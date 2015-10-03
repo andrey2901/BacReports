@@ -1,8 +1,11 @@
 package ua.com.hedgehogsoft.bacreports;
 
+import java.awt.EventQueue;
+
 import org.apache.log4j.Logger;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
+import ua.com.hedgehogsoft.bacreports.view.MainFrame;
 
 public class BacReports
 {
@@ -25,9 +28,20 @@ public class BacReports
       }
       else
       {
-         new Connection().connect();
+         // new Connection().connect();
+         new BacReports().start();
       }
+   }
 
-      logger.info("BacReports was finished.");
+   private void start()
+   {
+      EventQueue.invokeLater(new Runnable()
+      {
+         @Override
+         public void run()
+         {
+            new MainFrame();
+         }
+      });
    }
 }
