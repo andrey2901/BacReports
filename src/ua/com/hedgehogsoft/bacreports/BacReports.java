@@ -1,12 +1,16 @@
 package ua.com.hedgehogsoft.bacreports;
 
+import org.apache.log4j.Logger;
+
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 
 public class BacReports
 {
+   private static final Logger logger = Logger.getLogger(BacReports.class);
+
    public static void main(String[] args)
    {
-      System.out.println("BacReports is starting ...");
+      logger.info("BacReports is starting ...");
 
       if (args.length > 0)
       {
@@ -24,6 +28,6 @@ public class BacReports
          new Connection().connect();
       }
 
-      System.out.println("BacReports was finished.");
+      logger.info("BacReports was finished.");
    }
 }

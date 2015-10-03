@@ -9,11 +9,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class Connection
 {
    private String protocol = "jdbc:derby:";
    private String dbName = "derbyDB";
    private Properties props = null;
+   private static final Logger logger = Logger.getLogger(Connection.class);
 
    public Connection()
    {
@@ -34,7 +37,7 @@ public class Connection
       {
          conn = DriverManager.getConnection(protocol + dbName + ";create=true", props);
 
-         System.out.println("Created database " + dbName);
+         logger.info("Created database " + dbName);
 
          conn.setAutoCommit(false);
 
@@ -45,7 +48,7 @@ public class Connection
 
          conn.commit();
 
-         System.out.println("Created table location");
+         logger.info("Created table location");
       }
       catch (SQLException e)
       {
@@ -88,7 +91,7 @@ public class Connection
       {
          conn = DriverManager.getConnection(protocol + dbName, props);
 
-         System.out.println("Connected to database " + dbName);
+         logger.info("Connected to database " + dbName);
 
          conn.setAutoCommit(false);
 
@@ -97,11 +100,11 @@ public class Connection
          // delete the table
          s.execute("drop table location");
 
-         System.out.println("Dropped table location");
+         logger.info("Dropped table location");
 
          conn.commit();
 
-         System.out.println("Committed the transaction");
+         logger.info("Committed the transaction");
       }
       catch (SQLException e)
       {
@@ -148,7 +151,7 @@ public class Connection
          if (((se.getErrorCode() == 50000) && ("XJ015".equals(se.getSQLState()))))
          {
             // we got the expected exception
-            System.out.println("Derby shut down normally");
+            logger.info("Derby shut down normally");
             // Note that for single database shutdown, the expected
             // SQL state is "08006", and the error code is 45000.
          }
@@ -156,7 +159,7 @@ public class Connection
          {
             // if the error code or SQLState is different, we have
             // an unexpected exception (shutdown failed)
-            System.err.println("Derby did not shut down normally");
+            logger.error("Derby did not shut down normally");
             printSQLException(se);
          }
       }
@@ -164,7 +167,7 @@ public class Connection
 
    public void connect()
    {
-      System.out.println("Connection is starting...");
+      logger.info("Connection is starting...");
       java.sql.Connection conn = null;
       ArrayList<Statement> statements = new ArrayList<Statement>();
       PreparedStatement psInsert;
@@ -185,7 +188,7 @@ public class Connection
           */
          conn = DriverManager.getConnection(protocol + dbName, props);
 
-         System.out.println("Connected to database " + dbName);
+         logger.info("Connected to database " + dbName);
 
          // We want to control transactions manually. Autocommit is on by
          // default in JDBC.
@@ -210,12 +213,12 @@ public class Connection
          psInsert.setInt(1, 1956);
          psInsert.setString(2, "Webster St.");
          psInsert.executeUpdate();
-         System.out.println("Inserted 1956 Webster");
+         logger.info("Inserted 1956 Webster");
 
          psInsert.setInt(1, 1910);
          psInsert.setString(2, "Union St.");
          psInsert.executeUpdate();
-         System.out.println("Inserted 1910 Union");
+         logger.info("Inserted 1910 Union");
 
          // Let's update some rows as well...
 
@@ -227,13 +230,13 @@ public class Connection
          psUpdate.setString(2, "Grand Ave.");
          psUpdate.setInt(3, 1956);
          psUpdate.executeUpdate();
-         System.out.println("Updated 1956 Webster to 180 Grand");
+         logger.info("Updated 1956 Webster to 180 Grand");
 
          psUpdate.setInt(1, 300);
          psUpdate.setString(2, "Lakeshore Ave.");
          psUpdate.setInt(3, 180);
          psUpdate.executeUpdate();
-         System.out.println("Updated 180 Grand to 300 Lakeshore");
+         logger.info("Updated 180 Grand to 300 Lakeshore");
 
          /*
           * We select the rows and verify the results.
@@ -285,7 +288,7 @@ public class Connection
 
          if (!failure)
          {
-            System.out.println("Verified the rows");
+            logger.info("Verified the rows");
          }
 
          /*
@@ -293,7 +296,7 @@ public class Connection
           * database now.
           */
          conn.commit();
-         System.out.println("Committed the transaction");
+         logger.info("Committed the transaction");
 
          /*
           * In embedded mode, an application should shut down the database. If
@@ -380,8 +383,8 @@ public class Connection
     */
    private void reportFailure(String message)
    {
-      System.err.println("\nData verification failed:");
-      System.err.println('\t' + message);
+      logger.error("\nData verification failed:");
+      logger.error('\t' + message);
    }
 
    /**
@@ -397,10 +400,10 @@ public class Connection
       // Exception.
       while (e != null)
       {
-         System.err.println("\n----- SQLException -----");
-         System.err.println("  SQL State:  " + e.getSQLState());
-         System.err.println("  Error Code: " + e.getErrorCode());
-         System.err.println("  Message:    " + e.getMessage());
+         logger.error("\n----- SQLException -----");
+         logger.error("  SQL State:  " + e.getSQLState());
+         logger.error("  Error Code: " + e.getErrorCode());
+         logger.error("  Message:    " + e.getMessage());
          // for stack traces, refer to derby.log or uncomment this:
          // e.printStackTrace(System.err);
          e = e.getNextException();
