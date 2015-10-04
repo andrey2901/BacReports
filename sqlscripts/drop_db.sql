@@ -1,0 +1,2 @@
+ALTER TABLE store DROP CONSTRAINT st_productID;
+DROP TABLE store;
