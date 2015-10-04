@@ -52,13 +52,14 @@ public class Connection
          outcomingStatement = conn.createStatement();
 
          // We create a table...
-         storeStatement.execute("create table store(name varchar(40), price varchar(15), amount varchar(15))");
+         storeStatement.execute(
+               "CREATE TABLE store(name varchar(40) not null, price varchar(15) not null, amount varchar(15) not null, CONSTRAINT productID PRIMARY KEY (name, price))");
 
          incomingStatement.execute(
-               "create table incomings(name varchar(40), price varchar(15), amount varchar(15), date timestamp)");
+               "CREATE TABLE incomings(name varchar(40) not null, price varchar(15) not null, amount varchar(15) not null, incoming_date timestamp not null, CONSTRAINT incomingID PRIMARY KEY (name, price, incoming_date))");
 
          outcomingStatement.execute(
-               "create table outcomings(name varchar(40), price varchar(15), amount varchar(15), date timestamp)");
+               "CREATE TABLE outcomings(name varchar(40) not null, price varchar(15) not null, amount varchar(15) not null, outcoming_date timestamp not null, CONSTRAINT outcomingID PRIMARY KEY (name, price, outcoming_date))");
 
          conn.commit();
 
@@ -78,16 +79,11 @@ public class Connection
          {
             closeStatements(storeStatement, incomingStatement, outcomingStatement);
 
-            if (conn != null)
-            {
-               conn.close();
-
-               conn = null;
-            }
+            closeConnection(conn);
          }
-         catch (SQLException sqle)
+         catch (SQLException e)
          {
-            printSQLException(sqle);
+            printSQLException(e);
          }
 
          shutdownDB();
@@ -104,6 +100,12 @@ public class Connection
 
       Statement outcomingStatement = null;
 
+      Statement dropStoreStatement = null;
+
+      Statement dropIncomingStatement = null;
+
+      Statement dropOutcomingStatement = null;
+
       try
       {
          conn = DriverManager.getConnection(protocol + dbName, props);
@@ -118,12 +120,24 @@ public class Connection
 
          outcomingStatement = conn.createStatement();
 
+         dropStoreStatement = conn.createStatement();
+
+         dropIncomingStatement = conn.createStatement();
+
+         dropOutcomingStatement = conn.createStatement();
+
          // delete the table
-         storeStatement.execute("drop table store");
+         storeStatement.execute("ALTER TABLE store DROP CONSTRAINT productID");
 
-         incomingStatement.execute("drop table incomings");
+         dropStoreStatement.execute("DROP TABLE store");
 
-         outcomingStatement.execute("drop table outcomings");
+         incomingStatement.execute("ALTER TABLE incomings DROP CONSTRAINT incomingID");
+
+         dropIncomingStatement.execute("DROP TABLE incomings");
+
+         outcomingStatement.execute("ALTER TABLE outcomings DROP CONSTRAINT outcomingID");
+
+         dropOutcomingStatement.execute("DROP TABLE outcomings");
 
          conn.commit();
 
@@ -141,18 +155,14 @@ public class Connection
       {
          try
          {
-            closeStatements(storeStatement, incomingStatement, outcomingStatement);
+            closeStatements(storeStatement, incomingStatement, outcomingStatement, dropStoreStatement,
+                  dropIncomingStatement, dropOutcomingStatement);
 
-            if (conn != null)
-            {
-               conn.close();
-
-               conn = null;
-            }
+            closeConnection(conn);
          }
-         catch (SQLException sqle)
+         catch (SQLException e)
          {
-            printSQLException(sqle);
+            printSQLException(e);
          }
 
          shutdownDB();
@@ -443,5 +453,17 @@ public class Connection
                storeStatement[i] = null;
             }
          }
+   }
+
+   private void closeConnection(java.sql.Connection conn) throws SQLException
+   {
+      if (conn != null)
+      {
+         conn.close();
+
+         conn = null;
+
+         logger.error("Connection was closed successfully.");
+      }
    }
 }
