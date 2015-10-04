@@ -5,5 +5,7 @@
 	<classpathentry kind="lib" path="libs/derby.jar"/>
 	<classpathentry kind="lib" path="libs/derbytools.jar"/>
 	<classpathentry kind="lib" path="libs/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="libs/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="libs/junit-4.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
