@@ -1,10 +1,13 @@
 package ua.com.hedgehogsoft.bacreports.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Product
 {
    private String name;
-   private Integer amount;
-   private Price price;
+   private Double amount;
+   private Double price;
 
    public String getName()
    {
@@ -16,24 +19,24 @@ public class Product
       this.name = name;
    }
 
-   public Integer getAmount()
+   public Double getAmount()
    {
       return amount;
    }
 
-   public void setAmount(Integer amount)
+   public void setAmount(Double amount)
    {
-      this.amount = amount;
+      this.amount = new BigDecimal(amount).setScale(3, RoundingMode.HALF_EVEN).doubleValue();
    }
 
-   public Price getPrice()
+   public Double getPrice()
    {
       return price;
    }
 
-   public void setPrice(Price price)
+   public void setPrice(Double price)
    {
-      this.price = price;
+      this.price = new BigDecimal(price).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
    }
 
    @Override
@@ -56,5 +59,10 @@ public class Product
          return true;
       }
       return false;
+   }
+
+   public Double getTotalPrice()
+   {
+      return new BigDecimal(price * amount).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
    }
 }
