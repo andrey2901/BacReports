@@ -14,8 +14,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -23,16 +21,16 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 
-public class IncomingsFrame
+public class OutcomingsFrame
 {
    private JButton closeButton = null;
-   private JButton incomingButton = null;
+   private JButton outcomingButton = null;
    private JDatePickerImpl datePicker = null;
-   private static final Logger logger = Logger.getLogger(IncomingsFrame.class);
+   private static final Logger logger = Logger.getLogger(OutcomingsFrame.class);
 
-   public IncomingsFrame()
+   public OutcomingsFrame()
    {
-      final JFrame mainFrame = new JFrame("БакОтчеты - приход");
+      final JFrame mainFrame = new JFrame("БакОтчеты - списание");
 
       mainFrame.pack();
 
@@ -40,7 +38,7 @@ public class IncomingsFrame
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("IncomingsFrame was closed.");
+            logger.info("OutcomingsFrame was closed.");
 
             mainFrame.dispose();
          }
@@ -55,26 +53,26 @@ public class IncomingsFrame
          {
             mainFrame.dispose();
 
-            logger.info("IncomingsFrame was closed.");
+            logger.info("OutcomingsFrame was closed.");
          }
       });
 
-      incomingButton = new JButton("Оприходовать");
+      outcomingButton = new JButton("Списать");
 
-      incomingButton.addActionListener(new ActionListener()
+      outcomingButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
             logger.info(datePicker.getJFormattedTextField().getText());
 
-            logger.info("Incomings were performed.");
+            logger.info("Outcomings were performed.");
          }
       });
 
       JPanel buttonsPanel = new JPanel();
 
-      buttonsPanel.add(incomingButton);
+      buttonsPanel.add(outcomingButton);
 
       buttonsPanel.add(closeButton);
 
@@ -90,13 +88,11 @@ public class IncomingsFrame
 
       datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
       /*--------------------------------------------------------------*/
-      JPanel incomingPanel = new JPanel(new GridLayout(4, 2));
+      JPanel outcomingPanel = new JPanel(new GridLayout(4, 2));
 
-      incomingPanel.add(new JLabel("Наименование товара:"));
+      outcomingPanel.add(new JLabel("Наименование товара:"));
 
-      JComboBox<String> incomingComboBox = new JComboBox<String>();
-
-      incomingComboBox.setEditable(true);
+      JComboBox<String> outcomingNameComboBox = new JComboBox<String>();
 
       List<String> names = new Connection().getUniqueProductNames();
 
@@ -104,53 +100,45 @@ public class IncomingsFrame
       {
          for (String name : names)
          {
-            incomingComboBox.addItem(name);
+            outcomingNameComboBox.addItem(name);
          }
       }
 
-      JPanel incomingNamePanel = new JPanel();
+      JPanel outcomingNamePanel = new JPanel();
 
-      incomingNamePanel.add(incomingComboBox);
+      outcomingNamePanel.add(outcomingNameComboBox);
 
-      incomingPanel.add(incomingNamePanel);
+      outcomingPanel.add(outcomingNamePanel);
 
-      incomingPanel.add(new JLabel("Цена, грн./ед.:"));
+      outcomingPanel.add(new JLabel("Цена, грн./ед.:"));
 
-      JPanel incomingCostPanel = new JPanel();
+      JPanel outcomingCostPanel = new JPanel();
 
-      incomingCostPanel.add(new JTextField(5));
+      JComboBox<String> outcomingCostComboBox = new JComboBox<String>();
 
-      incomingCostPanel.add(new JLabel("грн.,"));
+      outcomingCostPanel.add(outcomingCostComboBox);
 
-      incomingCostPanel.add(new JTextField(2));
+      outcomingPanel.add(outcomingCostPanel);
 
-      incomingCostPanel.add(new JLabel("коп."));
+      outcomingPanel.add(new JLabel("Количество, ед.:"));
 
-      incomingPanel.add(incomingCostPanel);
+      JPanel outcomingAmountPanel = new JPanel();
 
-      incomingPanel.add(new JLabel("Количество, ед.:"));
+      JComboBox<String> outcomingAmountComboBox = new JComboBox<String>();
 
-      JPanel incomingAmountPanel = new JPanel();
+      outcomingAmountPanel.add(outcomingAmountComboBox);
 
-      incomingAmountPanel.add(new JTextField(5));
+      outcomingPanel.add(outcomingAmountPanel);
 
-      incomingAmountPanel.add(new JLabel(","));
+      outcomingPanel.add(new JLabel("Дата:"));
 
-      incomingAmountPanel.add(new JTextField(3));
+      JPanel outcomingDatePanel = new JPanel();
 
-      incomingAmountPanel.add(new JLabel("ед.     "));
+      outcomingDatePanel.add(datePicker);
 
-      incomingPanel.add(incomingAmountPanel);
+      outcomingPanel.add(outcomingDatePanel);
 
-      incomingPanel.add(new JLabel("Дата:"));
-
-      JPanel incomingDatePanel = new JPanel();
-
-      incomingDatePanel.add(datePicker);
-
-      incomingPanel.add(incomingDatePanel);
-
-      mainFrame.add(incomingPanel, BorderLayout.CENTER);
+      mainFrame.add(outcomingPanel, BorderLayout.CENTER);
 
       mainFrame.add(buttonsPanel, BorderLayout.SOUTH);
 
@@ -162,6 +150,6 @@ public class IncomingsFrame
 
       mainFrame.setVisible(true);
 
-      logger.info("IncomingsFrame was started.");
+      logger.info("OutcomingsFrame was started.");
    }
 }

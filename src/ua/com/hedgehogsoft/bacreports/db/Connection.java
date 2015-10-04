@@ -256,6 +256,55 @@ public class Connection
       return result;
    }
 
+   public List<String> getUniqueProductNames()
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<String> result = new ArrayList<String>();
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT DISTINCT name FROM store");
+
+         while (rs.next())
+         {
+            result.add(rs.getString("name"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public void connect()
    {
       logger.info("Connection is starting...");
