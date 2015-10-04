@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +19,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
+
+import ua.com.hedgehogsoft.bacreports.db.Connection;
+import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class MainFrame
 {
@@ -39,6 +43,8 @@ public class MainFrame
       {
          public void windowClosing(WindowEvent we)
          {
+            Connection.shutdownDB();
+
             logger.info("BacReports was finished.");
 
             System.exit(0);
@@ -58,6 +64,8 @@ public class MainFrame
          @Override
          public void actionPerformed(ActionEvent arg0)
          {
+            Connection.shutdownDB();
+
             logger.info("BacReports was finished.");
 
             System.exit(0);
@@ -103,19 +111,25 @@ public class MainFrame
    {
       String[] columnNames = {"№, п/п", "Наименование товара", "Цена, грн./ед.", "Количество, ед.", "Сумма, грн."};
 
-      Object[][] data = {{"1", "Smith", "Snowboarding", new Integer(5), new Boolean(false)},
-                         {"2", "Doe", "Rowing", new Integer(3), new Boolean(true)},
-                         {"3", "Black", "Knitting", new Integer(2), new Boolean(false)},
-                         {"4", "White", "Speed reading", new Integer(20), new Boolean(true)},
-                         {"5", "Brown", "Pool", new Integer(10), new Boolean(false)}};
+      List<Product> products = new Connection().getStore();
 
       DefaultTableModel model = new DefaultTableModel();
 
       model.setColumnIdentifiers(columnNames);
 
-      for (int i = 0; i < data.length; i++)
+      if (!products.isEmpty())
       {
-         model.addRow(data[i]);
+         for (int i = 0; i < products.size(); i++)
+         {
+            Product product = products.get(i);
+
+            model.addRow(
+                  new Object[] {i + 1,
+                                product.getName(),
+                                product.getPrice(),
+                                product.getAmount(),
+                                product.getTotalPrice()});
+         }
       }
 
       JTable table = new JTable(model);
@@ -132,15 +146,15 @@ public class MainFrame
    private void initColumnSizes(JTable table)
    {
       DefaultTableModel model = (DefaultTableModel) table.getModel();
-      
+
       TableColumn column = null;
-      
+
       Component comp = null;
-      
+
       int headerWidth = 0;
-      
+
       int cellWidth = 0;
-      
+
       TableCellRenderer headerRenderer = table.getTableHeader().getDefaultRenderer();
 
       for (int i = 0; i < 5; i++)
@@ -148,12 +162,12 @@ public class MainFrame
          column = table.getColumnModel().getColumn(i);
 
          comp = headerRenderer.getTableCellRendererComponent(null, column.getHeaderValue(), false, false, 0, 0);
-         
+
          headerWidth = comp.getPreferredSize().width;
 
          comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table,
                model.getColumnName(i), false, false, 0, i);
-         
+
          cellWidth = comp.getPreferredSize().width;
 
          column.setPreferredWidth(Math.max(headerWidth, cellWidth));

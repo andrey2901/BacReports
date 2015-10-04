@@ -7,9 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+
+import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class Connection
 {
@@ -53,13 +56,13 @@ public class Connection
 
          // We create a table...
          storeStatement.execute(
-               "CREATE TABLE store(name varchar(40) not null, price varchar(15) not null, amount varchar(15) not null, CONSTRAINT productID PRIMARY KEY (name, price))");
+               "CREATE TABLE store(name varchar(40) not null, price double not null, amount double not null, CONSTRAINT productID PRIMARY KEY (name, price))");
 
          incomingStatement.execute(
-               "CREATE TABLE incomings(name varchar(40) not null, price varchar(15) not null, amount varchar(15) not null, incoming_date timestamp not null, CONSTRAINT incomingID PRIMARY KEY (name, price, incoming_date))");
+               "CREATE TABLE incomings(name varchar(40) not null, price double not null, amount double not null, incoming_date timestamp not null, CONSTRAINT incomingID PRIMARY KEY (name, price, incoming_date))");
 
          outcomingStatement.execute(
-               "CREATE TABLE outcomings(name varchar(40) not null, price varchar(15) not null, amount varchar(15) not null, outcoming_date timestamp not null, CONSTRAINT outcomingID PRIMARY KEY (name, price, outcoming_date))");
+               "CREATE TABLE outcomings(name varchar(40) not null, price double not null, amount double not null, outcoming_date timestamp not null, CONSTRAINT outcomingID PRIMARY KEY (name, price, outcoming_date))");
 
          conn.commit();
 
@@ -169,7 +172,7 @@ public class Connection
       }
    }
 
-   void shutdownDB()
+   public static void shutdownDB()
    {
       try
       {
@@ -194,6 +197,63 @@ public class Connection
             printSQLException(se);
          }
       }
+   }
+
+   public List<Product> getStore()
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Product> result = new ArrayList<Product>();
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT * FROM store");
+
+         while (rs.next())
+         {
+            Product product = new Product();
+
+            product.setName(rs.getString("name"));
+
+            product.setPrice(rs.getDouble("price"));
+
+            product.setAmount(rs.getDouble("amount"));
+
+            result.add(product);
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
    }
 
    public void connect()
@@ -463,7 +523,7 @@ public class Connection
 
          conn = null;
 
-         logger.error("Connection was closed successfully.");
+         logger.info("Connection was closed successfully.");
       }
    }
 }
