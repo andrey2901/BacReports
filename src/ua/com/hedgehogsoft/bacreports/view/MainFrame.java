@@ -1,6 +1,7 @@
 package ua.com.hedgehogsoft.bacreports.view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
 
@@ -77,23 +81,9 @@ public class MainFrame
       buttonsPanel.add(comingButtonPanel, BorderLayout.NORTH);
 
       buttonsPanel.add(functionalButtonPanel, BorderLayout.SOUTH);
-      
-      String[] columnNames = {"№, п/п", "Наименование товара", "Цена, грн./ед.", "Количество, ед.", "Сумма, грн."};
 
-      Object[][] data = {{"Kathy", "Smith", "Snowboarding", new Integer(5), new Boolean(false)},
-                         {"John", "Doe", "Rowing", new Integer(3), new Boolean(true)},
-                         {"Sue", "Black", "Knitting", new Integer(2), new Boolean(false)},
-                         {"Jane", "White", "Speed reading", new Integer(20), new Boolean(true)},
-                         {"Joe", "Brown", "Pool", new Integer(10), new Boolean(false)}};
+      JScrollPane scrollPane = new JScrollPane(getFilledTable());
 
-      final JTable table = new JTable(data, columnNames);
-      
-      table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-      
-      table.setFillsViewportHeight(true);
-      
-      JScrollPane scrollPane = new JScrollPane(table);
-      
       mainFrame.add(scrollPane, BorderLayout.CENTER);
 
       mainFrame.add(buttonsPanel, BorderLayout.SOUTH);
@@ -107,5 +97,66 @@ public class MainFrame
       mainFrame.setVisible(true);
 
       logger.info("BacReports was started.");
+   }
+
+   private JTable getFilledTable()
+   {
+      String[] columnNames = {"№, п/п", "Наименование товара", "Цена, грн./ед.", "Количество, ед.", "Сумма, грн."};
+
+      Object[][] data = {{"1", "Smith", "Snowboarding", new Integer(5), new Boolean(false)},
+                         {"2", "Doe", "Rowing", new Integer(3), new Boolean(true)},
+                         {"3", "Black", "Knitting", new Integer(2), new Boolean(false)},
+                         {"4", "White", "Speed reading", new Integer(20), new Boolean(true)},
+                         {"5", "Brown", "Pool", new Integer(10), new Boolean(false)}};
+
+      DefaultTableModel model = new DefaultTableModel();
+
+      model.setColumnIdentifiers(columnNames);
+
+      for (int i = 0; i < data.length; i++)
+      {
+         model.addRow(data[i]);
+      }
+
+      JTable table = new JTable(model);
+
+      table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+
+      table.setFillsViewportHeight(true);
+
+      initColumnSizes(table);
+
+      return table;
+   }
+
+   private void initColumnSizes(JTable table)
+   {
+      DefaultTableModel model = (DefaultTableModel) table.getModel();
+      
+      TableColumn column = null;
+      
+      Component comp = null;
+      
+      int headerWidth = 0;
+      
+      int cellWidth = 0;
+      
+      TableCellRenderer headerRenderer = table.getTableHeader().getDefaultRenderer();
+
+      for (int i = 0; i < 5; i++)
+      {
+         column = table.getColumnModel().getColumn(i);
+
+         comp = headerRenderer.getTableCellRendererComponent(null, column.getHeaderValue(), false, false, 0, 0);
+         
+         headerWidth = comp.getPreferredSize().width;
+
+         comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table,
+               model.getColumnName(i), false, false, 0, i);
+         
+         cellWidth = comp.getPreferredSize().width;
+
+         column.setPreferredWidth(Math.max(headerWidth, cellWidth));
+      }
    }
 }

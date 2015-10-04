@@ -31,7 +31,11 @@ public class Connection
    {
       java.sql.Connection conn = null;
 
-      Statement s = null;
+      Statement storeStatement = null;
+
+      Statement incomingStatement = null;
+
+      Statement outcomingStatement = null;
 
       try
       {
@@ -41,14 +45,28 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         s = conn.createStatement();
+         storeStatement = conn.createStatement();
+
+         incomingStatement = conn.createStatement();
+
+         outcomingStatement = conn.createStatement();
 
          // We create a table...
-         s.execute("create table location(num int, addr varchar(40))");
+         storeStatement.execute("create table store(name varchar(40), price varchar(15), amount varchar(15))");
+
+         incomingStatement.execute(
+               "create table incomings(name varchar(40), price varchar(15), amount varchar(15), date timestamp)");
+
+         outcomingStatement.execute(
+               "create table outcomings(name varchar(40), price varchar(15), amount varchar(15), date timestamp)");
 
          conn.commit();
 
-         logger.info("Created table location");
+         logger.info("Created table store");
+
+         logger.info("Created table incomings");
+
+         logger.info("Created table outcomings");
       }
       catch (SQLException e)
       {
@@ -58,12 +76,7 @@ public class Connection
       {
          try
          {
-            if (s != null)
-            {
-               s.close();
-
-               s = null;
-            }
+            closeStatements(storeStatement, incomingStatement, outcomingStatement);
 
             if (conn != null)
             {
@@ -85,7 +98,11 @@ public class Connection
    {
       java.sql.Connection conn = null;
 
-      Statement s = null;
+      Statement storeStatement = null;
+
+      Statement incomingStatement = null;
+
+      Statement outcomingStatement = null;
 
       try
       {
@@ -95,16 +112,26 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         s = conn.createStatement();
+         storeStatement = conn.createStatement();
+
+         incomingStatement = conn.createStatement();
+
+         outcomingStatement = conn.createStatement();
 
          // delete the table
-         s.execute("drop table location");
+         storeStatement.execute("drop table store");
 
-         logger.info("Dropped table location");
+         incomingStatement.execute("drop table incomings");
+
+         outcomingStatement.execute("drop table outcomings");
 
          conn.commit();
 
-         logger.info("Committed the transaction");
+         logger.info("Dropped table store");
+
+         logger.info("Dropped table incomings");
+
+         logger.info("Dropped table outcomings");
       }
       catch (SQLException e)
       {
@@ -114,12 +141,7 @@ public class Connection
       {
          try
          {
-            if (s != null)
-            {
-               s.close();
-
-               s = null;
-            }
+            closeStatements(storeStatement, incomingStatement, outcomingStatement);
 
             if (conn != null)
             {
@@ -141,7 +163,6 @@ public class Connection
    {
       try
       {
-         // the shutdown=true attribute shuts down Derby
          DriverManager.getConnection("jdbc:derby:;shutdown=true");
          // DriverManager.getConnection("jdbc:derby:" + dbName +
          // ";shutdown=true");
@@ -394,7 +415,7 @@ public class Connection
     * @param e
     *           the SQLException from which to print details.
     */
-   public static void printSQLException(SQLException e)
+   private static void printSQLException(SQLException e)
    {
       // Unwraps the entire exception chain to unveil the real cause of the
       // Exception.
@@ -408,5 +429,19 @@ public class Connection
          // e.printStackTrace(System.err);
          e = e.getNextException();
       }
+   }
+
+   private void closeStatements(Statement... storeStatement) throws SQLException
+   {
+      if (storeStatement != null)
+         for (int i = 0; i < storeStatement.length; i++)
+         {
+            if (storeStatement[i] != null)
+            {
+               storeStatement[i].close();
+
+               storeStatement[i] = null;
+            }
+         }
    }
 }
