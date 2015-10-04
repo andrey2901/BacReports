@@ -33,7 +33,7 @@ public class MainFrame
 
    public MainFrame()
    {
-      final JFrame mainFrame = new JFrame("БакОтчеты");
+      final JFrame mainFrame = new JFrame("БакОтчеты - остатки");
 
       mainFrame.setLayout(new BorderLayout());
 
@@ -52,6 +52,15 @@ public class MainFrame
       });
 
       incomingButton = new JButton("Приход");
+
+      incomingButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            new IncomingsFrame();
+         }
+      });
 
       outcomingButton = new JButton("Списание");
 
