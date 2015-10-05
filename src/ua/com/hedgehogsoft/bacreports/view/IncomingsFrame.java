@@ -28,6 +28,8 @@ public class IncomingsFrame
    private JButton closeButton = null;
    private JButton incomingButton = null;
    private JDatePickerImpl datePicker = null;
+   private JComboBox<String> incomingNameComboBox = null;
+   private JComboBox<String> incomingCostComboBox = null;
    private static final Logger logger = Logger.getLogger(IncomingsFrame.class);
 
    public IncomingsFrame()
@@ -94,9 +96,9 @@ public class IncomingsFrame
 
       incomingPanel.add(new JLabel("Наименование товара:"));
 
-      JComboBox<String> incomingComboBox = new JComboBox<String>();
+      incomingNameComboBox = new JComboBox<String>();
 
-      incomingComboBox.setEditable(true);
+      incomingNameComboBox.setEditable(true);
 
       List<String> names = new Connection().getUniqueProductNames();
 
@@ -104,29 +106,40 @@ public class IncomingsFrame
       {
          for (String name : names)
          {
-            incomingComboBox.addItem(name);
+            incomingNameComboBox.addItem(name);
          }
       }
 
-      JPanel incomingNamePanel = new JPanel();
+      incomingNameComboBox.setSelectedItem("");
 
-      incomingNamePanel.add(incomingComboBox);
-
-      incomingPanel.add(incomingNamePanel);
+      incomingPanel.add(incomingNameComboBox);
 
       incomingPanel.add(new JLabel("Цена, грн./ед.:"));
 
-      JPanel incomingCostPanel = new JPanel();
+      incomingCostComboBox = new JComboBox<String>();
 
-      incomingCostPanel.add(new JTextField(5));
+      incomingCostComboBox.setEditable(true);
 
-      incomingCostPanel.add(new JLabel("грн.,"));
+      incomingPanel.add(incomingCostComboBox);
 
-      incomingCostPanel.add(new JTextField(2));
+      incomingNameComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            incomingCostComboBox.removeAllItems();
 
-      incomingCostPanel.add(new JLabel("коп."));
+            List<Double> prices = new Connection().getPricesByProduct((String) incomingNameComboBox.getSelectedItem());
 
-      incomingPanel.add(incomingCostPanel);
+            if (!prices.isEmpty())
+            {
+               for (Double price : prices)
+               {
+                  incomingCostComboBox.addItem(Double.toString(price));
+               }
+            }
+         }
+      });
 
       incomingPanel.add(new JLabel("Количество, ед.:"));
 
@@ -144,11 +157,7 @@ public class IncomingsFrame
 
       incomingPanel.add(new JLabel("Дата:"));
 
-      JPanel incomingDatePanel = new JPanel();
-
-      incomingDatePanel.add(datePicker);
-
-      incomingPanel.add(incomingDatePanel);
+      incomingPanel.add(datePicker);
 
       mainFrame.add(incomingPanel, BorderLayout.CENTER);
 

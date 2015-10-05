@@ -305,6 +305,105 @@ public class Connection
       return result;
    }
 
+   public List<Double> getPricesByProduct(String productName)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Double> result = new ArrayList<Double>();
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT price FROM store WHERE name='" + productName + "'");
+
+         while (rs.next())
+         {
+            result.add(rs.getDouble("price"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<Double> getAmountByProductAndPrice(String productName, double productPrice)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Double> result = new ArrayList<Double>();
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT amount FROM store WHERE name='" + productName + "' AND price=" + productPrice);
+
+         while (rs.next())
+         {
+            result.add(rs.getDouble("price"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public void connect()
    {
       logger.info("Connection is starting...");
