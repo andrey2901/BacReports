@@ -59,10 +59,10 @@ public class Connection
                "CREATE TABLE store(name varchar(40) not null, price double not null, amount double not null, CONSTRAINT productID PRIMARY KEY (name, price))");
 
          incomingStatement.execute(
-               "CREATE TABLE incomings(name varchar(40) not null, price double not null, amount double not null, incoming_date timestamp not null, CONSTRAINT incomingID PRIMARY KEY (name, price, incoming_date))");
+               "CREATE TABLE incomings(name varchar(40) not null, price double not null, amount double not null, incoming_date date not null, CONSTRAINT incomingID PRIMARY KEY (name, price, incoming_date))");
 
          outcomingStatement.execute(
-               "CREATE TABLE outcomings(name varchar(40) not null, price double not null, amount double not null, outcoming_date timestamp not null, CONSTRAINT outcomingID PRIMARY KEY (name, price, outcoming_date))");
+               "CREATE TABLE outcomings(name varchar(40) not null, price double not null, amount double not null, outcoming_date date not null, CONSTRAINT outcomingID PRIMARY KEY (name, price, outcoming_date))");
 
          conn.commit();
 
@@ -374,8 +374,7 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery(
-               "SELECT amount FROM store WHERE name='" + productName + "' AND price=" + productPrice);
+         rs = s.executeQuery("SELECT amount FROM store WHERE name='" + productName + "' AND price=" + productPrice);
 
          while (rs.next())
          {
