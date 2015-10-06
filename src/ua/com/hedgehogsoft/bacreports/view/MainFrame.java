@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.listener.IncomingActionListener;
+import ua.com.hedgehogsoft.bacreports.listener.OutcomingActionListener;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class MainFrame
@@ -59,14 +60,7 @@ public class MainFrame
 
       outcomingButton = new JButton("Списание");
 
-      outcomingButton.addActionListener(new ActionListener()
-      {
-         @Override
-         public void actionPerformed(ActionEvent e)
-         {
-            new OutcomingsFrame();
-         }
-      });
+      outcomingButton.addActionListener(new OutcomingActionListener(this));
 
       reportsButton = new JButton("Отчеты");
 

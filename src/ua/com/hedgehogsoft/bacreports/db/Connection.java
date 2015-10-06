@@ -525,6 +525,49 @@ public class Connection
       }
    }
 
+   public void addOutcoming(Product product, String date)
+   {
+      java.sql.Connection conn = null;
+
+      PreparedStatement ps = null;
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         ps = conn.prepareStatement("INSERT INTO outcomings VALUES (?, ?, ?, ?)");
+
+         ps.setString(1, product.getName());
+         ps.setDouble(2, product.getPrice());
+         ps.setDouble(3, product.getAmount());
+         ps.setString(4, date);
+         ps.executeUpdate();
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(ps);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+   }
+
    public Double getAmountByProductNameAndPrice(String productName, double productPrice)
    {
       java.sql.Connection conn = null;
@@ -549,7 +592,7 @@ public class Connection
 
          while (rs.next())
          {
-            result = rs.getDouble("price");
+            result = rs.getDouble("amount");
 
             break;
          }

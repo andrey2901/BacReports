@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -13,34 +14,41 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
+import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class OutcomingsFrame
 {
    private JButton closeButton = null;
    private JButton outcomingButton = null;
    private JDatePickerImpl datePicker = null;
+   private JComboBox<String> outcomingNameComboBox = null;
+   private JComboBox<String> outcomingCostComboBox = null;
+   private JTextField outcomingAmountTextField = null;
    private static final Logger logger = Logger.getLogger(OutcomingsFrame.class);
 
-   public OutcomingsFrame()
+   public OutcomingsFrame(MainFrame mainFrame)
    {
-      final JFrame mainFrame = new JFrame("БакОтчеты - списание");
+      final JFrame outcomingsFrame = new JFrame("БакОтчеты - списание");
 
-      mainFrame.pack();
+      outcomingsFrame.pack();
 
-      mainFrame.addWindowListener(new WindowAdapter()
+      outcomingsFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
             logger.info("OutcomingsFrame was closed.");
 
-            mainFrame.dispose();
+            outcomingsFrame.dispose();
          }
       });
 
@@ -51,7 +59,7 @@ public class OutcomingsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            mainFrame.dispose();
+            outcomingsFrame.dispose();
 
             logger.info("OutcomingsFrame was closed.");
          }
@@ -64,9 +72,44 @@ public class OutcomingsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            logger.info(datePicker.getJFormattedTextField().getText());
+            if (checkInputData())
+            {
+               Product product = new Product();
 
-            logger.info("Outcomings were performed.");
+               product.setName((String) outcomingNameComboBox.getSelectedItem());
+
+               product.setPrice(Double.valueOf(((String) outcomingCostComboBox.getSelectedItem()).replace(",", ".")));
+
+               product.setAmount(Double.valueOf(outcomingAmountTextField.getText().replace(",", ".")));
+
+               Product existedProduct = new Connection().getProductByNameAndPrice(product.getName(),
+                     product.getPrice());
+
+               if (existedProduct.getAmount() >= product.getAmount())
+               {
+                  existedProduct.setAmount(existedProduct.getAmount() - product.getAmount());
+
+                  new Connection().updateProduct(existedProduct);
+
+                  ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
+
+                  model.updateAmount(existedProduct);
+
+                  new Connection().addOutcoming(product, datePicker.getJFormattedTextField().getText());
+
+                  logger.info("Outcomings were performed.");
+
+                  outcomingsFrame.dispose();
+
+                  logger.info("OutcomingsFrame was closed.");
+               }
+               else
+               {
+                  JOptionPane.showMessageDialog(null,
+                        "Вы пытаетесь списать большее количество товара, чем имеется на складе.\n Укажите верное значение.",
+                        "Ошибка", JOptionPane.ERROR_MESSAGE);
+               }
+            }
          }
       });
 
@@ -92,9 +135,11 @@ public class OutcomingsFrame
 
       outcomingPanel.add(new JLabel("Наименование товара:"));
 
-      JComboBox<String> outcomingNameComboBox = new JComboBox<String>();
+      outcomingNameComboBox = new JComboBox<String>();
 
       List<String> names = new Connection().getUniqueProductNames();
+
+      Collections.sort(names);
 
       if (!names.isEmpty())
       {
@@ -104,52 +149,103 @@ public class OutcomingsFrame
          }
       }
 
-      JPanel outcomingNamePanel = new JPanel();
-
-      outcomingNamePanel.add(outcomingNameComboBox);
-
-      outcomingPanel.add(outcomingNamePanel);
+      outcomingPanel.add(outcomingNameComboBox);
 
       outcomingPanel.add(new JLabel("Цена, грн./ед.:"));
 
-      JPanel outcomingCostPanel = new JPanel();
+      outcomingCostComboBox = new JComboBox<String>();
 
-      JComboBox<String> outcomingCostComboBox = new JComboBox<String>();
+      outcomingPanel.add(outcomingCostComboBox);
 
-      outcomingCostPanel.add(outcomingCostComboBox);
+      outcomingNameComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            outcomingCostComboBox.removeAllItems();
 
-      outcomingPanel.add(outcomingCostPanel);
+            List<Double> prices = new Connection().getPricesByProduct((String) outcomingNameComboBox.getSelectedItem());
+
+            if (!prices.isEmpty())
+            {
+               Collections.sort(prices);
+               for (Double price : prices)
+               {
+                  outcomingCostComboBox.addItem(Double.toString(price));
+               }
+            }
+         }
+      });
 
       outcomingPanel.add(new JLabel("Количество, ед.:"));
 
-      JPanel outcomingAmountPanel = new JPanel();
+      outcomingAmountTextField = new JTextField();
 
-      JComboBox<String> outcomingAmountComboBox = new JComboBox<String>();
+      outcomingPanel.add(outcomingAmountTextField);
 
-      outcomingAmountPanel.add(outcomingAmountComboBox);
-
-      outcomingPanel.add(outcomingAmountPanel);
+      outcomingCostComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            if (outcomingCostComboBox.getItemCount() != 0)
+               outcomingAmountTextField.setText(Double.toString(
+                     new Connection().getAmountByProductNameAndPrice((String) outcomingNameComboBox.getSelectedItem(),
+                           Double.valueOf((String) outcomingCostComboBox.getSelectedItem()))));
+         }
+      });
 
       outcomingPanel.add(new JLabel("Дата:"));
 
-      JPanel outcomingDatePanel = new JPanel();
+      outcomingPanel.add(datePicker);
 
-      outcomingDatePanel.add(datePicker);
+      outcomingsFrame.add(outcomingPanel, BorderLayout.CENTER);
 
-      outcomingPanel.add(outcomingDatePanel);
+      outcomingsFrame.add(buttonsPanel, BorderLayout.SOUTH);
 
-      mainFrame.add(outcomingPanel, BorderLayout.CENTER);
+      outcomingsFrame.pack();
 
-      mainFrame.add(buttonsPanel, BorderLayout.SOUTH);
+      outcomingsFrame.setResizable(false);
 
-      mainFrame.pack();
+      outcomingsFrame.setLocationRelativeTo(null);
 
-      mainFrame.setResizable(false);
-
-      mainFrame.setLocationRelativeTo(null);
-
-      mainFrame.setVisible(true);
+      outcomingsFrame.setVisible(true);
 
       logger.info("OutcomingsFrame was started.");
+   }
+
+   private boolean checkInputData()
+   {
+      boolean result = true;
+
+      if (outcomingNameComboBox.getSelectedItem() == null
+            || ((String) outcomingNameComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле наименования товара", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      if (outcomingCostComboBox.getSelectedItem() == null
+            || ((String) outcomingCostComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле стоимости", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      if (outcomingAmountTextField.getText() == null || outcomingAmountTextField.getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле количества", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      if (datePicker.getJFormattedTextField().getText() == null
+            || datePicker.getJFormattedTextField().getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле даты", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+
+      return result;
    }
 }
