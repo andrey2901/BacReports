@@ -35,19 +35,19 @@ public class IncomingsFrame
    private JTextField incomingAmountTextField = null;
    private static final Logger logger = Logger.getLogger(IncomingsFrame.class);
 
-   public IncomingsFrame()
+   public IncomingsFrame(MainFrame mainFrame)
    {
-      final JFrame mainFrame = new JFrame("БакОтчеты - приход");
+      final JFrame incomingsFrame = new JFrame("БакОтчеты - приход");
 
-      mainFrame.pack();
+      incomingsFrame.pack();
 
-      mainFrame.addWindowListener(new WindowAdapter()
+      incomingsFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
             logger.info("IncomingsFrame was closed.");
 
-            mainFrame.dispose();
+            incomingsFrame.dispose();
          }
       });
 
@@ -58,7 +58,7 @@ public class IncomingsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            mainFrame.dispose();
+            incomingsFrame.dispose();
 
             logger.info("IncomingsFrame was closed.");
          }
@@ -89,17 +89,25 @@ public class IncomingsFrame
                   existedProduct.setAmount(product.getAmount() + existedProduct.getAmount());
 
                   new Connection().updateProduct(existedProduct);
+
+                  ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
+                  
+                  model.updateAmount(existedProduct);
                }
                else
                {
                   new Connection().addProductToStore(product);
+
+                  ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
+
+                  model.addProduct(product);
                }
 
                new Connection().addIncoming(product, datePicker.getJFormattedTextField().getText());
 
                logger.info("Incomings were performed.");
 
-               mainFrame.dispose();
+               incomingsFrame.dispose();
 
                logger.info("IncomingsFrame was closed.");
             }
@@ -183,17 +191,17 @@ public class IncomingsFrame
 
       incomingPanel.add(datePicker);
 
-      mainFrame.add(incomingPanel, BorderLayout.CENTER);
+      incomingsFrame.add(incomingPanel, BorderLayout.CENTER);
 
-      mainFrame.add(buttonsPanel, BorderLayout.SOUTH);
+      incomingsFrame.add(buttonsPanel, BorderLayout.SOUTH);
 
-      mainFrame.pack();
+      incomingsFrame.pack();
 
-      mainFrame.setResizable(false);
+      incomingsFrame.setResizable(false);
 
-      mainFrame.setLocationRelativeTo(null);
+      incomingsFrame.setLocationRelativeTo(null);
 
-      mainFrame.setVisible(true);
+      incomingsFrame.setVisible(true);
 
       logger.info("IncomingsFrame was started.");
    }

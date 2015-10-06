@@ -21,6 +21,7 @@ import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
+import ua.com.hedgehogsoft.bacreports.listener.IncomingActionListener;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class MainFrame
@@ -29,6 +30,7 @@ public class MainFrame
    private JButton outcomingButton = null;
    private JButton reportsButton = null;
    private JButton exitButton = null;
+   private JTable table = null;
    private static final Logger logger = Logger.getLogger(MainFrame.class);
 
    public MainFrame()
@@ -53,14 +55,7 @@ public class MainFrame
 
       incomingButton = new JButton("Приход");
 
-      incomingButton.addActionListener(new ActionListener()
-      {
-         @Override
-         public void actionPerformed(ActionEvent e)
-         {
-            new IncomingsFrame();
-         }
-      });
+      incomingButton.addActionListener(new IncomingActionListener(this));
 
       outcomingButton = new JButton("Списание");
 
@@ -108,7 +103,7 @@ public class MainFrame
 
       buttonsPanel.add(functionalButtonPanel, BorderLayout.SOUTH);
 
-      JScrollPane scrollPane = new JScrollPane(getFilledTable());
+      JScrollPane scrollPane = new JScrollPane(table = getFilledTable());
 
       mainFrame.add(scrollPane, BorderLayout.CENTER);
 
@@ -148,7 +143,7 @@ public class MainFrame
          }
       }
 
-      JTable table = new JTable(model);
+      table = new JTable(model);
 
       table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
@@ -188,5 +183,10 @@ public class MainFrame
 
          column.setPreferredWidth(Math.max(headerWidth, cellWidth));
       }
+   }
+
+   public JTable getTable()
+   {
+      return table;
    }
 }

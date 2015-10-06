@@ -54,7 +54,7 @@ public class Product
 
       Product product = (Product) obj;
 
-      if (name == product.getName() && price == product.getPrice())
+      if (product.getName().equals(name) && Double.toString(price).equals(Double.toString(product.getPrice())))
       {
          return true;
       }
