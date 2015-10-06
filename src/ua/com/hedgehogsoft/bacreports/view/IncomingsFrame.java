@@ -96,9 +96,13 @@ public class IncomingsFrame
                }
 
                new Connection().addIncoming(product, datePicker.getJFormattedTextField().getText());
-            }
 
-            logger.info("Incomings were performed.");
+               logger.info("Incomings were performed.");
+
+               mainFrame.dispose();
+
+               logger.info("IncomingsFrame was closed.");
+            }
          }
       });
 
