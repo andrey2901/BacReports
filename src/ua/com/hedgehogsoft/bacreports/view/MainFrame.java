@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -131,9 +131,7 @@ public class MainFrame
 
       List<Product> products = new Connection().getStore();
 
-      DefaultTableModel model = new DefaultTableModel();
-
-      model.setColumnIdentifiers(columnNames);
+      ProductStoreTableModel model = new ProductStoreTableModel(products, columnNames);
 
       if (!products.isEmpty())
       {
@@ -163,7 +161,7 @@ public class MainFrame
 
    private void initColumnSizes(JTable table)
    {
-      DefaultTableModel model = (DefaultTableModel) table.getModel();
+      AbstractTableModel model = (AbstractTableModel) table.getModel();
 
       TableColumn column = null;
 
