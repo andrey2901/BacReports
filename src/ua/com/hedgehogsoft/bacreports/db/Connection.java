@@ -59,10 +59,10 @@ public class Connection
                "CREATE TABLE store(name varchar(40) not null, price double not null, amount double not null, CONSTRAINT productID PRIMARY KEY (name, price))");
 
          incomingStatement.execute(
-               "CREATE TABLE incomings(name varchar(40) not null, price double not null, amount double not null, incoming_date date not null, CONSTRAINT incomingID PRIMARY KEY (name, price, incoming_date))");
+               "CREATE TABLE incomings(name varchar(40) not null, price double not null, amount double not null, incoming_date date not null)");
 
          outcomingStatement.execute(
-               "CREATE TABLE outcomings(name varchar(40) not null, price double not null, amount double not null, outcoming_date date not null, CONSTRAINT outcomingID PRIMARY KEY (name, price, outcoming_date))");
+               "CREATE TABLE outcomings(name varchar(40) not null, price double not null, amount double not null, outcoming_date date not null)");
 
          conn.commit();
 
@@ -99,10 +99,6 @@ public class Connection
 
       Statement storeStatement = null;
 
-      Statement incomingStatement = null;
-
-      Statement outcomingStatement = null;
-
       Statement dropStoreStatement = null;
 
       Statement dropIncomingStatement = null;
@@ -119,10 +115,6 @@ public class Connection
 
          storeStatement = conn.createStatement();
 
-         incomingStatement = conn.createStatement();
-
-         outcomingStatement = conn.createStatement();
-
          dropStoreStatement = conn.createStatement();
 
          dropIncomingStatement = conn.createStatement();
@@ -134,11 +126,7 @@ public class Connection
 
          dropStoreStatement.execute("DROP TABLE store");
 
-         incomingStatement.execute("ALTER TABLE incomings DROP CONSTRAINT incomingID");
-
          dropIncomingStatement.execute("DROP TABLE incomings");
-
-         outcomingStatement.execute("ALTER TABLE outcomings DROP CONSTRAINT outcomingID");
 
          dropOutcomingStatement.execute("DROP TABLE outcomings");
 
@@ -158,8 +146,7 @@ public class Connection
       {
          try
          {
-            closeStatements(storeStatement, incomingStatement, outcomingStatement, dropStoreStatement,
-                  dropIncomingStatement, dropOutcomingStatement);
+            closeStatements(storeStatement, dropStoreStatement, dropIncomingStatement, dropOutcomingStatement);
 
             closeConnection(conn);
          }

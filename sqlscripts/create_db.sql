@@ -11,8 +11,7 @@ CREATE TABLE incomings
 	name varchar(40) not null,
 	price double not null,
 	amount double not null,
-	incoming_date date not null,
-	CONSTRAINT incomingID PRIMARY KEY (name, price, incoming_date)
+	incoming_date date not null)
 );
 
 CREATE TABLE outcomings
@@ -20,6 +19,5 @@ CREATE TABLE outcomings
 	name varchar(40) not null,
 	price double not null,
 	amount double not null,
-	outcoming_date date not null,
-	CONSTRAINT outcomingID PRIMARY KEY (name, price, outcoming_date)
+	outcoming_date date not null)
 );
