@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -22,6 +23,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
+import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class IncomingsFrame
 {
@@ -30,6 +32,7 @@ public class IncomingsFrame
    private JDatePickerImpl datePicker = null;
    private JComboBox<String> incomingNameComboBox = null;
    private JComboBox<String> incomingCostComboBox = null;
+   private JTextField incomingAmountTextField = null;
    private static final Logger logger = Logger.getLogger(IncomingsFrame.class);
 
    public IncomingsFrame()
@@ -68,7 +71,32 @@ public class IncomingsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            logger.info(datePicker.getJFormattedTextField().getText());
+            if (checkInputData())
+            {
+               Product product = new Product();
+
+               product.setName((String) incomingNameComboBox.getSelectedItem());
+
+               product.setPrice(Double.valueOf(((String) incomingCostComboBox.getSelectedItem()).replace(",", ".")));
+
+               product.setAmount(Double.valueOf(incomingAmountTextField.getText().replace(",", ".")));
+
+               if (new Connection().productExist(product.getName(), product.getPrice()))
+               {
+                  Product existedProduct = new Connection().getProductByNameAndPrice(product.getName(),
+                        product.getPrice());
+
+                  existedProduct.setAmount(product.getAmount() + existedProduct.getAmount());
+
+                  new Connection().updateProduct(existedProduct);
+               }
+               else
+               {
+                  new Connection().addProductToStore(product);
+               }
+
+               new Connection().addIncoming(product, datePicker.getJFormattedTextField().getText());
+            }
 
             logger.info("Incomings were performed.");
          }
@@ -143,17 +171,9 @@ public class IncomingsFrame
 
       incomingPanel.add(new JLabel("Количество, ед.:"));
 
-      JPanel incomingAmountPanel = new JPanel();
+      incomingAmountTextField = new JTextField();
 
-      incomingAmountPanel.add(new JTextField(5));
-
-      incomingAmountPanel.add(new JLabel(","));
-
-      incomingAmountPanel.add(new JTextField(3));
-
-      incomingAmountPanel.add(new JLabel("ед.     "));
-
-      incomingPanel.add(incomingAmountPanel);
+      incomingPanel.add(incomingAmountTextField);
 
       incomingPanel.add(new JLabel("Дата:"));
 
@@ -172,5 +192,38 @@ public class IncomingsFrame
       mainFrame.setVisible(true);
 
       logger.info("IncomingsFrame was started.");
+   }
+
+   private boolean checkInputData()
+   {
+      boolean result = true;
+
+      if (incomingNameComboBox.getSelectedItem() == null || ((String) incomingNameComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле наименования товара", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      if (incomingCostComboBox.getSelectedItem() == null || ((String) incomingCostComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле стоимости", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      if (incomingAmountTextField.getText() == null || incomingAmountTextField.getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле количества", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      if (datePicker.getJFormattedTextField().getText() == null
+            || datePicker.getJFormattedTextField().getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заполните поле даты", "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+
+      return result;
    }
 }

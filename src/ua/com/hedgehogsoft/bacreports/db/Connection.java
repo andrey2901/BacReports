@@ -354,7 +354,7 @@ public class Connection
       return result;
    }
 
-   public List<Double> getAmountByProductAndPrice(String productName, double productPrice)
+   public Product getProductByNameAndPrice(String productName, double productPrice)
    {
       java.sql.Connection conn = null;
 
@@ -362,7 +362,191 @@ public class Connection
 
       ResultSet rs = null;
 
-      List<Double> result = new ArrayList<Double>();
+      Product result = null;
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT * FROM store WHERE name='" + productName + "' AND price=" + productPrice);
+
+         while (rs.next())
+         {
+            result = new Product();
+
+            result.setName(rs.getString("name"));
+
+            result.setPrice(rs.getDouble("price"));
+
+            result.setAmount(rs.getDouble("amount"));
+
+            break;
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public void updateProduct(Product product)
+   {
+      java.sql.Connection conn = null;
+
+      PreparedStatement ps = null;
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         ps = conn.prepareStatement("UPDATE store SET amount=? WHERE name=? AND price=?");
+
+         ps.setDouble(1, product.getAmount());
+         ps.setString(2, product.getName());
+         ps.setDouble(3, product.getPrice());
+         ps.executeUpdate();
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(ps);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+   }
+
+   public void addProductToStore(Product product)
+   {
+      java.sql.Connection conn = null;
+
+      PreparedStatement ps = null;
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         ps = conn.prepareStatement("INSERT INTO store VALUES (?, ?, ?)");
+
+         ps.setString(1, product.getName());
+         ps.setDouble(2, product.getPrice());
+         ps.setDouble(3, product.getAmount());
+         ps.executeUpdate();
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(ps);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+   }
+
+   public void addIncoming(Product product, String date)
+   {
+      java.sql.Connection conn = null;
+
+      PreparedStatement ps = null;
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         ps = conn.prepareStatement("INSERT INTO incomings VALUES (?, ?, ?, ?)");
+
+         ps.setString(1, product.getName());
+         ps.setDouble(2, product.getPrice());
+         ps.setDouble(3, product.getAmount());
+         ps.setString(4, date);
+         ps.executeUpdate();
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(ps);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+   }
+
+   public Double getAmountByProductNameAndPrice(String productName, double productPrice)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
 
       try
       {
@@ -378,7 +562,61 @@ public class Connection
 
          while (rs.next())
          {
-            result.add(rs.getDouble("price"));
+            result = rs.getDouble("price");
+
+            break;
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public boolean productExist(String productName, double productPrice)
+   {
+      boolean result = false;
+
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT COUNT(*) FROM store WHERE name='" + productName + "' AND price=" + productPrice);
+
+         while (rs.next())
+         {
+            if (rs.getInt("1") != 0)
+            {
+               result = true;
+            }
          }
 
          conn.commit();
