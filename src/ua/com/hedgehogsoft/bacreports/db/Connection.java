@@ -12,6 +12,8 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import ua.com.hedgehogsoft.bacreports.model.Incoming;
+import ua.com.hedgehogsoft.bacreports.model.Outcoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class Connection
@@ -268,6 +270,134 @@ public class Connection
          while (rs.next())
          {
             result.add(rs.getString("name"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<Incoming> getIncomings(String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Incoming> result = new ArrayList<Incoming>();
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT * FROM incomings  WHERE incoming_date >= '" + dateFrom + "' AND incoming_date <= '"
+               + dateTo + "'");
+
+         while (rs.next())
+         {
+            Incoming incoming = new Incoming();
+
+            Product product = new Product();
+
+            product.setName(rs.getString("name"));
+
+            product.setPrice(rs.getDouble("price"));
+
+            product.setAmount(rs.getDouble("amount"));
+
+            incoming.setProduct(product);
+
+            incoming.setDate(rs.getDate("incoming_date"));
+
+            result.add(incoming);
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            closeStatements(s);
+
+            closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<Outcoming> getOutcomings(String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Outcoming> result = new ArrayList<Outcoming>();
+
+      try
+      {
+         conn = DriverManager.getConnection(protocol + dbName, props);
+
+         logger.info("Connected to database " + dbName);
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT * FROM outcomings  WHERE outcoming_date >= '" + dateFrom
+               + "' AND outcoming_date <= '" + dateTo + "'");
+
+         while (rs.next())
+         {
+            Outcoming outcoming = new Outcoming();
+
+            Product product = new Product();
+
+            product.setName(rs.getString("name"));
+
+            product.setPrice(rs.getDouble("price"));
+
+            product.setAmount(rs.getDouble("amount"));
+
+            outcoming.setProduct(product);
+
+            outcoming.setDate(rs.getDate("outcoming_date"));
+
+            result.add(outcoming);
          }
 
          conn.commit();

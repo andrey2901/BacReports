@@ -64,6 +64,15 @@ public class MainFrame
 
       reportsButton = new JButton("Отчеты");
 
+      reportsButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            new ReportsFrame();
+         }
+      });
+
       exitButton = new JButton("Выход");
 
       exitButton.addActionListener(new ActionListener()
