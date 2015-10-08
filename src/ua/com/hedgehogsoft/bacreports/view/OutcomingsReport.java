@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Outcoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
+import ua.com.hedgehogsoft.bacreports.print.Printer;
 
 public class OutcomingsReport
 {
@@ -69,8 +70,11 @@ public class OutcomingsReport
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
+            new Printer().print(table);
 
+            reportsFrame.dispose();
+
+            logger.info("OutcomingsReport was closed.");
          }
       });
 
