@@ -10,30 +10,30 @@ INSERT INTO source_group(name) VALUES ('Реактиви, поживні середовища'), ('Мецена
 
 CREATE TABLE store
 (
-	name varchar(150) not null,
+	id int not null generated always as identity (start with 1, increment by 1),
+	name varchar(255) not null,
 	price double not null,
 	amount double not null,
-	source int not null,
-	CONSTRAINT productID PRIMARY KEY (name, price),
-	FOREIGN KEY (source) REFERENCES source_group(id)
+	source_id int not null,
+	PRIMARY KEY (id),
+	UNIQUE (name, price, source_id),
+	FOREIGN KEY (source_id) REFERENCES source_group(id)
 );
 
 CREATE TABLE incomings
 (
-	name varchar(150) not null,
-	price double not null,
+	id int not null generated always as identity (start with 1, increment by 1),
 	amount double not null,
 	incoming_date date not null,
-	source int not null,
-	FOREIGN KEY (source) REFERENCES source_group(id)
+	product_id int not null,
+	FOREIGN KEY (product_id) REFERENCES store(id)
 );
 
 CREATE TABLE outcomings
 (
-	name varchar(150) not null,
-	price double not null,
+	id int not null generated always as identity (start with 1, increment by 1),
 	amount double not null,
 	outcoming_date date not null,
-	source int not null,
-	FOREIGN KEY (source) REFERENCES source_group(id)
+	product_id int not null,
+	FOREIGN KEY (product_id) REFERENCES store(id)
 );
