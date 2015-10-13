@@ -1,6 +1,7 @@
 package ua.com.hedgehogsoft.bacreports.commons;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -12,12 +13,22 @@ public class SourceEnum
 
    public SourceEnum()
    {
-      this.values = new HashMap<String, Source>();
+      values = new HashMap<String, Source>();
    }
 
    public SourceEnum(Map<String, Source> values)
    {
       this.values = values;
+   }
+
+   public SourceEnum(List<Source> sources)
+   {
+      values = new HashMap<String, Source>();
+
+      for (Source source : sources)
+      {
+         values.put(source.getName(), source);
+      }
    }
 
    public void addValue(Source val)

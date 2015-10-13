@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,6 +34,7 @@ public class IncomingsFrame
    private JComboBox<String> incomingNameComboBox = null;
    private JComboBox<String> incomingCostComboBox = null;
    private JTextField incomingAmountTextField = null;
+   private JComboBox<String> incomingSourceComboBox = null;
    private static final Logger logger = Logger.getLogger(IncomingsFrame.class);
 
    public IncomingsFrame(MainFrame mainFrame)
@@ -91,7 +93,7 @@ public class IncomingsFrame
                   new Connection().updateProduct(existedProduct);
 
                   ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
-                  
+
                   model.updateAmount(existedProduct);
                }
                else
@@ -132,7 +134,7 @@ public class IncomingsFrame
 
       datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
       /*--------------------------------------------------------------*/
-      JPanel incomingPanel = new JPanel(new GridLayout(4, 2));
+      JPanel incomingPanel = new JPanel(new GridLayout(5, 2));
 
       incomingPanel.add(new JLabel("Наименование товара:"));
 
@@ -186,6 +188,19 @@ public class IncomingsFrame
       incomingAmountTextField = new JTextField();
 
       incomingPanel.add(incomingAmountTextField);
+
+      incomingSourceComboBox = new JComboBox<String>();
+
+      Iterator<String> it = mainFrame.getSources().getValues().keySet().iterator();
+
+      while (it.hasNext())
+      {
+         incomingSourceComboBox.addItem(it.next());
+      }
+
+      incomingPanel.add(new JLabel("Группа данных:"));
+
+      incomingPanel.add(incomingSourceComboBox);
 
       incomingPanel.add(new JLabel("Дата:"));
 

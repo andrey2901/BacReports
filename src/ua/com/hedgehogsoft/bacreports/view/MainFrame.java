@@ -20,6 +20,7 @@ import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
 
+import ua.com.hedgehogsoft.bacreports.commons.SourceEnum;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.listener.IncomingActionListener;
 import ua.com.hedgehogsoft.bacreports.listener.OutcomingActionListener;
@@ -32,6 +33,7 @@ public class MainFrame
    private JButton reportsButton = null;
    private JButton exitButton = null;
    private JTable table = null;
+   private SourceEnum sources = null;
    private static final Logger logger = Logger.getLogger(MainFrame.class);
 
    public MainFrame()
@@ -120,6 +122,8 @@ public class MainFrame
 
       mainFrame.setVisible(true);
 
+      sources = getDbSources();
+
       logger.info("BacReports was started.");
    }
 
@@ -188,8 +192,18 @@ public class MainFrame
       }
    }
 
+   private SourceEnum getDbSources()
+   {
+      return new SourceEnum(new Connection().getSources());
+   }
+
    public JTable getTable()
    {
       return table;
+   }
+
+   public SourceEnum getSources()
+   {
+      return sources;
    }
 }

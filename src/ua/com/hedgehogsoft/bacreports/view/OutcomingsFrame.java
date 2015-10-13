@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,6 +35,7 @@ public class OutcomingsFrame
    private JComboBox<String> outcomingNameComboBox = null;
    private JComboBox<String> outcomingCostComboBox = null;
    private JTextField outcomingAmountTextField = null;
+   private JComboBox<String> outcomingSourceComboBox = null;
    private static final Logger logger = Logger.getLogger(OutcomingsFrame.class);
 
    public OutcomingsFrame(MainFrame mainFrame)
@@ -131,7 +133,7 @@ public class OutcomingsFrame
 
       datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
       /*--------------------------------------------------------------*/
-      JPanel outcomingPanel = new JPanel(new GridLayout(4, 2));
+      JPanel outcomingPanel = new JPanel(new GridLayout(5, 2));
 
       outcomingPanel.add(new JLabel("Наименование товара:"));
 
@@ -194,6 +196,19 @@ public class OutcomingsFrame
                            Double.valueOf((String) outcomingCostComboBox.getSelectedItem()))));
          }
       });
+
+      outcomingSourceComboBox = new JComboBox<String>();
+
+      Iterator<String> it = mainFrame.getSources().getValues().keySet().iterator();
+
+      while (it.hasNext())
+      {
+         outcomingSourceComboBox.addItem(it.next());
+      }
+
+      outcomingPanel.add(new JLabel("Группа данных:"));
+
+      outcomingPanel.add(outcomingSourceComboBox);
 
       outcomingPanel.add(new JLabel("Дата:"));
 

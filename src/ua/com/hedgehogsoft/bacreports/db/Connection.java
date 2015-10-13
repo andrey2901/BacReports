@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import ua.com.hedgehogsoft.bacreports.model.Incoming;
 import ua.com.hedgehogsoft.bacreports.model.Outcoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
+import ua.com.hedgehogsoft.bacreports.model.Source;
 
 public class Connection
 {
@@ -189,7 +190,7 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT * FROM store");
+         rs = s.executeQuery("SELECT  name, price, amount FROM store");
 
          while (rs.next())
          {
@@ -202,6 +203,59 @@ public class Connection
             product.setAmount(rs.getDouble("amount"));
 
             result.add(product);
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<Source> getSources()
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Source> result = new ArrayList<Source>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT  * FROM source_group");
+
+         while (rs.next())
+         {
+            Source source = new Source();
+
+            source.setId(rs.getInt("id"));
+
+            source.setName(rs.getString("source"));
+
+            result.add(source);
          }
 
          conn.commit();
