@@ -25,6 +25,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
+import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class IncomingsFrame
 {

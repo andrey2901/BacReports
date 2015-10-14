@@ -1,4 +1,4 @@
-package ua.com.hedgehogsoft.bacreports.view;
+package ua.com.hedgehogsoft.bacreports.view.table;
 
 import java.util.ArrayList;
 import java.util.List;

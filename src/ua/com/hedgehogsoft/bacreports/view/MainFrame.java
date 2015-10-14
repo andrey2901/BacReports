@@ -25,6 +25,7 @@ import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.listener.IncomingActionListener;
 import ua.com.hedgehogsoft.bacreports.listener.OutcomingActionListener;
 import ua.com.hedgehogsoft.bacreports.model.Product;
+import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class MainFrame
 {
