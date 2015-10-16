@@ -20,11 +20,11 @@ import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
 
-import ua.com.hedgehogsoft.bacreports.commons.SourceEnum;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.listener.IncomingActionListener;
 import ua.com.hedgehogsoft.bacreports.listener.OutcomingActionListener;
 import ua.com.hedgehogsoft.bacreports.model.Product;
+import ua.com.hedgehogsoft.bacreports.model.Source;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class MainFrame
@@ -34,7 +34,7 @@ public class MainFrame
    private JButton reportsButton = null;
    private JButton exitButton = null;
    private JTable table = null;
-   private SourceEnum sources = null;
+   private List<Source> sources = null;
    private static final Logger logger = Logger.getLogger(MainFrame.class);
 
    public MainFrame()
@@ -123,14 +123,19 @@ public class MainFrame
 
       mainFrame.setVisible(true);
 
-      sources = getDbSources();
+      sources = new Connection().getSources();
 
       logger.info("BacReports was started.");
    }
 
    private JTable getFilledTable()
    {
-      String[] columnNames = {"№, п/п", "Наименование товара", "Цена, грн./ед.", "Количество, ед.", "Сумма, грн."};
+      String[] columnNames = {"№, п/п",
+                              "Наименование товара",
+                              "Цена, грн./ед.",
+                              "Количество, ед.",
+                              "Сумма, грн.",
+                              "Группа"};
 
       List<Product> products = new Connection().getStore();
 
@@ -142,12 +147,12 @@ public class MainFrame
          {
             Product product = products.get(i);
 
-            model.addRow(
-                  new Object[] {i + 1,
-                                product.getName(),
-                                product.getPrice(),
-                                product.getAmount(),
-                                product.getTotalPrice()});
+            model.addRow(new Object[] {i + 1,
+                                       product.getName(),
+                                       product.getPrice(),
+                                       product.getAmount(),
+                                       product.getTotalPrice(),
+                                       product.getSource().getName()});
          }
       }
 
@@ -193,17 +198,12 @@ public class MainFrame
       }
    }
 
-   private SourceEnum getDbSources()
-   {
-      return new SourceEnum(new Connection().getSources());
-   }
-
    public JTable getTable()
    {
       return table;
    }
 
-   public SourceEnum getSources()
+   public List<Source> getSources()
    {
       return sources;
    }

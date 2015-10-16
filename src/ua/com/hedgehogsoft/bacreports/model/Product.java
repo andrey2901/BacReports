@@ -8,6 +8,7 @@ public class Product
    private String name;
    private Double amount;
    private Double price;
+   private Source source;
 
    public String getName()
    {
@@ -64,5 +65,15 @@ public class Product
    public Double getTotalPrice()
    {
       return new BigDecimal(price * amount).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+   }
+
+   public Source getSource()
+   {
+      return source;
+   }
+
+   public void setSource(Source source)
+   {
+      this.source = source;
    }
 }

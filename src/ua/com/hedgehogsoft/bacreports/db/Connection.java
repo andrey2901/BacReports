@@ -190,7 +190,8 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT  name, price, amount FROM store");
+         rs = s.executeQuery(
+               "SELECT name, price, amount, source_group.id, source_group.source FROM store INNER JOIN source_group ON source_id = source_group.id");
 
          while (rs.next())
          {
@@ -201,6 +202,14 @@ public class Connection
             product.setPrice(rs.getDouble("price"));
 
             product.setAmount(rs.getDouble("amount"));
+
+            Source source = new Source();
+
+            source.setId(rs.getInt("id"));
+
+            source.setName(rs.getString("source"));
+
+            product.setSource(source);
 
             result.add(product);
          }
@@ -256,6 +265,71 @@ public class Connection
             source.setName(rs.getString("source"));
 
             result.add(source);
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<Product> getStoreBySource(Source source)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Product> result = new ArrayList<Product>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT name, price, amount, source_group.id, source FROM store INNER JOIN source_group ON store.source_id = source_group.id WHERE source_id = "
+                     + source.getId());
+
+         while (rs.next())
+         {
+            Product product = new Product();
+
+            product.setName(rs.getString("name"));
+
+            product.setPrice(rs.getDouble("price"));
+
+            product.setAmount(rs.getDouble("amount"));
+
+            Source src = new Source();
+
+            src.setId(rs.getInt("id"));
+
+            src.setName(rs.getString("source"));
+
+            product.setSource(src);
+
+            result.add(product);
          }
 
          conn.commit();

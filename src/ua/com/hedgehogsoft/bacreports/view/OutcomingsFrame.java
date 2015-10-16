@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,6 +25,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
+import ua.com.hedgehogsoft.bacreports.model.Source;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class OutcomingsFrame
@@ -200,11 +200,9 @@ public class OutcomingsFrame
 
       outcomingSourceComboBox = new JComboBox<String>();
 
-      Iterator<String> it = mainFrame.getSources().getValues().keySet().iterator();
-
-      while (it.hasNext())
+      for (Source source : mainFrame.getSources())
       {
-         outcomingSourceComboBox.addItem(it.next());
+         outcomingSourceComboBox.addItem(source.getName());
       }
 
       outcomingPanel.add(new JLabel("Группа данных:"));
