@@ -137,6 +137,17 @@ public class IncomingsFrame
       /*--------------------------------------------------------------*/
       JPanel incomingPanel = new JPanel(new GridLayout(5, 2));
 
+      incomingSourceComboBox = new JComboBox<String>();
+
+      for (Source source : mainFrame.getSources())
+      {
+         incomingSourceComboBox.addItem(source.getName());
+      }
+
+      incomingPanel.add(new JLabel("Группа данных:"));
+
+      incomingPanel.add(incomingSourceComboBox);
+
       incomingPanel.add(new JLabel("Наименование товара:"));
 
       incomingNameComboBox = new JComboBox<String>();
@@ -189,17 +200,6 @@ public class IncomingsFrame
       incomingAmountTextField = new JTextField();
 
       incomingPanel.add(incomingAmountTextField);
-
-      incomingSourceComboBox = new JComboBox<String>();
-
-      for (Source source : mainFrame.getSources())
-      {
-         incomingSourceComboBox.addItem(source.getName());
-      }
-
-      incomingPanel.add(new JLabel("Группа данных:"));
-
-      incomingPanel.add(incomingSourceComboBox);
 
       incomingPanel.add(new JLabel("Дата:"));
 
