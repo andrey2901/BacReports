@@ -386,6 +386,53 @@ public class Connection
       return result;
    }
 
+   public List<String> getUniqueProductNamesBySource(int sourceID)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<String> result = new ArrayList<String>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT DISTINCT name FROM store WHERE source_id=" + sourceID);
+
+         while (rs.next())
+         {
+            result.add(rs.getString("name"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public List<Incoming> getIncomings(String dateFrom, String dateTo)
    {
       java.sql.Connection conn = null;
@@ -529,6 +576,54 @@ public class Connection
          s = conn.createStatement();
 
          rs = s.executeQuery("SELECT DISTINCT price FROM store WHERE name='" + productName + "'");
+
+         while (rs.next())
+         {
+            result.add(rs.getDouble("price"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<Double> getPricesByProductAndSource(String productName, int sourceID)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Double> result = new ArrayList<Double>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT DISTINCT price FROM store WHERE name='" + productName + "' AND source_id=" + sourceID);
 
          while (rs.next())
          {
@@ -782,7 +877,7 @@ public class Connection
       }
    }
 
-   public Double getAmountByProductNameAndPrice(String productName, double productPrice)
+   public Double getAmountByProductNameAndPriceAndSource(String productName, double productPrice, int sourceID)
    {
       java.sql.Connection conn = null;
 
@@ -800,7 +895,8 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT amount FROM store WHERE name='" + productName + "' AND price=" + productPrice);
+         rs = s.executeQuery("SELECT amount FROM store WHERE name='" + productName + "' AND price=" + productPrice
+               + "AND source_id=" + sourceID);
 
          while (rs.next())
          {

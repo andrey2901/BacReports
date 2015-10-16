@@ -85,7 +85,7 @@ public class OutcomingsFrame
 
                product.setAmount(Double.valueOf(outcomingAmountTextField.getText().replace(",", ".")));
 
-               product.setSource(Integer.valueOf((String) outcomingSourceComboBox.getSelectedItem()));
+               product.setSource(mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
 
                Product existedProduct = new Connection().getProductByNameAndPriceAndSource(product.getName(),
                      product.getPrice(), product.getSource());
@@ -138,6 +138,17 @@ public class OutcomingsFrame
       /*--------------------------------------------------------------*/
       JPanel outcomingPanel = new JPanel(new GridLayout(5, 2));
 
+      outcomingSourceComboBox = new JComboBox<String>();
+
+      for (Source source : mainFrame.getSources().values())
+      {
+         outcomingSourceComboBox.addItem(source.getName());
+      }
+
+      outcomingPanel.add(new JLabel("Группа данных:"));
+
+      outcomingPanel.add(outcomingSourceComboBox);
+
       outcomingPanel.add(new JLabel("Наименование товара:"));
 
       outcomingNameComboBox = new JComboBox<String>();
@@ -162,6 +173,34 @@ public class OutcomingsFrame
 
       outcomingPanel.add(outcomingCostComboBox);
 
+      outcomingPanel.add(new JLabel("Количество, ед.:"));
+
+      outcomingAmountTextField = new JTextField();
+
+      outcomingPanel.add(outcomingAmountTextField);
+
+      outcomingPanel.add(new JLabel("Дата:"));
+
+      outcomingPanel.add(datePicker);
+
+      outcomingCostComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            if (outcomingCostComboBox.getItemCount() != 0)
+            {
+               outcomingAmountTextField
+                     .setText(
+                           Double.toString(
+                                 new Connection().getAmountByProductNameAndPriceAndSource(
+                                       (String) outcomingNameComboBox.getSelectedItem(), Double
+                                             .valueOf((String) outcomingCostComboBox.getSelectedItem()),
+                                 mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()))));
+            }
+         }
+      });
+
       outcomingNameComboBox.addActionListener(new ActionListener()
       {
          @Override
@@ -169,7 +208,9 @@ public class OutcomingsFrame
          {
             outcomingCostComboBox.removeAllItems();
 
-            List<Double> prices = new Connection().getPricesByProduct((String) outcomingNameComboBox.getSelectedItem());
+            List<Double> prices = new Connection().getPricesByProductAndSource(
+                  (String) outcomingNameComboBox.getSelectedItem(),
+                  mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
 
             if (!prices.isEmpty())
             {
@@ -182,38 +223,29 @@ public class OutcomingsFrame
          }
       });
 
-      outcomingPanel.add(new JLabel("Количество, ед.:"));
-
-      outcomingAmountTextField = new JTextField();
-
-      outcomingPanel.add(outcomingAmountTextField);
-
-      outcomingCostComboBox.addActionListener(new ActionListener()
+      outcomingSourceComboBox.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            if (outcomingCostComboBox.getItemCount() != 0)
-               outcomingAmountTextField.setText(Double.toString(
-                     new Connection().getAmountByProductNameAndPrice((String) outcomingNameComboBox.getSelectedItem(),
-                           Double.valueOf((String) outcomingCostComboBox.getSelectedItem()))));
+            outcomingNameComboBox.removeAllItems();
+
+            List<String> productNames = new Connection().getUniqueProductNamesBySource(
+                  mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
+
+            if (!productNames.isEmpty())
+            {
+               Collections.sort(productNames);
+
+               for (String name : productNames)
+               {
+                  outcomingNameComboBox.addItem(name);
+               }
+            }
          }
       });
 
-      outcomingSourceComboBox = new JComboBox<String>();
-
-      for (Source source : mainFrame.getSources().values())
-      {
-         outcomingSourceComboBox.addItem(source.getName());
-      }
-
-      outcomingPanel.add(new JLabel("Группа данных:"));
-
-      outcomingPanel.add(outcomingSourceComboBox);
-
-      outcomingPanel.add(new JLabel("Дата:"));
-
-      outcomingPanel.add(datePicker);
+      outcomingSourceComboBox.setSelectedIndex(0);
 
       outcomingsFrame.add(outcomingPanel, BorderLayout.CENTER);
 
