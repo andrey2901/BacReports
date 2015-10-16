@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import ua.com.hedgehogsoft.bacreports.commons.Sources;
+import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 
 public class ProductStoreTableModel extends AbstractTableModel
@@ -72,7 +74,8 @@ public class ProductStoreTableModel extends AbstractTableModel
                                    product.getPrice(),
                                    product.getAmount(),
                                    product.getTotalPrice(),
-                                   product.getSource()};
+                                   new Sources(new Connection().getSources()).valueOf(product.getSource()).getName()};
+
       int rowCount = getRowCount();
 
       rows.add(row);

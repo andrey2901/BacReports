@@ -528,7 +528,7 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT price FROM store WHERE name='" + productName + "'");
+         rs = s.executeQuery("SELECT DISTINCT price FROM store WHERE name='" + productName + "'");
 
          while (rs.next())
          {
@@ -557,7 +557,7 @@ public class Connection
       return result;
    }
 
-   public Product getProductByNameAndPrice(String productName, double productPrice)
+   public Product getProductByNameAndPriceAndSource(String productName, double productPrice, int sourceID)
    {
       java.sql.Connection conn = null;
 
@@ -575,7 +575,8 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT * FROM store WHERE name='" + productName + "' AND price=" + productPrice);
+         rs = s.executeQuery("SELECT * FROM store WHERE name='" + productName + "' AND price=" + productPrice
+               + " AND source_id = " + sourceID);
 
          while (rs.next())
          {
@@ -586,6 +587,8 @@ public class Connection
             result.setPrice(rs.getDouble("price"));
 
             result.setAmount(rs.getDouble("amount"));
+
+            result.setSource(rs.getInt("source_id"));
 
             break;
          }
@@ -624,11 +627,12 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("UPDATE store SET amount=? WHERE name=? AND price=?");
+         ps = conn.prepareStatement("UPDATE store SET amount=? WHERE name=? AND price=? AND source_id=?");
 
          ps.setDouble(1, product.getAmount());
          ps.setString(2, product.getName());
          ps.setDouble(3, product.getPrice());
+         ps.setInt(4, product.getSource());
          ps.executeUpdate();
 
          conn.commit();
@@ -664,11 +668,12 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("INSERT INTO store VALUES (?, ?, ?)");
+         ps = conn.prepareStatement("INSERT INTO store(name, price, amount, source_id) VALUES (?, ?, ?, ?)");
 
          ps.setString(1, product.getName());
          ps.setDouble(2, product.getPrice());
          ps.setDouble(3, product.getAmount());
+         ps.setInt(4, product.getSource());
          ps.executeUpdate();
 
          conn.commit();
@@ -704,12 +709,15 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("INSERT INTO incomings VALUES (?, ?, ?, ?)");
+         ps = conn.prepareStatement("INSERT INTO incomings(amount, incoming_date, product_id)"
+               + " VALUES (?, ?, (SELECT id FROM store WHERE name = ? AND price = ? AND source_id = ?))");
 
-         ps.setString(1, product.getName());
-         ps.setDouble(2, product.getPrice());
-         ps.setDouble(3, product.getAmount());
-         ps.setString(4, date);
+         ps.setDouble(1, product.getAmount());
+         ps.setString(2, date);
+         ps.setString(3, product.getName());
+         ps.setDouble(4, product.getPrice());
+         ps.setInt(5, product.getSource());
+
          ps.executeUpdate();
 
          conn.commit();
@@ -823,7 +831,7 @@ public class Connection
       return result;
    }
 
-   public boolean productExist(String productName, double productPrice)
+   public boolean productExist(String productName, double productPrice, int sourceID)
    {
       boolean result = false;
 
@@ -841,7 +849,8 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT COUNT(*) FROM store WHERE name='" + productName + "' AND price=" + productPrice);
+         rs = s.executeQuery("SELECT COUNT(*) FROM store WHERE name = '" + productName + "' AND price = " + productPrice
+               + " AND source_id = " + sourceID);
 
          while (rs.next())
          {

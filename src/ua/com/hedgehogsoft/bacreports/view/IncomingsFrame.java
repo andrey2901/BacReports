@@ -84,10 +84,12 @@ public class IncomingsFrame
 
                product.setAmount(Double.valueOf(incomingAmountTextField.getText().replace(",", ".")));
 
-               if (new Connection().productExist(product.getName(), product.getPrice()))
+               product.setSource(mainFrame.getSources().indexOf((String) incomingSourceComboBox.getSelectedItem()));
+
+               if (new Connection().productExist(product.getName(), product.getPrice(), product.getSource()))
                {
-                  Product existedProduct = new Connection().getProductByNameAndPrice(product.getName(),
-                        product.getPrice());
+                  Product existedProduct = new Connection().getProductByNameAndPriceAndSource(product.getName(),
+                        product.getPrice(), product.getSource());
 
                   existedProduct.setAmount(product.getAmount() + existedProduct.getAmount());
 
@@ -106,7 +108,8 @@ public class IncomingsFrame
                   model.addProduct(product);
                }
 
-               new Connection().addIncoming(product, datePicker.getJFormattedTextField().getText());
+               new Connection().addIncoming(product,
+                     datePicker.getJFormattedTextField().getText().replaceAll("-", "."));
 
                logger.info("Incomings were performed.");
 

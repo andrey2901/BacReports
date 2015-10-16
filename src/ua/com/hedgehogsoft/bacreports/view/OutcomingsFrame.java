@@ -85,8 +85,10 @@ public class OutcomingsFrame
 
                product.setAmount(Double.valueOf(outcomingAmountTextField.getText().replace(",", ".")));
 
-               Product existedProduct = new Connection().getProductByNameAndPrice(product.getName(),
-                     product.getPrice());
+               product.setSource(Integer.valueOf((String) outcomingSourceComboBox.getSelectedItem()));
+
+               Product existedProduct = new Connection().getProductByNameAndPriceAndSource(product.getName(),
+                     product.getPrice(), product.getSource());
 
                if (existedProduct.getAmount() >= product.getAmount())
                {
