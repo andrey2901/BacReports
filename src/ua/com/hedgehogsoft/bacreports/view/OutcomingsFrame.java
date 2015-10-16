@@ -136,17 +136,6 @@ public class OutcomingsFrame
       /*--------------------------------------------------------------*/
       JPanel outcomingPanel = new JPanel(new GridLayout(5, 2));
 
-      outcomingSourceComboBox = new JComboBox<String>();
-
-      for (Source source : mainFrame.getSources())
-      {
-         outcomingSourceComboBox.addItem(source.getName());
-      }
-
-      outcomingPanel.add(new JLabel("Группа данных:"));
-
-      outcomingPanel.add(outcomingSourceComboBox);
-
       outcomingPanel.add(new JLabel("Наименование товара:"));
 
       outcomingNameComboBox = new JComboBox<String>();
@@ -208,6 +197,17 @@ public class OutcomingsFrame
                            Double.valueOf((String) outcomingCostComboBox.getSelectedItem()))));
          }
       });
+
+      outcomingSourceComboBox = new JComboBox<String>();
+
+      for (Source source : mainFrame.getSources())
+      {
+         outcomingSourceComboBox.addItem(source.getName());
+      }
+
+      outcomingPanel.add(new JLabel("Группа данных:"));
+
+      outcomingPanel.add(outcomingSourceComboBox);
 
       outcomingPanel.add(new JLabel("Дата:"));
 
