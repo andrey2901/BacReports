@@ -190,8 +190,7 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery(
-               "SELECT name, price, amount, source_group.id, source_group.source FROM store INNER JOIN source_group ON source_id = source_group.id");
+         rs = s.executeQuery("SELECT name, price, amount, source_id FROM store");
 
          while (rs.next())
          {
@@ -203,13 +202,7 @@ public class Connection
 
             product.setAmount(rs.getDouble("amount"));
 
-            Source source = new Source();
-
-            source.setId(rs.getInt("id"));
-
-            source.setName(rs.getString("source"));
-
-            product.setSource(source);
+            product.setSource(rs.getInt("source_id"));
 
             result.add(product);
          }
@@ -307,9 +300,7 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery(
-               "SELECT name, price, amount, source_group.id, source FROM store INNER JOIN source_group ON store.source_id = source_group.id WHERE source_id = "
-                     + source.getId());
+         rs = s.executeQuery("SELECT name, price, amount, source_id FROM store WHERE source_id = " + source.getId());
 
          while (rs.next())
          {
@@ -321,13 +312,7 @@ public class Connection
 
             product.setAmount(rs.getDouble("amount"));
 
-            Source src = new Source();
-
-            src.setId(rs.getInt("id"));
-
-            src.setName(rs.getString("source"));
-
-            product.setSource(src);
+            product.setSource(rs.getInt("source_id"));
 
             result.add(product);
          }

@@ -72,7 +72,7 @@ public class ProductStoreTableModel extends AbstractTableModel
                                    product.getPrice(),
                                    product.getAmount(),
                                    product.getTotalPrice(),
-                                   product.getSource().getName()};
+                                   product.getSource()};
       int rowCount = getRowCount();
 
       rows.add(row);

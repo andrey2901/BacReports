@@ -20,11 +20,11 @@ import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
 
+import ua.com.hedgehogsoft.bacreports.commons.Sources;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.listener.IncomingActionListener;
 import ua.com.hedgehogsoft.bacreports.listener.OutcomingActionListener;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.model.Source;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class MainFrame
@@ -34,11 +34,13 @@ public class MainFrame
    private JButton reportsButton = null;
    private JButton exitButton = null;
    private JTable table = null;
-   private List<Source> sources = null;
+   private Sources sources = null;
    private static final Logger logger = Logger.getLogger(MainFrame.class);
 
    public MainFrame()
    {
+      sources = new Sources(new Connection().getSources());
+
       final JFrame mainFrame = new JFrame("БакОтчеты - склад");
 
       mainFrame.setLayout(new BorderLayout());
@@ -123,8 +125,6 @@ public class MainFrame
 
       mainFrame.setVisible(true);
 
-      sources = new Connection().getSources();
-
       logger.info("BacReports was started.");
    }
 
@@ -147,12 +147,13 @@ public class MainFrame
          {
             Product product = products.get(i);
 
-            model.addRow(new Object[] {i + 1,
-                                       product.getName(),
-                                       product.getPrice(),
-                                       product.getAmount(),
-                                       product.getTotalPrice(),
-                                       product.getSource().getName()});
+            model.addRow(
+                  new Object[] {i + 1,
+                                product.getName(),
+                                product.getPrice(),
+                                product.getAmount(),
+                                product.getTotalPrice(),
+                                sources.valueOf(product.getSource()).getName()});
          }
       }
 
@@ -203,7 +204,7 @@ public class MainFrame
       return table;
    }
 
-   public List<Source> getSources()
+   public Sources getSources()
    {
       return sources;
    }

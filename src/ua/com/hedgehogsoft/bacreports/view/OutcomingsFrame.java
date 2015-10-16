@@ -200,7 +200,7 @@ public class OutcomingsFrame
 
       outcomingSourceComboBox = new JComboBox<String>();
 
-      for (Source source : mainFrame.getSources())
+      for (Source source : mainFrame.getSources().values())
       {
          outcomingSourceComboBox.addItem(source.getName());
       }

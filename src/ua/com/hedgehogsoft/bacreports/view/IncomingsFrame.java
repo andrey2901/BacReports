@@ -192,7 +192,7 @@ public class IncomingsFrame
 
       incomingSourceComboBox = new JComboBox<String>();
 
-      for (Source source : mainFrame.getSources())
+      for (Source source : mainFrame.getSources().values())
       {
          incomingSourceComboBox.addItem(source.getName());
       }
