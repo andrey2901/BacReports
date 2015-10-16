@@ -848,12 +848,14 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("INSERT INTO outcomings VALUES (?, ?, ?, ?)");
+         ps = conn.prepareStatement("INSERT INTO outcomings(amount, outcoming_date, product_id)"
+               + " VALUES (?, ?, (SELECT id FROM store WHERE name = ? AND price = ? AND source_id = ?))");
 
-         ps.setString(1, product.getName());
-         ps.setDouble(2, product.getPrice());
-         ps.setDouble(3, product.getAmount());
-         ps.setString(4, date);
+         ps.setDouble(1, product.getAmount());
+         ps.setString(2, date);
+         ps.setString(3, product.getName());
+         ps.setDouble(4, product.getPrice());
+         ps.setInt(5, product.getSource());
          ps.executeUpdate();
 
          conn.commit();
