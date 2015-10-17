@@ -24,11 +24,19 @@ public class Connection
    {
       java.sql.Connection conn = null;
 
-      Statement storeStatement = null;
+      Statement unitsTableStatement = null;
 
-      Statement incomingStatement = null;
+      Statement insertUnitsTableStatement = null;
 
-      Statement outcomingStatement = null;
+      Statement sourceTableStatement = null;
+
+      Statement insertSourceTableStatement = null;
+
+      Statement storeTableStatement = null;
+
+      Statement incomingTableStatement = null;
+
+      Statement outcomingTableStatement = null;
 
       try
       {
@@ -36,29 +44,56 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         storeStatement = conn.createStatement();
+         unitsTableStatement = conn.createStatement();
 
-         incomingStatement = conn.createStatement();
+         insertUnitsTableStatement = conn.createStatement();
 
-         outcomingStatement = conn.createStatement();
+         sourceTableStatement = conn.createStatement();
 
-         // We create a table...
-         storeStatement.execute(
-               "CREATE TABLE store(name varchar(40) not null, price double not null, amount double not null, CONSTRAINT productID PRIMARY KEY (name, price))");
+         insertSourceTableStatement = conn.createStatement();
 
-         incomingStatement.execute(
-               "CREATE TABLE incomings(name varchar(40) not null, price double not null, amount double not null, incoming_date date not null)");
+         storeTableStatement = conn.createStatement();
 
-         outcomingStatement.execute(
-               "CREATE TABLE outcomings(name varchar(40) not null, price double not null, amount double not null, outcoming_date date not null)");
+         incomingTableStatement = conn.createStatement();
 
-         conn.commit();
+         outcomingTableStatement = conn.createStatement();
+
+         unitsTableStatement.execute(
+               "CREATE TABLE units(id int not null generated always as identity (start with 1, increment by 1), unit varchar(100) not null, PRIMARY KEY (id), UNIQUE (unit))");
+
+         logger.info("Created table units");
+
+         insertUnitsTableStatement.execute(
+               "INSERT INTO units(unit) VALUES ('амп'), ('флак'), ('шт'), ('гр'), ('кг'), ('набір'), ('уп'), ('кор'), ('пар')");
+
+         logger.info("Filled table units by default values");
+
+         sourceTableStatement.execute(
+               "CREATE TABLE source_group(id int not null generated always as identity (start with 1, increment by 1), source varchar(100) not null, PRIMARY KEY (id), UNIQUE (source))");
+
+         logger.info("Created table sources");
+
+         insertSourceTableStatement.execute(
+               "INSERT INTO source_group(source) VALUES ('Реактиви, поживні середовища'), ('Меценат'), ('Від провізора'), ('Від дезінфектора')");
+
+         logger.info("Filled table sources by default values");
+
+         storeTableStatement.execute(
+               "CREATE TABLE store(id int not null generated always as identity (start with 1, increment by 1), name varchar(255) not null, price double not null, amount double not null, source_id int not null, unit_id int not null, PRIMARY KEY (id), UNIQUE (name, price, source_id, unit_id), FOREIGN KEY (source_id) REFERENCES source_group(id), FOREIGN KEY (unit_id) REFERENCES units(id))");
 
          logger.info("Created table store");
 
+         incomingTableStatement.execute(
+               "CREATE TABLE incomings(id int not null generated always as identity (start with 1, increment by 1), amount double not null, incoming_date date not null, product_id int not null, PRIMARY KEY (id), FOREIGN KEY (product_id) REFERENCES store(id))");
+
          logger.info("Created table incomings");
 
+         outcomingTableStatement.execute(
+               "CREATE TABLE outcomings(id int not null generated always as identity (start with 1, increment by 1), amount double not null, outcoming_date date not null, product_id int not null, PRIMARY KEY (id), FOREIGN KEY (product_id) REFERENCES store(id))");
+
          logger.info("Created table outcomings");
+
+         conn.commit();
       }
       catch (SQLException e)
       {
@@ -68,7 +103,7 @@ public class Connection
       {
          try
          {
-            DbConnection.closeStatements(storeStatement, incomingStatement, outcomingStatement);
+            DbConnection.closeStatements(storeTableStatement, incomingTableStatement, outcomingTableStatement);
 
             DbConnection.closeConnection(conn);
          }
@@ -85,13 +120,15 @@ public class Connection
    {
       java.sql.Connection conn = null;
 
-      Statement storeStatement = null;
+      Statement dropIncomingTableStatement = null;
 
-      Statement dropStoreStatement = null;
+      Statement dropOutcomingTableStatement = null;
 
-      Statement dropIncomingStatement = null;
+      Statement dropStoreTableStatement = null;
 
-      Statement dropOutcomingStatement = null;
+      Statement dropSourceTableStatement = null;
+
+      Statement dropUnitsTableStatement = null;
 
       try
       {
@@ -99,30 +136,37 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         storeStatement = conn.createStatement();
+         dropIncomingTableStatement = conn.createStatement();
 
-         dropStoreStatement = conn.createStatement();
+         dropOutcomingTableStatement = conn.createStatement();
 
-         dropIncomingStatement = conn.createStatement();
+         dropStoreTableStatement = conn.createStatement();
 
-         dropOutcomingStatement = conn.createStatement();
+         dropSourceTableStatement = conn.createStatement();
 
-         // delete the table
-         storeStatement.execute("ALTER TABLE store DROP CONSTRAINT productID");
+         dropUnitsTableStatement = conn.createStatement();
 
-         dropStoreStatement.execute("DROP TABLE store");
-
-         dropIncomingStatement.execute("DROP TABLE incomings");
-
-         dropOutcomingStatement.execute("DROP TABLE outcomings");
-
-         conn.commit();
-
-         logger.info("Dropped table store");
+         dropIncomingTableStatement.execute("DROP TABLE incomings");
 
          logger.info("Dropped table incomings");
 
+         dropOutcomingTableStatement.execute("DROP TABLE outcomings");
+
          logger.info("Dropped table outcomings");
+
+         dropStoreTableStatement.execute("DROP TABLE store");
+
+         logger.info("Dropped table store");
+
+         dropSourceTableStatement.execute("DROP TABLE source_group");
+
+         logger.info("Dropped table sources");
+
+         dropUnitsTableStatement.execute("DROP TABLE units");
+
+         logger.info("Dropped table units");
+
+         conn.commit();
       }
       catch (SQLException e)
       {
@@ -132,8 +176,8 @@ public class Connection
       {
          try
          {
-            DbConnection.closeStatements(storeStatement, dropStoreStatement, dropIncomingStatement,
-                  dropOutcomingStatement);
+            DbConnection.closeStatements(dropIncomingTableStatement, dropOutcomingTableStatement,
+                  dropStoreTableStatement, dropSourceTableStatement, dropUnitsTableStatement);
 
             DbConnection.closeConnection(conn);
          }
