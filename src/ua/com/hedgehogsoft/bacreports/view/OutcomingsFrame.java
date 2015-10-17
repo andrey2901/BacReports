@@ -18,6 +18,8 @@ import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePickerImpl;
+
+import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 import ua.com.hedgehogsoft.bacreports.model.Source;
@@ -33,11 +35,15 @@ public class OutcomingsFrame
    private JComboBox<String> outcomingCostComboBox = null;
    private JTextField outcomingAmountTextField = null;
    private JComboBox<String> outcomingSourceComboBox = null;
+   private JComboBox<String> outcomingUnitComboBox = null;
+   private Units units = null;
    private static final Logger logger = Logger.getLogger(OutcomingsFrame.class);
 
    public OutcomingsFrame(MainFrame mainFrame)
    {
-      final JFrame outcomingsFrame = new JFrame("БакОтчеты - списание");
+      units = new Units(new Connection().getUnits());
+
+      JFrame outcomingsFrame = new JFrame("БакЗвіт - списання");
 
       outcomingsFrame.pack();
 
@@ -51,7 +57,7 @@ public class OutcomingsFrame
          }
       });
 
-      closeButton = new JButton("Закрыть");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -64,7 +70,7 @@ public class OutcomingsFrame
          }
       });
 
-      outcomingButton = new JButton("Списать");
+      outcomingButton = new JButton("Списати");
 
       outcomingButton.addActionListener(new ActionListener()
       {
@@ -82,6 +88,8 @@ public class OutcomingsFrame
                product.setAmount(Double.valueOf(outcomingAmountTextField.getText().replace(",", ".")));
 
                product.setSource(mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
+
+               product.setUnit(units.indexOf((String) outcomingUnitComboBox.getSelectedItem()));
 
                Product existedProduct = new Connection().getProductByNameAndPriceAndSourceAndUnit(product.getName(),
                      product.getPrice(), product.getSource(), product.getUnit());
@@ -126,7 +134,7 @@ public class OutcomingsFrame
       datePicker = DatePicker.getDatePicker();
 
       /*--------------------------------------------------------------*/
-      JPanel outcomingPanel = new JPanel(new GridLayout(5, 2));
+      JPanel outcomingPanel = new JPanel(new GridLayout(6, 2));
 
       outcomingSourceComboBox = new JComboBox<String>();
 
@@ -135,24 +143,21 @@ public class OutcomingsFrame
          outcomingSourceComboBox.addItem(source.getName());
       }
 
-      outcomingPanel.add(new JLabel("Группа данных:"));
+      outcomingPanel.add(new JLabel("Група даних:"));
 
       outcomingPanel.add(outcomingSourceComboBox);
 
-      outcomingPanel.add(new JLabel("Наименование товара:"));
+      outcomingPanel.add(new JLabel("Найменування засобу:"));
 
       outcomingNameComboBox = new JComboBox<String>();
 
-      /*
-       * List<String> names = new Connection().getUniqueProductNames();
-       * 
-       * Collections.sort(names);
-       * 
-       * if (!names.isEmpty()) { for (String name : names) {
-       * outcomingNameComboBox.addItem(name); } }
-       */
-
       outcomingPanel.add(outcomingNameComboBox);
+
+      outcomingPanel.add(new JLabel("Одиниця виміру:"));
+
+      outcomingUnitComboBox = new JComboBox<String>();
+
+      outcomingPanel.add(outcomingUnitComboBox);
 
       outcomingPanel.add(new JLabel("Цена, грн./ед.:"));
 
@@ -188,16 +193,17 @@ public class OutcomingsFrame
          }
       });
 
-      outcomingNameComboBox.addActionListener(new ActionListener()
+      outcomingUnitComboBox.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
             outcomingCostComboBox.removeAllItems();
 
-            List<Double> prices = new Connection().getPricesByProductAndSource(
+            List<Double> prices = new Connection().getPricesByProductAndSourceAndUnit(
                   (String) outcomingNameComboBox.getSelectedItem(),
-                  mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
+                  mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()),
+                  units.indexOf((String) outcomingUnitComboBox.getSelectedItem()));
 
             if (!prices.isEmpty())
             {
@@ -206,6 +212,24 @@ public class OutcomingsFrame
                {
                   outcomingCostComboBox.addItem(Double.toString(price));
                }
+            }
+         }
+      });
+
+      outcomingNameComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            List<String> unitNames = new Connection().getUniqueUnitNamesByProductNameAndSourceName(
+                  (String) outcomingNameComboBox.getSelectedItem(),
+                  mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
+
+            outcomingUnitComboBox.removeAllItems();
+
+            for (String unit : unitNames)
+            {
+               outcomingUnitComboBox.addItem(unit);
             }
          }
       });
@@ -261,14 +285,15 @@ public class OutcomingsFrame
 
          result = false;
       }
-      /*
-       * if (outcomingUnitComboBox.getSelectedItem() == null || ((String)
-       * outcomingUnitComboBox.getSelectedItem()).isEmpty()) {
-       * JOptionPane.showMessageDialog(null, "Заповніть поле одиниць виміру",
-       * "Помилка", JOptionPane.ERROR_MESSAGE);
-       * 
-       * result = false; }
-       */
+
+      if (outcomingUnitComboBox.getSelectedItem() == null
+            || ((String) outcomingUnitComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заповніть поле одиниць виміру", "Помилка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+
       if (outcomingCostComboBox.getSelectedItem() == null
             || ((String) outcomingCostComboBox.getSelectedItem()).isEmpty())
       {

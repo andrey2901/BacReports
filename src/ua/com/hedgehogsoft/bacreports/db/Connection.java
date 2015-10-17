@@ -568,6 +568,55 @@ public class Connection
       return result;
    }
 
+   public List<String> getUniqueUnitNamesByProductNameAndSourceName(String productName, int sourceID)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<String> result = new ArrayList<String>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT DISTINCT unit FROM units LEFT JOIN store ON units.id = store.unit_id WHERE store.name='"
+                     + productName + "' AND store.source_id=" + sourceID);
+
+         while (rs.next())
+         {
+            result.add(rs.getString("unit"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public List<Incoming> getIncomings(String dateFrom, String dateTo)
    {
       java.sql.Connection conn = null;
@@ -739,7 +788,7 @@ public class Connection
       return result;
    }
 
-   public List<Double> getPricesByProductAndSource(String productName, int sourceID)
+   public List<Double> getPricesByProductAndSourceAndUnit(String productName, int sourceID, int unitID)
    {
       java.sql.Connection conn = null;
 
@@ -757,8 +806,8 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery(
-               "SELECT DISTINCT price FROM store WHERE name='" + productName + "' AND source_id=" + sourceID);
+         rs = s.executeQuery("SELECT DISTINCT price FROM store WHERE name='" + productName + "' AND source_id="
+               + sourceID + " AND unit_id=" + unitID);
 
          while (rs.next())
          {
@@ -823,6 +872,7 @@ public class Connection
 
             result.setSource(rs.getInt("source_id"));
 
+            result.setUnit(rs.getInt("unit_id"));
             break;
          }
 
@@ -860,7 +910,8 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("UPDATE store SET amount=? WHERE name=? AND price=? AND source_id=? AND unit_id=?");
+         ps = conn.prepareStatement(
+               "UPDATE store SET amount = ? WHERE name = ? AND price = ? AND source_id = ? AND unit_id = ?");
 
          ps.setDouble(1, product.getAmount());
          ps.setString(2, product.getName());
