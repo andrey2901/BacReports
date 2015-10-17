@@ -45,7 +45,7 @@ public class MainFrame
 
       units = new Units(new Connection().getUnits());
 
-      final JFrame mainFrame = new JFrame("Ѕак«в≥т - склад");
+      JFrame mainFrame = new JFrame("Ѕак«в≥т - склад");
 
       mainFrame.setLayout(new BorderLayout());
 

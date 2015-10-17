@@ -8,8 +8,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -19,13 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
-import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 import ua.com.hedgehogsoft.bacreports.model.Source;
+import ua.com.hedgehogsoft.bacreports.view.date.DatePicker;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class OutcomingsFrame
@@ -87,8 +83,8 @@ public class OutcomingsFrame
 
                product.setSource(mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
 
-               Product existedProduct = new Connection().getProductByNameAndPriceAndSource(product.getName(),
-                     product.getPrice(), product.getSource());
+               Product existedProduct = new Connection().getProductByNameAndPriceAndSourceAndUnit(product.getName(),
+                     product.getPrice(), product.getSource(), product.getUnit());
 
                if (existedProduct.getAmount() >= product.getAmount())
                {
@@ -126,16 +122,9 @@ public class OutcomingsFrame
       buttonsPanel.add(closeButton);
 
       /*--------------------------------------------------------------*/
-      UtilDateModel model = new UtilDateModel();
 
-      Properties props = new Properties();
-      props.put("text.today", "Сегодня");
-      props.put("text.month", "Месяц");
-      props.put("text.year", "Год");
+      datePicker = DatePicker.getDatePicker();
 
-      JDatePanelImpl datePanel = new JDatePanelImpl(model, props);
-
-      datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
       /*--------------------------------------------------------------*/
       JPanel outcomingPanel = new JPanel(new GridLayout(5, 2));
 
@@ -154,17 +143,14 @@ public class OutcomingsFrame
 
       outcomingNameComboBox = new JComboBox<String>();
 
-      /*List<String> names = new Connection().getUniqueProductNames();
-
-      Collections.sort(names);
-
-      if (!names.isEmpty())
-      {
-         for (String name : names)
-         {
-            outcomingNameComboBox.addItem(name);
-         }
-      }*/
+      /*
+       * List<String> names = new Connection().getUniqueProductNames();
+       * 
+       * Collections.sort(names);
+       * 
+       * if (!names.isEmpty()) { for (String name : names) {
+       * outcomingNameComboBox.addItem(name); } }
+       */
 
       outcomingPanel.add(outcomingNameComboBox);
 
@@ -270,27 +256,36 @@ public class OutcomingsFrame
       if (outcomingNameComboBox.getSelectedItem() == null
             || ((String) outcomingNameComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле наименования товара", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле найменування товару", "Помилка",
+               JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
+      /*
+       * if (outcomingUnitComboBox.getSelectedItem() == null || ((String)
+       * outcomingUnitComboBox.getSelectedItem()).isEmpty()) {
+       * JOptionPane.showMessageDialog(null, "Заповніть поле одиниць виміру",
+       * "Помилка", JOptionPane.ERROR_MESSAGE);
+       * 
+       * result = false; }
+       */
       if (outcomingCostComboBox.getSelectedItem() == null
             || ((String) outcomingCostComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле стоимости", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле вартості", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (outcomingAmountTextField.getText() == null || outcomingAmountTextField.getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле количества", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле кількості", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (datePicker.getJFormattedTextField().getText() == null
             || datePicker.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле даты", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле дати", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }

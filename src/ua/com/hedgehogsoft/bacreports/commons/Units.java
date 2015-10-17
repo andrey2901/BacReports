@@ -26,11 +26,11 @@ public class Units
       return units.get(i);
    }
 
-   public int indexOf(String sourceName)
+   public int indexOf(String unitName)
    {
       for (Unit unit : units.values())
       {
-         if (unit.getName().equals(sourceName))
+         if (unit.getName().equals(unitName))
          {
             return unit.getId();
          }

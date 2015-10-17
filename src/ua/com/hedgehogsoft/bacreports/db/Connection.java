@@ -338,62 +338,45 @@ public class Connection
       return result;
    }
 
-   /*public List<Product> getStoreBySource(Source source)
-   {
-      java.sql.Connection conn = null;
-
-      Statement s = null;
-
-      ResultSet rs = null;
-
-      List<Product> result = new ArrayList<Product>();
-
-      try
-      {
-         conn = DbConnection.getConnection();
-
-         conn.setAutoCommit(false);
-
-         s = conn.createStatement();
-
-         rs = s.executeQuery("SELECT name, price, amount, source_id FROM store WHERE source_id = " + source.getId());
-
-         while (rs.next())
-         {
-            Product product = new Product();
-
-            product.setName(rs.getString("name"));
-
-            product.setPrice(rs.getDouble("price"));
-
-            product.setAmount(rs.getDouble("amount"));
-
-            product.setSource(rs.getInt("source_id"));
-
-            result.add(product);
-         }
-
-         conn.commit();
-      }
-      catch (SQLException e)
-      {
-         DbConnection.printSQLException(e);
-      }
-      finally
-      {
-         try
-         {
-            DbConnection.closeStatements(s);
-
-            DbConnection.closeConnection(conn);
-         }
-         catch (SQLException e)
-         {
-            DbConnection.printSQLException(e);
-         }
-      }
-      return result;
-   }*/
+   /*
+    * public List<Product> getStoreBySource(Source source) { java.sql.Connection
+    * conn = null;
+    * 
+    * Statement s = null;
+    * 
+    * ResultSet rs = null;
+    * 
+    * List<Product> result = new ArrayList<Product>();
+    * 
+    * try { conn = DbConnection.getConnection();
+    * 
+    * conn.setAutoCommit(false);
+    * 
+    * s = conn.createStatement();
+    * 
+    * rs = s.executeQuery(
+    * "SELECT name, price, amount, source_id FROM store WHERE source_id = " +
+    * source.getId());
+    * 
+    * while (rs.next()) { Product product = new Product();
+    * 
+    * product.setName(rs.getString("name"));
+    * 
+    * product.setPrice(rs.getDouble("price"));
+    * 
+    * product.setAmount(rs.getDouble("amount"));
+    * 
+    * product.setSource(rs.getInt("source_id"));
+    * 
+    * result.add(product); }
+    * 
+    * conn.commit(); } catch (SQLException e) {
+    * DbConnection.printSQLException(e); } finally { try {
+    * DbConnection.closeStatements(s);
+    * 
+    * DbConnection.closeConnection(conn); } catch (SQLException e) {
+    * DbConnection.printSQLException(e); } } return result; }
+    */
 
    public List<String> getUniqueProductNames()
    {
@@ -442,6 +425,53 @@ public class Connection
       return result;
    }
 
+   public List<String> getUniqueUnitNames()
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<String> result = new ArrayList<String>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT DISTINCT unit FROM units");
+
+         while (rs.next())
+         {
+            result.add(rs.getString("unit"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public List<String> getUniqueProductNamesBySource(int sourceID)
    {
       java.sql.Connection conn = null;
@@ -465,6 +495,55 @@ public class Connection
          while (rs.next())
          {
             result.add(rs.getString("name"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<String> getUniqueUnitNamesByProductName(String productName)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<String> result = new ArrayList<String>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT DISTINCT unit FROM units LEFT JOIN store ON units.id = store.unit_id WHERE store.name='"
+                     + productName + "'");
+
+         while (rs.next())
+         {
+            result.add(rs.getString("unit"));
          }
 
          conn.commit();
@@ -613,7 +692,7 @@ public class Connection
       return result;
    }
 
-   public List<Double> getPricesByProduct(String productName)
+   public List<Double> getPricesByProductAndUnit(String productName, int unitID)
    {
       java.sql.Connection conn = null;
 
@@ -631,7 +710,7 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT DISTINCT price FROM store WHERE name='" + productName + "'");
+         rs = s.executeQuery("SELECT DISTINCT price FROM store WHERE name='" + productName + "' AND unit_id=" + unitID);
 
          while (rs.next())
          {
@@ -708,7 +787,10 @@ public class Connection
       return result;
    }
 
-   public Product getProductByNameAndPriceAndSource(String productName, double productPrice, int sourceID)
+   public Product getProductByNameAndPriceAndSourceAndUnit(String productName,
+                                                           double productPrice,
+                                                           int sourceID,
+                                                           int unitID)
    {
       java.sql.Connection conn = null;
 
@@ -727,7 +809,7 @@ public class Connection
          s = conn.createStatement();
 
          rs = s.executeQuery("SELECT * FROM store WHERE name='" + productName + "' AND price=" + productPrice
-               + " AND source_id = " + sourceID);
+               + " AND source_id = " + sourceID + " AND unit_id = " + unitID);
 
          while (rs.next())
          {
@@ -778,12 +860,13 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("UPDATE store SET amount=? WHERE name=? AND price=? AND source_id=?");
+         ps = conn.prepareStatement("UPDATE store SET amount=? WHERE name=? AND price=? AND source_id=? AND unit_id=?");
 
          ps.setDouble(1, product.getAmount());
          ps.setString(2, product.getName());
          ps.setDouble(3, product.getPrice());
          ps.setInt(4, product.getSource());
+         ps.setInt(5, product.getUnit());
          ps.executeUpdate();
 
          conn.commit();
@@ -819,12 +902,14 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("INSERT INTO store(name, price, amount, source_id) VALUES (?, ?, ?, ?)");
+         ps = conn
+               .prepareStatement("INSERT INTO store(name, price, amount, source_id, unit_id) VALUES (?, ?, ?, ?, ?)");
 
          ps.setString(1, product.getName());
          ps.setDouble(2, product.getPrice());
          ps.setDouble(3, product.getAmount());
          ps.setInt(4, product.getSource());
+         ps.setInt(5, product.getUnit());
          ps.executeUpdate();
 
          conn.commit();
@@ -860,14 +945,15 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement("INSERT INTO incomings(amount, incoming_date, product_id)"
-               + " VALUES (?, ?, (SELECT id FROM store WHERE name = ? AND price = ? AND source_id = ?))");
+         ps = conn.prepareStatement("INSERT INTO incomings(amount, incoming_date, product_id) VALUES (?, ?, "
+               + "(SELECT id FROM store WHERE name = ? AND price = ? AND source_id = ? AND unit_id= ?))");
 
          ps.setDouble(1, product.getAmount());
          ps.setString(2, date);
          ps.setString(3, product.getName());
          ps.setDouble(4, product.getPrice());
          ps.setInt(5, product.getSource());
+         ps.setInt(6, product.getUnit());
 
          ps.executeUpdate();
 
@@ -985,7 +1071,7 @@ public class Connection
       return result;
    }
 
-   public boolean productExist(String productName, double productPrice, int sourceID)
+   public boolean productExist(String productName, double productPrice, int sourceID, int unitID)
    {
       boolean result = false;
 
@@ -1004,7 +1090,7 @@ public class Connection
          s = conn.createStatement();
 
          rs = s.executeQuery("SELECT COUNT(*) FROM store WHERE name = '" + productName + "' AND price = " + productPrice
-               + " AND source_id = " + sourceID);
+               + " AND source_id = " + sourceID + " AND unit_id = " + unitID);
 
          while (rs.next())
          {
@@ -1034,5 +1120,94 @@ public class Connection
          }
       }
       return result;
+   }
+
+   public boolean unitExist(String unitName)
+   {
+      boolean result = false;
+
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT COUNT(*) FROM units WHERE unit = '" + unitName + "'");
+
+         while (rs.next())
+         {
+            if (rs.getInt("1") != 0)
+            {
+               result = true;
+            }
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public void addUnit(String unitName)
+   {
+      java.sql.Connection conn = null;
+
+      PreparedStatement ps = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         ps = conn.prepareStatement("INSERT INTO units(unit) VALUES (?)");
+
+         ps.setString(1, unitName);
+
+         ps.executeUpdate();
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(ps);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
    }
 }

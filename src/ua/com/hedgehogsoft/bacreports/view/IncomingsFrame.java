@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-import java.util.Properties;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -18,13 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
-import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
 
+import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 import ua.com.hedgehogsoft.bacreports.model.Source;
+import ua.com.hedgehogsoft.bacreports.view.date.DatePicker;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class IncomingsFrame
@@ -36,11 +34,15 @@ public class IncomingsFrame
    private JComboBox<String> incomingCostComboBox = null;
    private JTextField incomingAmountTextField = null;
    private JComboBox<String> incomingSourceComboBox = null;
+   private JComboBox<String> incomingUnitComboBox = null;
+   private Units units = null;
    private static final Logger logger = Logger.getLogger(IncomingsFrame.class);
 
    public IncomingsFrame(MainFrame mainFrame)
    {
-      final JFrame incomingsFrame = new JFrame("БакОтчеты - приход");
+      units = new Units(new Connection().getUnits());
+
+      JFrame incomingsFrame = new JFrame("БакЗвіт - надходження");
 
       incomingsFrame.pack();
 
@@ -54,7 +56,7 @@ public class IncomingsFrame
          }
       });
 
-      closeButton = new JButton("Закрыть");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -67,7 +69,7 @@ public class IncomingsFrame
          }
       });
 
-      incomingButton = new JButton("Оприходовать");
+      incomingButton = new JButton("Оприбуткувати");
 
       incomingButton.addActionListener(new ActionListener()
       {
@@ -76,6 +78,13 @@ public class IncomingsFrame
          {
             if (checkInputData())
             {
+               if (!new Connection().unitExist((String) incomingUnitComboBox.getSelectedItem()))
+               {
+                  new Connection().addUnit((String) incomingUnitComboBox.getSelectedItem());
+
+                  units = new Units(new Connection().getUnits());
+               }
+
                Product product = new Product();
 
                product.setName((String) incomingNameComboBox.getSelectedItem());
@@ -86,10 +95,13 @@ public class IncomingsFrame
 
                product.setSource(mainFrame.getSources().indexOf((String) incomingSourceComboBox.getSelectedItem()));
 
-               if (new Connection().productExist(product.getName(), product.getPrice(), product.getSource()))
+               product.setUnit(units.indexOf((String) incomingUnitComboBox.getSelectedItem()));
+
+               if (new Connection().productExist(product.getName(), product.getPrice(), product.getSource(),
+                     product.getUnit()))
                {
-                  Product existedProduct = new Connection().getProductByNameAndPriceAndSource(product.getName(),
-                        product.getPrice(), product.getSource());
+                  Product existedProduct = new Connection().getProductByNameAndPriceAndSourceAndUnit(product.getName(),
+                        product.getPrice(), product.getSource(), product.getUnit());
 
                   existedProduct.setAmount(product.getAmount() + existedProduct.getAmount());
 
@@ -127,20 +139,13 @@ public class IncomingsFrame
       buttonsPanel.add(closeButton);
 
       /*--------------------------------------------------------------*/
-      UtilDateModel model = new UtilDateModel();
 
-      Properties props = new Properties();
-      props.put("text.today", "Сегодня");
-      props.put("text.month", "Месяц");
-      props.put("text.year", "Год");
+      datePicker = DatePicker.getDatePicker();
 
-      JDatePanelImpl datePanel = new JDatePanelImpl(model, props);
-
-      datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
       /*--------------------------------------------------------------*/
-      JPanel incomingPanel = new JPanel(new GridLayout(5, 2));
+      JPanel incomingPanel = new JPanel(new GridLayout(6, 2));
 
-      incomingPanel.add(new JLabel("Наименование товара:"));
+      incomingPanel.add(new JLabel("Найменування засобу:"));
 
       incomingNameComboBox = new JComboBox<String>();
 
@@ -160,7 +165,23 @@ public class IncomingsFrame
 
       incomingPanel.add(incomingNameComboBox);
 
-      incomingPanel.add(new JLabel("Цена, грн./ед.:"));
+      incomingPanel.add(new JLabel("Одиниця виміру:"));
+
+      incomingUnitComboBox = new JComboBox<String>();
+
+      incomingUnitComboBox.setEditable(true);
+
+      incomingPanel.add(incomingUnitComboBox);
+
+      for (String unit : new Connection().getUniqueUnitNames())
+
+      {
+         incomingUnitComboBox.addItem(unit);
+      }
+
+      incomingUnitComboBox.setSelectedItem("");
+
+      incomingPanel.add(new JLabel("Ціна, грн./од.:"));
 
       incomingCostComboBox = new JComboBox<String>();
 
@@ -168,26 +189,7 @@ public class IncomingsFrame
 
       incomingPanel.add(incomingCostComboBox);
 
-      incomingNameComboBox.addActionListener(new ActionListener()
-      {
-         @Override
-         public void actionPerformed(ActionEvent e)
-         {
-            incomingCostComboBox.removeAllItems();
-
-            List<Double> prices = new Connection().getPricesByProduct((String) incomingNameComboBox.getSelectedItem());
-
-            if (!prices.isEmpty())
-            {
-               for (Double price : prices)
-               {
-                  incomingCostComboBox.addItem(Double.toString(price));
-               }
-            }
-         }
-      });
-
-      incomingPanel.add(new JLabel("Количество, ед.:"));
+      incomingPanel.add(new JLabel("Кількість, од.:"));
 
       incomingAmountTextField = new JTextField();
 
@@ -200,13 +202,65 @@ public class IncomingsFrame
          incomingSourceComboBox.addItem(source.getName());
       }
 
-      incomingPanel.add(new JLabel("Группа данных:"));
+      incomingPanel.add(new JLabel("Група даних:"));
 
       incomingPanel.add(incomingSourceComboBox);
 
       incomingPanel.add(new JLabel("Дата:"));
 
       incomingPanel.add(datePicker);
+
+      incomingUnitComboBox.addActionListener(new ActionListener()
+      {
+
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            if (!(((String) incomingNameComboBox.getSelectedItem()) == null
+                  || ((String) incomingNameComboBox.getSelectedItem()).isEmpty()))
+            {
+               incomingCostComboBox.removeAllItems();
+
+               List<Double> prices = new Connection().getPricesByProductAndUnit(
+                     (String) incomingNameComboBox.getSelectedItem(),
+                     units.indexOf((String) incomingUnitComboBox.getSelectedItem()));
+
+               if (!prices.isEmpty())
+               {
+                  for (Double price : prices)
+                  {
+                     incomingCostComboBox.addItem(Double.toString(price));
+                  }
+               }
+            }
+         }
+
+      });
+      incomingNameComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            List<String> unitNamesForProduct = new Connection()
+                  .getUniqueUnitNamesByProductName((String) incomingNameComboBox.getSelectedItem());
+
+            List<String> unitsNames = new Connection().getUniqueUnitNames();
+
+            unitsNames.removeAll(unitNamesForProduct);
+
+            incomingUnitComboBox.removeAllItems();
+
+            for (String unit : unitNamesForProduct)
+            {
+               incomingUnitComboBox.addItem(unit);
+            }
+
+            for (String unit : unitsNames)
+            {
+               incomingUnitComboBox.addItem(unit);
+            }
+         }
+      });
 
       incomingsFrame.add(incomingPanel, BorderLayout.CENTER);
 
@@ -229,26 +283,33 @@ public class IncomingsFrame
 
       if (incomingNameComboBox.getSelectedItem() == null || ((String) incomingNameComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле наименования товара", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле найменування товару", "Помилка",
+               JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      if (incomingUnitComboBox.getSelectedItem() == null || ((String) incomingUnitComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заповніть поле одиниць виміру", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (incomingCostComboBox.getSelectedItem() == null || ((String) incomingCostComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле стоимости", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле вартості", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (incomingAmountTextField.getText() == null || incomingAmountTextField.getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле количества", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле кількості", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (datePicker.getJFormattedTextField().getText() == null
             || datePicker.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заполните поле даты", "Ошибка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле дати", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }

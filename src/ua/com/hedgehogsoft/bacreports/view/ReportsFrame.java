@@ -7,16 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Properties;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
-import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
+import ua.com.hedgehogsoft.bacreports.view.date.DatePicker;
 
 public class ReportsFrame
 {
@@ -109,9 +106,9 @@ public class ReportsFrame
 
       datePanel.add(new Label("Конец периода:"));
 
-      datePanel.add(datePickerFrom = createDatePicker());
+      datePanel.add(datePickerFrom = DatePicker.getDatePicker());
 
-      datePanel.add(datePickerTo = createDatePicker());
+      datePanel.add(datePickerTo = DatePicker.getDatePicker());
 
       reportsFrame.add(datePanel, BorderLayout.CENTER);
 
@@ -126,22 +123,5 @@ public class ReportsFrame
       reportsFrame.setVisible(true);
 
       logger.info("ReportsFrame was started.");
-   }
-
-   private JDatePickerImpl createDatePicker()
-   {
-      UtilDateModel model = new UtilDateModel();
-
-      Properties props = new Properties();
-
-      props.put("text.today", "Сегодня");
-
-      props.put("text.month", "Месяц");
-
-      props.put("text.year", "Год");
-
-      JDatePanelImpl datePanel = new JDatePanelImpl(model, props);
-
-      return new JDatePickerImpl(datePanel, new DateLabelFormatter());
    }
 }
