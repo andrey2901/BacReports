@@ -1,3 +1,13 @@
+CREATE TABLE units
+(
+	id int not null generated always as identity (start with 1, increment by 1),
+	unit varchar(100) not null,
+	PRIMARY KEY (id),
+	UNIQUE (unit)
+);
+
+INSERT INTO units(unit) VALUES ('амп'), ('флак'), ('шт'), ('гр'), ('кг'), ('набір'), ('уп'), ('кор'), ('пар');
+
 CREATE TABLE source_group
 (
 	id int not null generated always as identity (start with 1, increment by 1),
@@ -15,9 +25,11 @@ CREATE TABLE store
 	price double not null,
 	amount double not null,
 	source_id int not null,
+	unit_id int not null,
 	PRIMARY KEY (id),
-	UNIQUE (name, price, source_id),
-	FOREIGN KEY (source_id) REFERENCES source_group(id)
+	UNIQUE (name, price, source_id, unit_id),
+	FOREIGN KEY (source_id) REFERENCES source_group(id),
+	FOREIGN KEY (unit_id) REFERENCES units(id)
 );
 
 CREATE TABLE incomings

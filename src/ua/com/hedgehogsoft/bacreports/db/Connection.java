@@ -14,6 +14,7 @@ import ua.com.hedgehogsoft.bacreports.model.Incoming;
 import ua.com.hedgehogsoft.bacreports.model.Outcoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 import ua.com.hedgehogsoft.bacreports.model.Source;
+import ua.com.hedgehogsoft.bacreports.model.Unit;
 
 public class Connection
 {
@@ -190,7 +191,7 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT name, price, amount, source_id FROM store");
+         rs = s.executeQuery("SELECT name, price, amount, source_id, unit_id FROM store");
 
          while (rs.next())
          {
@@ -203,6 +204,8 @@ public class Connection
             product.setAmount(rs.getDouble("amount"));
 
             product.setSource(rs.getInt("source_id"));
+
+            product.setUnit(rs.getInt("unit_id"));
 
             result.add(product);
          }
@@ -282,7 +285,60 @@ public class Connection
       return result;
    }
 
-   public List<Product> getStoreBySource(Source source)
+   public List<Unit> getUnits()
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Unit> result = new ArrayList<Unit>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT  * FROM units");
+
+         while (rs.next())
+         {
+            Unit unit = new Unit();
+
+            unit.setId(rs.getInt("id"));
+
+            unit.setName(rs.getString("unit"));
+
+            result.add(unit);
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   /*public List<Product> getStoreBySource(Source source)
    {
       java.sql.Connection conn = null;
 
@@ -337,7 +393,7 @@ public class Connection
          }
       }
       return result;
-   }
+   }*/
 
    public List<String> getUniqueProductNames()
    {

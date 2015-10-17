@@ -21,6 +21,7 @@ import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
 
 import ua.com.hedgehogsoft.bacreports.commons.Sources;
+import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.listener.IncomingActionListener;
 import ua.com.hedgehogsoft.bacreports.listener.OutcomingActionListener;
@@ -35,13 +36,16 @@ public class MainFrame
    private JButton exitButton = null;
    private JTable table = null;
    private Sources sources = null;
+   private Units units = null;
    private static final Logger logger = Logger.getLogger(MainFrame.class);
 
    public MainFrame()
    {
       sources = new Sources(new Connection().getSources());
 
-      final JFrame mainFrame = new JFrame("БакОтчеты - склад");
+      units = new Units(new Connection().getUnits());
+
+      final JFrame mainFrame = new JFrame("БакЗвіт - склад");
 
       mainFrame.setLayout(new BorderLayout());
 
@@ -59,15 +63,15 @@ public class MainFrame
          }
       });
 
-      incomingButton = new JButton("Приход");
+      incomingButton = new JButton("Надходження");
 
       incomingButton.addActionListener(new IncomingActionListener(this));
 
-      outcomingButton = new JButton("Списание");
+      outcomingButton = new JButton("Використання");
 
       outcomingButton.addActionListener(new OutcomingActionListener(this));
 
-      reportsButton = new JButton("Отчеты");
+      reportsButton = new JButton("Звіти");
 
       reportsButton.addActionListener(new ActionListener()
       {
@@ -78,7 +82,7 @@ public class MainFrame
          }
       });
 
-      exitButton = new JButton("Выход");
+      exitButton = new JButton("Вихід");
 
       exitButton.addActionListener(new ActionListener()
       {
@@ -130,12 +134,13 @@ public class MainFrame
 
    private JTable getFilledTable()
    {
-      String[] columnNames = {"№, п/п",
-                              "Наименование товара",
-                              "Цена, грн./ед.",
-                              "Количество, ед.",
-                              "Сумма, грн.",
-                              "Группа"};
+      String[] columnNames = {"№ з/п",
+                              "Найменування лікарських засобів та медичних виробів",
+                              "Одиниця виміру",
+                              "Ціна, грн./од.",
+                              "Кількість, од.",
+                              "Сума, грн.",
+                              "Група"};
 
       List<Product> products = new Connection().getStore();
 
@@ -147,13 +152,13 @@ public class MainFrame
          {
             Product product = products.get(i);
 
-            model.addRow(
-                  new Object[] {i + 1,
-                                product.getName(),
-                                product.getPrice(),
-                                product.getAmount(),
-                                product.getTotalPrice(),
-                                sources.valueOf(product.getSource()).getName()});
+            model.addRow(new Object[] {i + 1,
+                                       product.getName(),
+                                       units.valueOf(product.getUnit()).getName(),
+                                       product.getPrice(),
+                                       product.getAmount(),
+                                       product.getTotalPrice(),
+                                       sources.valueOf(product.getSource()).getName()});
          }
       }
 

@@ -9,6 +9,7 @@ public class Product
    private Double amount;
    private Double price;
    private int source;
+   private int unit;
 
    public String getName()
    {
@@ -76,5 +77,15 @@ public class Product
    public void setSource(int source)
    {
       this.source = source;
+   }
+
+   public int getUnit()
+   {
+      return unit;
+   }
+
+   public void setUnit(int unit)
+   {
+      this.unit = unit;
    }
 }

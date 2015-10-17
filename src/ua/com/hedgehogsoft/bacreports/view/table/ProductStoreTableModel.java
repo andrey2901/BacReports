@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import ua.com.hedgehogsoft.bacreports.commons.Sources;
+import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 
@@ -71,6 +72,7 @@ public class ProductStoreTableModel extends AbstractTableModel
    {
       Object[] row = new Object[] {this.getRowCount() + 1,
                                    product.getName(),
+                                   new Units(new Connection().getUnits()).valueOf(product.getUnit()).getName(),
                                    product.getPrice(),
                                    product.getAmount(),
                                    product.getTotalPrice(),
@@ -101,13 +103,13 @@ public class ProductStoreTableModel extends AbstractTableModel
 
       Object[] row = rows.get(rowIndex);
 
-      row[3] = product.getAmount();
+      row[4] = product.getAmount();
 
-      row[4] = product.getTotalPrice();
-
-      fireTableCellUpdated(rowIndex, 3);
+      row[5] = product.getTotalPrice();
 
       fireTableCellUpdated(rowIndex, 4);
+
+      fireTableCellUpdated(rowIndex, 5);
    }
 
    @Override

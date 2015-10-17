@@ -154,7 +154,7 @@ public class OutcomingsFrame
 
       outcomingNameComboBox = new JComboBox<String>();
 
-      List<String> names = new Connection().getUniqueProductNames();
+      /*List<String> names = new Connection().getUniqueProductNames();
 
       Collections.sort(names);
 
@@ -164,7 +164,7 @@ public class OutcomingsFrame
          {
             outcomingNameComboBox.addItem(name);
          }
-      }
+      }*/
 
       outcomingPanel.add(outcomingNameComboBox);
 
