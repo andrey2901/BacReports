@@ -276,6 +276,53 @@ public class Connection
       return result;
    }
 
+   public List<Integer> getIds()
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Integer> result = new ArrayList<Integer>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT DISTINCT id FROM store");
+
+         while (rs.next())
+         {
+            result.add(rs.getInt("id"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public List<Source> getSources()
    {
       java.sql.Connection conn = null;
@@ -877,6 +924,66 @@ public class Connection
             result.setSource(rs.getInt("source_id"));
 
             result.setUnit(rs.getInt("unit_id"));
+
+            break;
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public Product getProductById(int id)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      Product result = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT * FROM store WHERE id = " + id);
+
+         while (rs.next())
+         {
+            result = new Product();
+
+            result.setName(rs.getString("name"));
+
+            result.setPrice(rs.getDouble("price"));
+
+            result.setAmount(rs.getDouble("amount"));
+
+            result.setSource(rs.getInt("source_id"));
+
+            result.setUnit(rs.getInt("unit_id"));
+
             break;
          }
 
@@ -1265,4 +1372,161 @@ public class Connection
          }
       }
    }
+
+   /**
+    * 
+    * @param date
+    *           - specified date like "2015-01-23" or "23.01.2015"
+    * @return unique ids for products which has changes (incoming and outcoming
+    *         movements ) or has remains (amount more 0) from specified date to
+    *         now one.
+    */
+   public List<Integer> getUniqueIdProductWithRemainsOrChanges(String date)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Integer> result = new ArrayList<Integer>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT DISTINCT store.id FROM store " + "LEFT JOIN incomings ON store.id = incomings.product_id "
+                     + "LEFT JOIN outcomings ON store.id = outcomings.product_id " + "WHERE incomings.incoming_date > '"
+                     + date + "' AND outcomings.outcoming_date > '" + date + "' OR store.amount > 0");
+
+         while (rs.next())
+         {
+            result.add(rs.getInt("id"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public double getIncomingSumsFromDate(int id, String date)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT SUM(temp.amount) as summa FROM "
+               + "(SELECT incomings.amount FROM incomings JOIN store ON incomings.product_id = store.id "
+               + "WHERE incomings.incoming_date >= '" + date + "' AND store.id = " + id + ") as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public double getOutcomingSumsFromDate(int id, String date)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT SUM(temp.amount) as summa "
+               + "FROM (SELECT outcomings.amount FROM outcomings JOIN store ON outcomings.product_id = store.id "
+               + "WHERE outcomings.outcoming_date >= '" + date + "' AND store.id = " + id + ") as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
 }

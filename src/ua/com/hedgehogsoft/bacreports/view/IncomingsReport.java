@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -13,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -80,13 +80,13 @@ public class IncomingsReport
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new Label("Начало периода:"));
+      datePanel.add(new JLabel("Начало периода:"));
 
-      datePanel.add(new Label(from));
+      datePanel.add(new JLabel(from));
 
-      datePanel.add(new Label("Конец периода:"));
+      datePanel.add(new JLabel("Конец периода:"));
 
-      datePanel.add(new Label(to));
+      datePanel.add(new JLabel(to));
 
       JPanel buttonsPanel = new JPanel();
 

@@ -2,7 +2,6 @@ package ua.com.hedgehogsoft.bacreports.view;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -11,6 +10,7 @@ import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -68,10 +68,9 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
             if (checkInputData())
             {
-
+               new RemainsReportFrame(datePickerFrom.getJFormattedTextField().getText().replaceAll("-", "."));
             }
          }
       });
@@ -157,9 +156,9 @@ public class ReportsFrame
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new Label("Початок періоду:"));
+      datePanel.add(new JLabel("Початок періоду:"));
 
-      datePanel.add(new Label("Кінець періоду:"));
+      datePanel.add(new JLabel("Кінець періоду:"));
 
       datePanel.add(datePickerFrom = DatePicker.getDatePicker());
 

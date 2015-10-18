@@ -161,13 +161,13 @@ public class OutcomingsFrame
 
       outcomingPanel.add(outcomingUnitComboBox, position(1, 2));
 
-      outcomingPanel.add(new JLabel("Цена, грн./ед.:"), position(0, 3));
+      outcomingPanel.add(new JLabel("Ціна, грн./од.:"), position(0, 3));
 
       outcomingCostComboBox = new JComboBox<String>();
 
       outcomingPanel.add(outcomingCostComboBox, position(1, 3));
 
-      outcomingPanel.add(new JLabel("Количество, ед.:"), position(0, 4));
+      outcomingPanel.add(new JLabel("Кількість, од.:"), position(0, 4));
 
       outcomingAmountTextField = new JTextField();
 
