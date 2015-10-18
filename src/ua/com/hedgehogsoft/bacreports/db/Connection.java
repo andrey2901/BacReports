@@ -382,46 +382,6 @@ public class Connection
       return result;
    }
 
-   /*
-    * public List<Product> getStoreBySource(Source source) { java.sql.Connection
-    * conn = null;
-    * 
-    * Statement s = null;
-    * 
-    * ResultSet rs = null;
-    * 
-    * List<Product> result = new ArrayList<Product>();
-    * 
-    * try { conn = DbConnection.getConnection();
-    * 
-    * conn.setAutoCommit(false);
-    * 
-    * s = conn.createStatement();
-    * 
-    * rs = s.executeQuery(
-    * "SELECT name, price, amount, source_id FROM store WHERE source_id = " +
-    * source.getId());
-    * 
-    * while (rs.next()) { Product product = new Product();
-    * 
-    * product.setName(rs.getString("name"));
-    * 
-    * product.setPrice(rs.getDouble("price"));
-    * 
-    * product.setAmount(rs.getDouble("amount"));
-    * 
-    * product.setSource(rs.getInt("source_id"));
-    * 
-    * result.add(product); }
-    * 
-    * conn.commit(); } catch (SQLException e) {
-    * DbConnection.printSQLException(e); } finally { try {
-    * DbConnection.closeStatements(s);
-    * 
-    * DbConnection.closeConnection(conn); } catch (SQLException e) {
-    * DbConnection.printSQLException(e); } } return result; }
-    */
-
    public List<String> getUniqueProductNames()
    {
       java.sql.Connection conn = null;
