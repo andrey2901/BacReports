@@ -7,19 +7,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePickerImpl;
+
+import ua.com.hedgehogsoft.bacreports.view.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.bacreports.view.date.DatePicker;
 
 public class ReportsFrame
 {
-   private JButton storeButton = null;
-   private JButton incomingsButton = null;
-   private JButton outcomingsButton = null;
+   private JButton remainsReportButton = null;
+   private JButton actReportButton = null;
+   private JButton finalReportButton = null;
+   private JButton incomingsReportButton = null;
+   private JButton outcomingsReportButton = null;
    private JButton closeButton = null;
    private JDatePickerImpl datePickerFrom = null;
    private JDatePickerImpl datePickerTo = null;
@@ -27,7 +34,7 @@ public class ReportsFrame
 
    public ReportsFrame()
    {
-      JFrame reportsFrame = new JFrame("БакОтчеты - отчеты");
+      JFrame reportsFrame = new JFrame("БакЗвіт - звіти");
 
       reportsFrame.pack();
 
@@ -41,7 +48,7 @@ public class ReportsFrame
          }
       });
 
-      closeButton = new JButton("Закрыть");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -54,57 +61,105 @@ public class ReportsFrame
          }
       });
 
-      storeButton = new JButton("Движение по складу");
+      remainsReportButton = new JButton("Залишки");
 
-      storeButton.addActionListener(new ActionListener()
+      remainsReportButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
             // TODO Auto-generated method stub
+            if (checkInputData())
+            {
 
+            }
          }
       });
 
-      incomingsButton = new JButton("Поступления");
+      actReportButton = new JButton("Акт");
 
-      incomingsButton.addActionListener(new ActionListener()
+      actReportButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new IncomingsReport(datePickerFrom.getJFormattedTextField().getText(),
-                  datePickerTo.getJFormattedTextField().getText());
+            // TODO Auto-generated method stub
+            if (checkInputData())
+            {
+
+            }
          }
       });
 
-      outcomingsButton = new JButton("Списания");
+      finalReportButton = new JButton("Звіт");
 
-      outcomingsButton.addActionListener(new ActionListener()
+      finalReportButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new OutcomingsReport(datePickerFrom.getJFormattedTextField().getText(),
-                  datePickerTo.getJFormattedTextField().getText());
+            // TODO Auto-generated method stub
+            if (checkInputData())
+            {
+
+            }
          }
       });
 
-      JPanel buttonsPanel = new JPanel();
+      incomingsReportButton = new JButton("Надходження");
 
-      buttonsPanel.add(storeButton);
+      incomingsReportButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            // TODO Auto-generated method stub
+            if (checkInputData())
+            {
+               // new
+               // IncomingsReport(datePickerFrom.getJFormattedTextField().getText(),
+               // datePickerTo.getJFormattedTextField().getText());
+            }
 
-      buttonsPanel.add(incomingsButton);
+         }
+      });
 
-      buttonsPanel.add(outcomingsButton);
+      outcomingsReportButton = new JButton("Використання");
+
+      outcomingsReportButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            // TODO Auto-generated method stub
+            if (checkInputData())
+            {
+               // new
+               // OutcomingsReport(datePickerFrom.getJFormattedTextField().getText(),
+               // datePickerTo.getJFormattedTextField().getText());
+            }
+         }
+      });
+
+      JPanel buttonsPanel = new JPanel(new GridLayout(2, 3));
+
+      buttonsPanel.add(remainsReportButton);
+
+      buttonsPanel.add(actReportButton);
+
+      buttonsPanel.add(finalReportButton);
+
+      buttonsPanel.add(incomingsReportButton);
+
+      buttonsPanel.add(outcomingsReportButton);
 
       buttonsPanel.add(closeButton);
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new Label("Начало периода:"));
+      datePanel.add(new Label("Початок періоду:"));
 
-      datePanel.add(new Label("Конец периода:"));
+      datePanel.add(new Label("Кінець періоду:"));
 
       datePanel.add(datePickerFrom = DatePicker.getDatePicker());
 
@@ -123,5 +178,49 @@ public class ReportsFrame
       reportsFrame.setVisible(true);
 
       logger.info("ReportsFrame was started.");
+   }
+
+   private boolean checkInputData()
+   {
+      boolean result = true;
+
+      Date dateFrom = null;
+      Date dateTo = null;
+
+      if (datePickerFrom.getJFormattedTextField().getText() == null
+            || datePickerFrom.getJFormattedTextField().getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заповніть поле початку періоду", "Помилка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      else
+      {
+         dateFrom = (Date) new DateLabelFormatter().stringToValue(datePickerFrom.getJFormattedTextField().getText());
+      }
+
+      if (datePickerTo.getJFormattedTextField().getText() == null
+            || datePickerTo.getJFormattedTextField().getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, "Заповніть поле кінця періоду", "Помилка", JOptionPane.ERROR_MESSAGE);
+
+         result = false;
+      }
+      else
+      {
+         dateTo = (Date) new DateLabelFormatter().stringToValue(datePickerTo.getJFormattedTextField().getText());
+      }
+
+      if (dateFrom != null && dateTo != null)
+      {
+         if (dateTo.before(dateFrom))
+         {
+            JOptionPane.showMessageDialog(null,
+                  "Кінець періоду не може бути раніше за його початок.\nПоміняйте, будь ласка, дати місцями.",
+                  "Помилка", JOptionPane.ERROR_MESSAGE);
+         }
+      }
+
+      return result;
    }
 }

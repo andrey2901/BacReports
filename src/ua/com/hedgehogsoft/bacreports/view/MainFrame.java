@@ -14,7 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -121,9 +123,9 @@ public class MainFrame
 
       mainFrame.add(buttonsPanel, BorderLayout.SOUTH);
 
-      mainFrame.setSize(900, 661);
+      mainFrame.setSize(1000, 700);
 
-      mainFrame.setResizable(false);
+      mainFrame.setResizable(true);
 
       mainFrame.setLocationRelativeTo(null);
 
@@ -168,6 +170,8 @@ public class MainFrame
 
       table.setFillsViewportHeight(true);
 
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+
       initColumnSizes(table);
 
       return table;
@@ -187,20 +191,72 @@ public class MainFrame
 
       TableCellRenderer headerRenderer = table.getTableHeader().getDefaultRenderer();
 
-      for (int i = 0; i < 5; i++)
+      for (int i = 0; i < 7; i++)
       {
-         column = table.getColumnModel().getColumn(i);
+         switch (i)
+         {
+            case 0:
 
-         comp = headerRenderer.getTableCellRendererComponent(null, column.getHeaderValue(), false, false, 0, 0);
+               column = table.getColumnModel().getColumn(i);
 
-         headerWidth = comp.getPreferredSize().width;
+               column.setMaxWidth(50);
 
-         comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table,
-               model.getColumnName(i), false, false, 0, i);
+               column.setMinWidth(50);
 
-         cellWidth = comp.getPreferredSize().width;
+               column.setPreferredWidth(50);
 
-         column.setPreferredWidth(Math.max(headerWidth, cellWidth));
+               DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+
+               renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+               column.setCellRenderer(renderer);
+
+               break;
+
+            case 1:
+
+               column = table.getColumnModel().getColumn(i);
+
+               comp = headerRenderer.getTableCellRendererComponent(null, column.getHeaderValue(), false, false, 0, 0);
+
+               headerWidth = comp.getPreferredSize().width;
+
+               comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table,
+                     model.getColumnName(i), false, false, 0, i);
+
+               cellWidth = comp.getPreferredSize().width;
+
+               column.setPreferredWidth(Math.max(headerWidth, cellWidth));
+
+               break;
+
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+
+               column = table.getColumnModel().getColumn(i);
+
+               column.setMinWidth(100);
+
+               column.setMaxWidth(100);
+
+               column.setPreferredWidth(100);
+
+               break;
+
+            case 6:
+
+               column = table.getColumnModel().getColumn(i);
+
+               column.setMinWidth(100);
+
+               column.setMaxWidth(200);
+
+               column.setPreferredWidth(100);
+
+               break;
+         }
       }
    }
 

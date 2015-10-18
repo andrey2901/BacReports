@@ -1,7 +1,9 @@
 package ua.com.hedgehogsoft.bacreports.view;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -134,7 +136,7 @@ public class OutcomingsFrame
       datePicker = DatePicker.getDatePicker();
 
       /*--------------------------------------------------------------*/
-      JPanel outcomingPanel = new JPanel(new GridLayout(6, 2));
+      JPanel outcomingPanel = new JPanel(new GridBagLayout());
 
       outcomingSourceComboBox = new JComboBox<String>();
 
@@ -143,37 +145,37 @@ public class OutcomingsFrame
          outcomingSourceComboBox.addItem(source.getName());
       }
 
-      outcomingPanel.add(new JLabel("Група даних:"));
+      outcomingPanel.add(new JLabel("Група даних:"), position(0, 0));
 
-      outcomingPanel.add(outcomingSourceComboBox);
+      outcomingPanel.add(outcomingSourceComboBox, position(1, 0));
 
-      outcomingPanel.add(new JLabel("Найменування засобу:"));
+      outcomingPanel.add(new JLabel("Найменування засобу:"), position(0, 1));
 
       outcomingNameComboBox = new JComboBox<String>();
 
-      outcomingPanel.add(outcomingNameComboBox);
+      outcomingPanel.add(outcomingNameComboBox, position(1, 1));
 
-      outcomingPanel.add(new JLabel("Одиниця виміру:"));
+      outcomingPanel.add(new JLabel("Одиниця виміру:"), position(0, 2));
 
       outcomingUnitComboBox = new JComboBox<String>();
 
-      outcomingPanel.add(outcomingUnitComboBox);
+      outcomingPanel.add(outcomingUnitComboBox, position(1, 2));
 
-      outcomingPanel.add(new JLabel("Цена, грн./ед.:"));
+      outcomingPanel.add(new JLabel("Цена, грн./ед.:"), position(0, 3));
 
       outcomingCostComboBox = new JComboBox<String>();
 
-      outcomingPanel.add(outcomingCostComboBox);
+      outcomingPanel.add(outcomingCostComboBox, position(1, 3));
 
-      outcomingPanel.add(new JLabel("Количество, ед.:"));
+      outcomingPanel.add(new JLabel("Количество, ед.:"), position(0, 4));
 
       outcomingAmountTextField = new JTextField();
 
-      outcomingPanel.add(outcomingAmountTextField);
+      outcomingPanel.add(outcomingAmountTextField, position(1, 4));
 
-      outcomingPanel.add(new JLabel("Дата:"));
+      outcomingPanel.add(new JLabel("Дата:"), position(0, 5));
 
-      outcomingPanel.add(datePicker);
+      outcomingPanel.add(datePicker, position(1, 5));
 
       outcomingCostComboBox.addActionListener(new ActionListener()
       {
@@ -264,7 +266,11 @@ public class OutcomingsFrame
 
       outcomingsFrame.pack();
 
-      outcomingsFrame.setResizable(false);
+      outcomingsFrame.setSize(700, 225);
+
+      outcomingsFrame.setMinimumSize(new Dimension(375, 225));
+
+      outcomingsFrame.setResizable(true);
 
       outcomingsFrame.setLocationRelativeTo(null);
 
@@ -316,5 +322,35 @@ public class OutcomingsFrame
       }
 
       return result;
+   }
+
+   private GridBagConstraints position(int x, int y)
+   {
+      GridBagConstraints c = new GridBagConstraints();
+
+      c.fill = GridBagConstraints.HORIZONTAL;
+
+      switch (x)
+      {
+         case 0:
+
+            c.gridx = 0;
+            c.weightx = 0;
+            c.gridwidth = 1;
+
+            break;
+
+         case 1:
+
+            c.gridx = 1;
+            c.weightx = 10;
+            c.gridwidth = 3;
+
+            break;
+      }
+
+      c.gridy = y;
+
+      return c;
    }
 }
