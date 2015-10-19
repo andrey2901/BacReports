@@ -33,7 +33,7 @@ import ua.com.hedgehogsoft.bacreports.commons.Sources;
 import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.print.Printer;
+import ua.com.hedgehogsoft.bacreports.print.FinalReportPrinter;
 import ua.com.hedgehogsoft.bacreports.view.table.MultiLineHeaderRenderer;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
@@ -78,7 +78,7 @@ public class FinalReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new Printer().print(table);
+            new FinalReportPrinter().print(table, dateFrom, dateTo);
 
             finalReportFrame.dispose();
 
