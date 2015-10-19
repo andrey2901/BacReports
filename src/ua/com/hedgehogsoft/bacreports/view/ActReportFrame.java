@@ -32,24 +32,24 @@ import ua.com.hedgehogsoft.bacreports.model.Product;
 import ua.com.hedgehogsoft.bacreports.print.Printer;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
-public class RemainsReportFrame
+public class ActReportFrame
 {
    private JButton printButton = null;
    private JButton closeButton = null;
    private JTable table = null;
-   private static final Logger logger = Logger.getLogger(RemainsReportFrame.class);
+   private static final Logger logger = Logger.getLogger(ActReportFrame.class);
 
-   public RemainsReportFrame(String date)
+   public ActReportFrame(String dateFrom, String dateTo)
    {
-      JFrame remainsFrame = new JFrame("БакЗвіт - залишки");
+      JFrame actsFrame = new JFrame("БакЗвіт - акт списання");
 
-      remainsFrame.addWindowListener(new WindowAdapter()
+      actsFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("RemainsReportFrame was closed.");
+            logger.info("ActReportFrame was closed.");
 
-            remainsFrame.dispose();
+            actsFrame.dispose();
          }
       });
 
@@ -60,9 +60,9 @@ public class RemainsReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            remainsFrame.dispose();
+            actsFrame.dispose();
 
-            logger.info("RemainsReportFrame was closed.");
+            logger.info("ActReportFrame was closed.");
          }
       });
 
@@ -75,23 +75,24 @@ public class RemainsReportFrame
          {
             new Printer().print(table);
 
-            remainsFrame.dispose();
+            actsFrame.dispose();
 
-            logger.info("RemainsReportFrame was closed.");
+            logger.info("ActReportFrame was closed.");
          }
       });
 
       JPanel titlePanel = new JPanel(new GridLayout(4, 1));
 
-      titlePanel.add(new JLabel("Залишок", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("Акт", SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("поживних середовищ і хімреактивів, лабораторного скла ", SwingConstants.CENTER));
+      titlePanel
+            .add(new JLabel("списання поживних середовищ і хімреактивів, лабораторного скла,", SwingConstants.CENTER));
 
       titlePanel.add(new JLabel(
-            "по Централізованій баклабораторії Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"",
+            "використаних Централізованою баклабораторією Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"",
             SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("на " + date, SwingConstants.CENTER));
+      titlePanel.add(new JLabel("з " + dateFrom + " до " + dateTo, SwingConstants.CENTER));
 
       JPanel buttonsPanel = new JPanel();
 
@@ -99,26 +100,26 @@ public class RemainsReportFrame
 
       buttonsPanel.add(closeButton);
 
-      JScrollPane scrollPane = new JScrollPane(table = getFilledTable(date));
+      JScrollPane scrollPane = new JScrollPane(table = getFilledTable(dateFrom, dateTo));
 
-      remainsFrame.add(scrollPane, BorderLayout.CENTER);
+      actsFrame.add(scrollPane, BorderLayout.CENTER);
 
-      remainsFrame.add(titlePanel, BorderLayout.NORTH);
+      actsFrame.add(titlePanel, BorderLayout.NORTH);
 
-      remainsFrame.add(buttonsPanel, BorderLayout.SOUTH);
+      actsFrame.add(buttonsPanel, BorderLayout.SOUTH);
 
-      remainsFrame.pack();
+      actsFrame.pack();
 
-      remainsFrame.setResizable(true);
+      actsFrame.setResizable(true);
 
-      remainsFrame.setLocationRelativeTo(null);
+      actsFrame.setLocationRelativeTo(null);
 
-      remainsFrame.setVisible(true);
+      actsFrame.setVisible(true);
 
-      logger.info("RemainsReportFrame was started.");
+      logger.info("ActReportFrame was started.");
    }
 
-   private JTable getFilledTable(String date)
+   private JTable getFilledTable(String dateFrom, String dateTo)
    {
       String[] columnNames = {"№ з/п",
                               "Найменування предметів закупівель",
@@ -128,24 +129,13 @@ public class RemainsReportFrame
                               "Кількість, од.",
                               "Сума, грн."};
 
-      List<Integer> ids = new Connection().getIds();
+      List<Integer> ids = new Connection().getUniqueIdsForOutcomings(dateFrom, dateTo);
 
       List<Product> products = new ArrayList<Product>();
 
       for (int id : ids)
       {
-         double incomingSum = new Connection().getIncomingSumsFromDate(id, date);
-
-         double outcomingSum = new Connection().getOutcomingSumsFromDate(id, date);
-
-         Product product = new Connection().getProductById(id);
-
-         product.setAmount(product.getAmount() + outcomingSum - incomingSum);
-
-         if (product.getAmount() != 0.0)
-         {
-            products.add(product);
-         }
+         products.add(new Connection().getOutcomingProduct(id, dateFrom, dateTo));
       }
 
       ProductStoreTableModel model = new ProductStoreTableModel(products, columnNames);
@@ -163,7 +153,7 @@ public class RemainsReportFrame
                                              .getName(),
                                        product.getPrice(),
                                        product.getAmount(),
-                                       product.getTotalPrice()});
+                                       product.getTotalPrice(),});
          }
       }
 

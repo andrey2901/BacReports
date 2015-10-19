@@ -107,7 +107,7 @@ public class OutcomingsFrame
                   model.updateAmount(existedProduct);
 
                   new Connection().addOutcoming(product,
-                        datePicker.getJFormattedTextField().getText().replaceAll("-", "."));
+                        datePicker.getJFormattedTextField().getText());
 
                   logger.info("Outcomings were performed.");
 

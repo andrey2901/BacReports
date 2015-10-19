@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 public class DateLabelFormatter extends AbstractFormatter
 {
    private static final long serialVersionUID = 1L;
-   private String datePattern = "dd-MM-yyyy";
+   private String datePattern = "dd.MM.yyyy";
    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
    private static final Logger logger = Logger.getLogger(DateLabelFormatter.class);
 

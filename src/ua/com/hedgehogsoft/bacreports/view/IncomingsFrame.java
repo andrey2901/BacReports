@@ -123,7 +123,7 @@ public class IncomingsFrame
                }
 
                new Connection().addIncoming(product,
-                     datePicker.getJFormattedTextField().getText().replaceAll("-", "."));
+                     datePicker.getJFormattedTextField().getText());
 
                logger.info("Incomings were performed.");
 

@@ -70,7 +70,7 @@ public class ReportsFrame
          {
             if (checkInputData())
             {
-               new RemainsReportFrame(datePickerFrom.getJFormattedTextField().getText().replaceAll("-", "."));
+               new RemainsReportFrame(datePickerFrom.getJFormattedTextField().getText());
             }
          }
       });
@@ -82,10 +82,10 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
             if (checkInputData())
             {
-
+               new ActReportFrame(datePickerFrom.getJFormattedTextField().getText(),
+                     datePickerTo.getJFormattedTextField().getText());
             }
          }
       });

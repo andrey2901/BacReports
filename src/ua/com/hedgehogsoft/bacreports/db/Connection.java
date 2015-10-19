@@ -792,6 +792,68 @@ public class Connection
       return result;
    }
 
+   public Product getOutcomingProduct(int id, String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      Product result = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT name, price, source_id, unit_id, (SELECT SUM(temp.amount) FROM (SELECT outcomings.amount FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcomings.outcoming_date >= '"
+                     + dateFrom + "' AND outcomings.outcoming_date <=  '" + dateTo + "' AND store.id = " + id
+                     + ") as temp) as summa FROM store WHERE store.id = " + id);
+
+         while (rs.next())
+         {
+            result = new Product();
+
+            result.setName(rs.getString("name"));
+
+            result.setPrice(rs.getDouble("price"));
+
+            result.setAmount(rs.getDouble("summa"));
+
+            result.setSource(rs.getInt("source_id"));
+
+            result.setUnit(rs.getInt("unit_id"));
+
+            break;
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public List<Double> getPricesByProductAndUnit(String productName, int unitID)
    {
       java.sql.Connection conn = null;
@@ -1431,6 +1493,55 @@ public class Connection
       return result;
    }
 
+   public List<Integer> getUniqueIdsForOutcomings(String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Integer> result = new ArrayList<Integer>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT DISTINCT store.id FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcomings.outcoming_date >= '"
+                     + dateFrom + "' AND outcomings.outcoming_date <=  '" + dateTo + "'");
+
+         while (rs.next())
+         {
+            result.add(rs.getInt("id"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public double getIncomingSumsFromDate(int id, String date)
    {
       java.sql.Connection conn = null;
@@ -1528,5 +1639,4 @@ public class Connection
       }
       return result;
    }
-
 }
