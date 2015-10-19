@@ -32,7 +32,7 @@ import ua.com.hedgehogsoft.bacreports.commons.Sources;
 import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.print.Printer;
+import ua.com.hedgehogsoft.bacreports.print.RemainsReportPrinter;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class RemainsReportFrame
@@ -76,7 +76,7 @@ public class RemainsReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new Printer().print(table);
+            new RemainsReportPrinter().print(table, date);
 
             remainsFrame.dispose();
 

@@ -158,7 +158,7 @@ public class FinalReportFrame
 
          Product product = new Connection().getProductById(id);
 
-         model.addRow(new Object[] {i++,
+         model.addRow(new Object[] {++i,
                                     product.getName(),
                                     new Units(new Connection().getUnits()).valueOf(product.getUnit()).getName(),
                                     product.getAmount() + outcomingSumFromDates - incomingSumFromDates,
