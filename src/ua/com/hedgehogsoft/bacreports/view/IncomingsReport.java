@@ -16,9 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
@@ -104,6 +107,8 @@ public class IncomingsReport
 
       reportsFrame.pack();
 
+      reportsFrame.setSize(1000, 700);
+
       reportsFrame.setResizable(true);
 
       reportsFrame.setLocationRelativeTo(null);
@@ -148,6 +153,10 @@ public class IncomingsReport
       table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
       table.setFillsViewportHeight(true);
+
+      RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+
+      table.setRowSorter(sorter);
 
       initColumnSizes(table);
 
