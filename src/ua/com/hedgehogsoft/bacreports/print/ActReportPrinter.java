@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 import javax.swing.JTable;
 import javax.swing.RowSorter;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -25,9 +25,9 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-public class FinalReportPrinter
+public class ActReportPrinter
 {
-   private static final Logger logger = Logger.getLogger(FinalReportPrinter.class);
+   private static final Logger logger = Logger.getLogger(ActReportPrinter.class);
 
    public void print(JTable table, String dateFrom, String dateTo)
    {
@@ -49,7 +49,7 @@ public class FinalReportPrinter
          Document document = new Document(PageSize.A4, 0, 0, 0, 0);
 
          PdfWriter.getInstance(document, new FileOutputStream(
-               System.getProperty("report.folder") + "/Zagalnyi_zvit_" + dateFrom + "_" + dateTo + ".pdf"));
+               System.getProperty("report.folder") + "/Act_spysannia_" + dateFrom + "_" + dateTo + ".pdf"));
 
          document.open();
 
@@ -66,7 +66,7 @@ public class FinalReportPrinter
          paragraph1.setSpacingAfter(3);
          paragraph1.setSpacingBefore(3);
          paragraph1.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk1 = new Chunk("Звіт");
+         Chunk chunk1 = new Chunk("Акт");
          paragraph1.add(chunk1);
 
          Paragraph paragraph2 = new Paragraph();
@@ -74,7 +74,8 @@ public class FinalReportPrinter
          paragraph2.setSpacingAfter(3);
          paragraph2.setSpacingBefore(3);
          paragraph2.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk2 = new Chunk("про надходження і відпуск (використання) лікарських засобів та медичних виробів");
+         Chunk chunk2 = new Chunk("списання поживних середовищ і хімреактивів, лабораторного скла,\n"
+               + "використаних Централізованою баклабораторією Лівобережжя\nКЗ \"Дніпропетровьска міська клінічна лікарня №9 \" ДОР\"");
          paragraph2.add(chunk2);
 
          Paragraph paragraph3 = new Paragraph();
@@ -99,49 +100,39 @@ public class FinalReportPrinter
 
          PdfPTable pdfTable = new PdfPTable(model.getColumnCount() - 1);
 
-         pdfTable.setWidths(new int[] {2, 21, 3, 4, 4, 4, 4});
+         pdfTable.setWidths(new int[] {2, 21, 4, 4, 4, 4});
 
          pdfTable.setWidthPercentage(90);
 
          PdfPCell cell = null;
          cell = new PdfPCell(new Phrase("№ з/п", font));
-         cell.setRowspan(2);
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Найменування лікарських засобів та медичних виробів", font));
-         cell.setRowspan(2);
+         cell = new PdfPCell(new Phrase("Найменування предметів закупівель", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Одини-\nця\nвиміру", font));
-         cell.setRowspan(2);
+         cell = new PdfPCell(new Phrase("Одиниця виміру", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Кількість", font));
-         cell.setColspan(4);
+         cell = new PdfPCell(new Phrase("Ціна, грн./од.", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Залишок на початок періоду", font));
+         cell = new PdfPCell(new Phrase("Кількість, од.", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Надход-\nження", font));
+         cell = new PdfPCell(new Phrase("Сума, грн.", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-         pdfTable.addCell(cell);
-
-         cell = new PdfPCell(new Phrase("Викорис-\nтання", font));
-         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-         pdfTable.addCell(cell);
-
-         cell = new PdfPCell(new Phrase("Залишок на\nкінець\nперіоду", font));
-         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
          RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
@@ -150,27 +141,30 @@ public class FinalReportPrinter
 
          ArrayList<SortKey> list = new ArrayList<SortKey>();
 
-         list.add(new RowSorter.SortKey(7, SortOrder.DESCENDING));
+         list.add(new RowSorter.SortKey(3, SortOrder.DESCENDING));
 
          ((TableRowSorter<TableModel>) sorter).setSortKeys(list);
 
          ((TableRowSorter<TableModel>) sorter).sort();
 
-         String group = (String) model.getValueAt(0, 7);
+         String group = (String) model.getValueAt(0, 3);
+
+         double common = 0d;
+
          cell = new PdfPCell(new Phrase(group, font));
-         cell.setColspan(7);
+         cell.setColspan(6);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
          for (int row = 0; row < model.getRowCount(); row++)
          {
-            if (!group.equals((String) model.getValueAt(row, 7)))
+            if (!group.equals((String) model.getValueAt(row, 3)))
             {
-               cell = new PdfPCell(new Phrase((String) model.getValueAt(row, 7), font));
-               cell.setColspan(7);
+               cell = new PdfPCell(new Phrase((String) model.getValueAt(row, 3), font));
+               cell.setColspan(6);
                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                pdfTable.addCell(cell);
-               group = (String) model.getValueAt(row, 7);
+               group = (String) model.getValueAt(row, 3);
             }
             for (int column = 0; column < model.getColumnCount(); column++)
             {
@@ -188,18 +182,34 @@ public class FinalReportPrinter
                      cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                      pdfTable.addCell(cell);
                      break;
-                  case 3:
                   case 4:
                   case 5:
-                  case 6:
                      cell = new PdfPCell(
                            new Phrase((String) Double.toString((double) model.getValueAt(row, column)), font));
                      cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                      pdfTable.addCell(cell);
                      break;
+                  case 6:
+                     cell = new PdfPCell(
+                           new Phrase((String) Double.toString((double) model.getValueAt(row, column)), font));
+                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                     pdfTable.addCell(cell);
+                     common += (double) model.getValueAt(row, column);
+                     break;
                }
             }
          }
+
+         cell = new PdfPCell(new Phrase("Всього", font));
+         cell.setColspan(5);
+         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+         pdfTable.addCell(cell);
+
+         cell = new PdfPCell(new Phrase((String) Double.toString(common), font));
+         cell.setColspan(5);
+         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+         pdfTable.addCell(cell);
+
          document.add(pdfTable);
 
          /*******************************************************************************************/
@@ -209,48 +219,44 @@ public class FinalReportPrinter
          Paragraph subscribeParagraph = new Paragraph();
          subscribeParagraph.setFont(font);
 
+         Paragraph responsibleParagraph = new Paragraph();
+         responsibleParagraph.setFont(font);
+         responsibleParagraph.setSpacingAfter(0);
+         responsibleParagraph.setSpacingBefore(5);
+         responsibleParagraph.setAlignment(Element.ALIGN_RIGHT);
+         Chunk responsibleChunk = new Chunk(
+               "Матеріально відповідальна особа                                                                                         ");
+         responsibleParagraph.add(responsibleChunk);
+
          Paragraph laboratoryParagraph = new Paragraph();
          laboratoryParagraph.setFont(font);
          laboratoryParagraph.setSpacingAfter(3);
-         laboratoryParagraph.setSpacingBefore(3);
+         laboratoryParagraph.setSpacingBefore(0);
          laboratoryParagraph.setAlignment(Element.ALIGN_RIGHT);
          Chunk labVacancyChunk = new Chunk("Лаборант з бактеріології      ");
          Chunk labUnderlineChunk = new Chunk("                                       ");
          labUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk labNameChunk = new Chunk("       Н.В. Нагорна            ");
+         Chunk labNameChunk = new Chunk("          Н.В. Нагорна            ");
          laboratoryParagraph.add(labVacancyChunk);
          laboratoryParagraph.add(labUnderlineChunk);
          laboratoryParagraph.add(labNameChunk);
 
-         Paragraph accountParagraph = new Paragraph();
-         accountParagraph.setFont(font);
-         accountParagraph.setSpacingAfter(3);
-         accountParagraph.setSpacingBefore(3);
-         accountParagraph.setAlignment(Element.ALIGN_RIGHT);
-         Chunk accVacancyChunk = new Chunk("Бухгалтер      ");
-         Chunk accUnderlineChunk = new Chunk("                                       ");
-         accUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk accNameChunk = new Chunk("      І.Ф. Кольцова            ");
-         accountParagraph.add(accVacancyChunk);
-         accountParagraph.add(accUnderlineChunk);
-         accountParagraph.add(accNameChunk);
-
          Paragraph deputyParagraph = new Paragraph();
          deputyParagraph.setFont(font);
-         deputyParagraph.setSpacingAfter(3);
-         deputyParagraph.setSpacingBefore(3);
+         deputyParagraph.setSpacingAfter(5);
+         deputyParagraph.setSpacingBefore(5);
          deputyParagraph.setAlignment(Element.ALIGN_RIGHT);
-         Chunk deputyVacancyChunk = new Chunk("Затверджую зам.головного лікаря з медичної частини      ");
+         Chunk deputyVacancyChunk = new Chunk("Зав.ЦБакЛЛ      ");
          Chunk deputyUnderlineChunk = new Chunk("                                       ");
          deputyUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk deputyNameChunk = new Chunk("    І.А. Єсауленко            ");
+         Chunk deputyNameChunk = new Chunk("    Л.М. Москаленко            ");
          deputyParagraph.add(deputyVacancyChunk);
          deputyParagraph.add(deputyUnderlineChunk);
          deputyParagraph.add(deputyNameChunk);
 
-         subscribeParagraph.add(laboratoryParagraph);
-         subscribeParagraph.add(accountParagraph);
          subscribeParagraph.add(deputyParagraph);
+         subscribeParagraph.add(responsibleParagraph);
+         subscribeParagraph.add(laboratoryParagraph);
 
          document.add(subscribeParagraph);
 
@@ -260,7 +266,7 @@ public class FinalReportPrinter
       }
       catch (Exception e)
       {
-         logger.error("Zagalnyi_zvit_" + dateFrom + "_" + dateTo + ".pdf wasn't printed.", e);
+         logger.error("Act_spysannia_" + dateFrom + "_" + dateTo + ".pdf wasn't printed.", e);
       }
    }
 }

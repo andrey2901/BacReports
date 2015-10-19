@@ -32,7 +32,7 @@ import ua.com.hedgehogsoft.bacreports.commons.Sources;
 import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.print.Printer;
+import ua.com.hedgehogsoft.bacreports.print.ActReportPrinter;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class ActReportFrame
@@ -76,7 +76,7 @@ public class ActReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new Printer().print(table);
+            new ActReportPrinter().print(table, dateFrom, dateTo);
 
             actsFrame.dispose();
 
