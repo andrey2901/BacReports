@@ -75,7 +75,7 @@ public class ReportsFrame
          }
       });
 
-      actReportButton = new JButton("Акт");
+      actReportButton = new JButton("Акт списання");
 
       actReportButton.addActionListener(new ActionListener()
       {
@@ -97,10 +97,10 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
             if (checkInputData())
             {
-
+               new FinalReportFrame(datePickerFrom.getJFormattedTextField().getText(),
+                     datePickerTo.getJFormattedTextField().getText());
             }
          }
       });

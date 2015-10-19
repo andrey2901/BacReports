@@ -31,7 +31,7 @@ public class DbConnection
       {
          conn = DriverManager.getConnection(protocol + dbName + ";create=true", props);
 
-         logger.info("Connected database " + dbName);
+         logger.trace("Connected database " + dbName);
       }
       catch (SQLException e)
       {
@@ -71,7 +71,7 @@ public class DbConnection
 
          conn = null;
 
-         logger.info("Connection was closed successfully.");
+         logger.trace("Connection was closed successfully.");
       }
    }
 
@@ -88,7 +88,7 @@ public class DbConnection
                storeStatement[i] = null;
             }
          }
-         logger.info("All  statements were closed successfully.");
+         logger.trace("All  statements were closed successfully.");
       }
    }
 }

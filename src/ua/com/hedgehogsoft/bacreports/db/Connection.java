@@ -1639,4 +1639,104 @@ public class Connection
       }
       return result;
    }
+
+   public double getIncomingSumsBetweenDates(int id, String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT SUM(temp.amount) as summa FROM (SELECT incomings.amount FROM incomings JOIN store ON incomings.product_id = store.id WHERE incomings.incoming_date >= '"
+                     + dateFrom + "' AND incomings.incoming_date <= '" + dateTo + "' AND store.id = " + id
+                     + ") as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public double getOutcomingSumsBetweenDates(int id, String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT SUM(temp.amount) as summa FROM (SELECT outcomings.amount FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcomings.outcoming_date >= '"
+                     + dateFrom + "' AND outcomings.outcoming_date <= '" + dateTo + "' AND store.id = " + id
+                     + ") as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
 }
