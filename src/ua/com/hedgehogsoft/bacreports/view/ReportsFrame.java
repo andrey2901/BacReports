@@ -115,9 +115,8 @@ public class ReportsFrame
             // TODO Auto-generated method stub
             if (checkInputData())
             {
-               // new
-               // IncomingsReport(datePickerFrom.getJFormattedTextField().getText(),
-               // datePickerTo.getJFormattedTextField().getText());
+               new IncomingsReport(datePickerFrom.getJFormattedTextField().getText(),
+                     datePickerTo.getJFormattedTextField().getText());
             }
 
          }
@@ -133,9 +132,8 @@ public class ReportsFrame
             // TODO Auto-generated method stub
             if (checkInputData())
             {
-               // new
-               // OutcomingsReport(datePickerFrom.getJFormattedTextField().getText(),
-               // datePickerTo.getJFormattedTextField().getText());
+               new OutcomingsReport(datePickerFrom.getJFormattedTextField().getText(),
+                     datePickerTo.getJFormattedTextField().getText());
             }
          }
       });

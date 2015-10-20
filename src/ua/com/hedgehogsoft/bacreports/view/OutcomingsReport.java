@@ -33,6 +33,7 @@ import ua.com.hedgehogsoft.bacreports.print.Printer;
 public class OutcomingsReport
 {
    private JButton printButton = null;
+   private JButton deleteButton = null;
    private JButton closeButton = null;
    private JTable table = null;
    private static final Logger logger = Logger.getLogger(OutcomingsReport.class);
@@ -81,6 +82,18 @@ public class OutcomingsReport
          }
       });
 
+      deleteButton = new JButton("Видалити");
+
+      deleteButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            // TODO Auto-generated method stub
+
+         }
+      });
+
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
       datePanel.add(new JLabel("Начало периода:"));
@@ -94,6 +107,8 @@ public class OutcomingsReport
       JPanel buttonsPanel = new JPanel();
 
       buttonsPanel.add(printButton);
+
+      buttonsPanel.add(deleteButton);
 
       buttonsPanel.add(closeButton);
 

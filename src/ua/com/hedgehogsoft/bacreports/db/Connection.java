@@ -686,8 +686,9 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT * FROM incomings  WHERE incoming_date >= '" + dateFrom + "' AND incoming_date <= '"
-               + dateTo + "'");
+         rs = s.executeQuery(
+               "SELECT incomings.amount, incoming_date, store.name, store.price FROM incomings JOIN store ON incomings.product_id = store.id WHERE incoming_date >= '"
+                     + dateFrom + "' AND incoming_date <= '" + dateTo + "'");
 
          while (rs.next())
          {
@@ -748,8 +749,9 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT * FROM outcomings  WHERE outcoming_date >= '" + dateFrom
-               + "' AND outcoming_date <= '" + dateTo + "'");
+         rs = s.executeQuery(
+               "SELECT outcomings.amount, outcoming_date, store.name, store.price FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcoming_date >= '"
+                     + dateFrom + "' AND outcoming_date <= '" + dateTo + "'");
 
          while (rs.next())
          {
