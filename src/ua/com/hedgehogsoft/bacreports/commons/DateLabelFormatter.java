@@ -1,4 +1,4 @@
-package ua.com.hedgehogsoft.bacreports.view.date;
+package ua.com.hedgehogsoft.bacreports.commons;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

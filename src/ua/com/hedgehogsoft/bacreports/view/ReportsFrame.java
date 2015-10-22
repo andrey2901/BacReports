@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePickerImpl;
 
-import ua.com.hedgehogsoft.bacreports.view.date.DateLabelFormatter;
+import ua.com.hedgehogsoft.bacreports.commons.DateLabelFormatter;
 import ua.com.hedgehogsoft.bacreports.view.date.DatePicker;
 
 public class ReportsFrame

@@ -6,6 +6,8 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import ua.com.hedgehogsoft.bacreports.commons.DateLabelFormatter;
+
 public class DatePicker
 {
    public static JDatePickerImpl getDatePicker()
