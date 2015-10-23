@@ -22,6 +22,7 @@ public class ActReportDateRangeFrame
    private JButton closeButton = null;
    private JComboBox<String> monthComboBox = null;
    private JComboBox<Integer> yearComboBox = null;
+   private JComboBox<String> sourceComboBox = null;
    private static final Logger logger = Logger.getLogger(ActReportDateRangeFrame.class);
 
    public ActReportDateRangeFrame()
@@ -58,7 +59,14 @@ public class ActReportDateRangeFrame
 
             DateLabelFormatter formatter = new DateLabelFormatter();
 
-            new ActReportFrame(formatter.dateToString(ranger.from()), formatter.dateToString(ranger.to()));
+            if (sourceComboBox.getSelectedIndex() == 1)
+            {
+               new ActReportPatronFrame(formatter.dateToString(ranger.from()), formatter.dateToString(ranger.to()));
+            }
+            else
+            {
+               new ActReportFrame(formatter.dateToString(ranger.from()), formatter.dateToString(ranger.to()));
+            }
 
             frame.dispose();
          }
@@ -70,7 +78,7 @@ public class ActReportDateRangeFrame
 
       buttonsPanel.add(closeButton);
 
-      JPanel datePanel = new JPanel(new GridLayout(2, 2));
+      JPanel datePanel = new JPanel(new GridLayout(3, 2));
 
       datePanel.add(new JLabel("Місяць:"));
 
@@ -100,6 +108,12 @@ public class ActReportDateRangeFrame
       }
 
       datePanel.add(yearComboBox);
+
+      datePanel.add(new JLabel("Група:"));
+
+      sourceComboBox = new JComboBox<String>(new String[] {"Бюджет", "Меценат"});
+
+      datePanel.add(sourceComboBox);
 
       frame.add(datePanel, BorderLayout.CENTER);
 

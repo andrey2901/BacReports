@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,6 +23,7 @@ public class RemainsReportDateRangeFrame
    private JButton okButton = null;
    private JButton closeButton = null;
    private JDatePickerImpl datePicker = null;
+   private JComboBox<String> sourceComboBox = null;
    private static final Logger logger = Logger.getLogger(RemainsReportDateRangeFrame.class);
 
    public RemainsReportDateRangeFrame()
@@ -56,7 +58,14 @@ public class RemainsReportDateRangeFrame
          {
             if (checkInputData())
             {
-               new RemainsReportFrame(datePicker.getJFormattedTextField().getText());
+               if (sourceComboBox.getSelectedIndex() == 1)
+               {
+                  new RemainsReportPatronFrame(datePicker.getJFormattedTextField().getText());
+               }
+               else
+               {
+                  new RemainsReportFrame(datePicker.getJFormattedTextField().getText());
+               }
 
                close(frame);
             }
@@ -69,7 +78,13 @@ public class RemainsReportDateRangeFrame
 
       buttonsPanel.add(closeButton);
 
-      JPanel datePanel = new JPanel(new GridLayout(2, 1));
+      JPanel datePanel = new JPanel(new GridLayout(2, 2));
+
+      datePanel.add(new JLabel("Група:"));
+
+      sourceComboBox = new JComboBox<String>(new String[] {"Бюджет", "Меценат"});
+
+      datePanel.add(sourceComboBox);
 
       datePanel.add(new JLabel("Дата:"));
 
