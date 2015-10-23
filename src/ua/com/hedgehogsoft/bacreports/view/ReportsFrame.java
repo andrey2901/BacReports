@@ -6,19 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
-import org.jdatepicker.impl.JDatePickerImpl;
-
-import ua.com.hedgehogsoft.bacreports.commons.DateLabelFormatter;
-import ua.com.hedgehogsoft.bacreports.view.date.DatePicker;
 
 public class ReportsFrame
 {
@@ -28,8 +20,6 @@ public class ReportsFrame
    private JButton incomingsReportButton = null;
    private JButton outcomingsReportButton = null;
    private JButton closeButton = null;
-   private JDatePickerImpl datePickerFrom = null;
-   private JDatePickerImpl datePickerTo = null;
    private static final Logger logger = Logger.getLogger(ReportsFrame.class);
 
    public ReportsFrame()
@@ -68,10 +58,7 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            if (checkInputData())
-            {
-               new RemainsReportFrame(datePickerFrom.getJFormattedTextField().getText());
-            }
+            new RemainsReportDateRangeFrame();
          }
       });
 
@@ -82,11 +69,7 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            if (checkInputData())
-            {
-               new ActReportFrame(datePickerFrom.getJFormattedTextField().getText(),
-                     datePickerTo.getJFormattedTextField().getText());
-            }
+            new ActReportDateRangeFrame();
          }
       });
 
@@ -97,11 +80,7 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            if (checkInputData())
-            {
-               new FinalReportFrame(datePickerFrom.getJFormattedTextField().getText(),
-                     datePickerTo.getJFormattedTextField().getText());
-            }
+            new FinalReportDateRangeFrame();
          }
       });
 
@@ -112,13 +91,7 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
-            if (checkInputData())
-            {
-               new IncomingsReport(datePickerFrom.getJFormattedTextField().getText(),
-                     datePickerTo.getJFormattedTextField().getText());
-            }
-
+            new IncomingsReportDateRangeFrame();
          }
       });
 
@@ -129,12 +102,7 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
-            if (checkInputData())
-            {
-               new OutcomingsReport(datePickerFrom.getJFormattedTextField().getText(),
-                     datePickerTo.getJFormattedTextField().getText());
-            }
+            new OutcomingsReportDateRangeFrame();
          }
       });
 
@@ -152,19 +120,7 @@ public class ReportsFrame
 
       buttonsPanel.add(closeButton);
 
-      JPanel datePanel = new JPanel(new GridLayout(2, 2));
-
-      datePanel.add(new JLabel("Початок періоду:"));
-
-      datePanel.add(new JLabel("Кінець періоду:"));
-
-      datePanel.add(datePickerFrom = DatePicker.getDatePicker());
-
-      datePanel.add(datePickerTo = DatePicker.getDatePicker());
-
-      reportsFrame.add(datePanel, BorderLayout.CENTER);
-
-      reportsFrame.add(buttonsPanel, BorderLayout.SOUTH);
+      reportsFrame.add(buttonsPanel, BorderLayout.CENTER);
 
       reportsFrame.pack();
 
@@ -175,49 +131,5 @@ public class ReportsFrame
       reportsFrame.setVisible(true);
 
       logger.info("ReportsFrame was started.");
-   }
-
-   private boolean checkInputData()
-   {
-      boolean result = true;
-
-      Date dateFrom = null;
-      Date dateTo = null;
-
-      if (datePickerFrom.getJFormattedTextField().getText() == null
-            || datePickerFrom.getJFormattedTextField().getText().isEmpty())
-      {
-         JOptionPane.showMessageDialog(null, "Заповніть поле початку періоду", "Помилка", JOptionPane.ERROR_MESSAGE);
-
-         result = false;
-      }
-      else
-      {
-         dateFrom = (Date) new DateLabelFormatter().stringToValue(datePickerFrom.getJFormattedTextField().getText());
-      }
-
-      if (datePickerTo.getJFormattedTextField().getText() == null
-            || datePickerTo.getJFormattedTextField().getText().isEmpty())
-      {
-         JOptionPane.showMessageDialog(null, "Заповніть поле кінця періоду", "Помилка", JOptionPane.ERROR_MESSAGE);
-
-         result = false;
-      }
-      else
-      {
-         dateTo = (Date) new DateLabelFormatter().stringToValue(datePickerTo.getJFormattedTextField().getText());
-      }
-
-      if (dateFrom != null && dateTo != null)
-      {
-         if (dateTo.before(dateFrom))
-         {
-            JOptionPane.showMessageDialog(null,
-                  "Кінець періоду не може бути раніше за його початок.\nПоміняйте, будь ласка, дати місцями.",
-                  "Помилка", JOptionPane.ERROR_MESSAGE);
-         }
-      }
-
-      return result;
    }
 }

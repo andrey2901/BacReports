@@ -3,6 +3,7 @@ package ua.com.hedgehogsoft.bacreports.commons;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
@@ -39,6 +40,16 @@ public class DateLabelFormatter extends AbstractFormatter
          Calendar cal = (Calendar) value;
 
          return dateFormatter.format(cal.getTime());
+      }
+
+      return "";
+   }
+
+   public String dateToString(Date date)
+   {
+      if (date != null)
+      {
+         return dateFormatter.format(date);
       }
 
       return "";
