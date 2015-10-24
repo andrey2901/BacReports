@@ -235,11 +235,13 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT name, price, amount, source_id, unit_id FROM store");
+         rs = s.executeQuery("SELECT * FROM store");
 
          while (rs.next())
          {
             Product product = new Product();
+
+            product.setId(rs.getInt("id"));
 
             product.setName(rs.getString("name"));
 

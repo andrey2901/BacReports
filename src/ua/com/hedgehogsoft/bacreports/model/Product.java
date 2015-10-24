@@ -5,11 +5,22 @@ import java.math.RoundingMode;
 
 public class Product
 {
+   private int id;
    private String name;
    private Double amount;
    private Double price;
    private int source;
    private int unit;
+
+   public int getId()
+   {
+      return id;
+   }
+
+   public void setId(int id)
+   {
+      this.id = id;
+   }
 
    public String getName()
    {

@@ -54,17 +54,11 @@ public class MainFrame
 
       mainFrame.setLayout(new BorderLayout());
 
-      mainFrame.pack();
-
       mainFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            Connection.shutdownDB();
-
-            logger.info("BacReports was finished.");
-
-            System.exit(0);
+            close();
          }
       });
 
@@ -94,11 +88,7 @@ public class MainFrame
          @Override
          public void actionPerformed(ActionEvent arg0)
          {
-            Connection.shutdownDB();
-
-            logger.info("BacReports was finished.");
-
-            System.exit(0);
+            close();
          }
       });
 
@@ -167,7 +157,7 @@ public class MainFrame
          }
       }
 
-      table = new JTable(model);
+      JTable table = new JTable(model);
 
       table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
@@ -275,5 +265,14 @@ public class MainFrame
    public Sources getSources()
    {
       return sources;
+   }
+
+   private void close()
+   {
+      Connection.shutdownDB();
+
+      logger.info("BacReports was finished.");
+
+      System.exit(0);
    }
 }
