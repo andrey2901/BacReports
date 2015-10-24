@@ -4,11 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,6 +24,7 @@ import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePickerImpl;
 
+import ua.com.hedgehogsoft.bacreports.commons.DateLabelFormatter;
 import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
@@ -47,15 +51,11 @@ public class OutcomingsFrame
 
       JFrame outcomingsFrame = new JFrame("БакЗвіт - списання");
 
-      outcomingsFrame.pack();
-
       outcomingsFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("OutcomingsFrame was closed.");
-
-            outcomingsFrame.dispose();
+            close(outcomingsFrame);
          }
       });
 
@@ -66,9 +66,7 @@ public class OutcomingsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            outcomingsFrame.dispose();
-
-            logger.info("OutcomingsFrame was closed.");
+            close(outcomingsFrame);
          }
       });
 
@@ -98,29 +96,56 @@ public class OutcomingsFrame
 
                if (existedProduct.getAmount() >= product.getAmount())
                {
-                  existedProduct.setAmount(existedProduct.getAmount() - product.getAmount());
+                  if (isReversible(existedProduct, product.getAmount(), datePicker.getJFormattedTextField().getText()))
+                  {
+                     existedProduct.setAmount(existedProduct.getAmount() - product.getAmount());
 
-                  new Connection().updateProduct(existedProduct);
+                     if (new Connection().updateProduct(existedProduct))
 
-                  ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
+                     {
+                        if (new Connection().addOutcoming(product, datePicker.getJFormattedTextField().getText()))
+                        {
+                           ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
 
-                  model.updateAmount(existedProduct);
+                           model.updateAmount(existedProduct);
 
-                  new Connection().addOutcoming(product,
-                        datePicker.getJFormattedTextField().getText());
+                           logger.info("Outcomings were performed.");
 
-                  logger.info("Outcomings were performed.");
+                           JPanel panel = new JPanel(new GridLayout(6, 2));
+                           panel.add(new JLabel("Найменування: "));
+                           panel.add(new JLabel(product.getName()));
+                           panel.add(new JLabel("Кількість, од.: "));
+                           panel.add(new JLabel(Double.toString(product.getAmount())));
+                           panel.add(new JLabel("Одиниця виміру: "));
+                           panel.add(new JLabel(units.valueOf(product.getUnit()).getName()));
+                           panel.add(new JLabel("Ціна, грн./од.: "));
+                           panel.add(new JLabel(Double.toString(product.getPrice())));
+                           panel.add(new JLabel("Група: "));
+                           panel.add(new JLabel(mainFrame.getSources().valueOf(product.getSource()).getName()));
+                           panel.add(new JLabel("Сума, грн.: "));
+                           panel.add(new JLabel(Double.toString(product.getTotalPrice())));
 
-                  outcomingsFrame.dispose();
+                           JOptionPane.showMessageDialog(null, panel, "Списано", JOptionPane.INFORMATION_MESSAGE);
 
-                  logger.info("OutcomingsFrame was closed.");
+                           close(outcomingsFrame);
+                        }
+                     }
+                  }
+                  else
+                  {
+                     JOptionPane.showMessageDialog(null,
+                           "Ви не можете списати вказану кількість товару на цю дату,"
+                                 + "\nтак как у більш пізні строки Ви отримаєте від'ємний залишок.",
+                           "Помилка", JOptionPane.ERROR_MESSAGE);
+                  }
                }
                else
                {
                   JOptionPane.showMessageDialog(null,
-                        "Вы пытаетесь списать большее количество товара, чем имеется на складе.\n Укажите верное значение.",
-                        "Ошибка", JOptionPane.ERROR_MESSAGE);
+                        "Ви намагаєтеся списати більшу кількість товару, ніж є на складі.\nВкажіть вірне значення.",
+                        "Помилка", JOptionPane.ERROR_MESSAGE);
                }
+               close(outcomingsFrame);
             }
          }
       });
@@ -184,13 +209,11 @@ public class OutcomingsFrame
          {
             if (outcomingCostComboBox.getItemCount() != 0)
             {
-               outcomingAmountTextField
-                     .setText(
-                           Double.toString(
-                                 new Connection().getAmountByProductNameAndPriceAndSource(
-                                       (String) outcomingNameComboBox.getSelectedItem(), Double
-                                             .valueOf((String) outcomingCostComboBox.getSelectedItem()),
-                                 mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()))));
+               outcomingAmountTextField.setText(Double.toString(new Connection()
+                     .getAmountByProductNameAndPriceAndSourceAndUnit((String) outcomingNameComboBox.getSelectedItem(),
+                           Double.valueOf((String) outcomingCostComboBox.getSelectedItem()),
+                           mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()),
+                           units.indexOf((String) outcomingUnitComboBox.getSelectedItem()))));
             }
          }
       });
@@ -223,7 +246,7 @@ public class OutcomingsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            List<String> unitNames = new Connection().getUniqueUnitNamesByProductNameAndSourceName(
+            List<String> unitNames = new Connection().getUniqueUnitNamesByProductNameAndSource(
                   (String) outcomingNameComboBox.getSelectedItem(),
                   mainFrame.getSources().indexOf((String) outcomingSourceComboBox.getSelectedItem()));
 
@@ -263,8 +286,6 @@ public class OutcomingsFrame
       outcomingsFrame.add(outcomingPanel, BorderLayout.CENTER);
 
       outcomingsFrame.add(buttonsPanel, BorderLayout.SOUTH);
-
-      outcomingsFrame.pack();
 
       outcomingsFrame.setSize(700, 225);
 
@@ -352,5 +373,53 @@ public class OutcomingsFrame
       c.gridy = y;
 
       return c;
+   }
+
+   private void close(JFrame frame)
+   {
+      logger.info("OutcomingsFrame was closed.");
+
+      frame.dispose();
+   }
+
+   /*
+    * Check ability to insert an outcoming in the past (f.e. today is 24.05.2015
+    * and the date of outcoming is 20.03.2015)
+    */
+   private boolean isReversible(Product existedProduct, double outcomingAmount, String date)
+   {
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.HOUR_OF_DAY, 0);
+      cal.set(Calendar.MINUTE, 0);
+      cal.set(Calendar.SECOND, 0);
+      cal.set(Calendar.MILLISECOND, 0);
+
+      Date today = cal.getTime();
+
+      DateLabelFormatter formatter = new DateLabelFormatter();
+
+      Date destinationDate = (Date) formatter.stringToValue(date);
+
+      while (destinationDate.before(today))
+      {
+         double incomingSum = new Connection().getIncomingSumsFromDate(existedProduct.getId(),
+               formatter.dateToString(destinationDate));
+
+         double outcomingSum = new Connection().getOutcomingSumsFromDate(existedProduct.getId(),
+               formatter.dateToString(destinationDate));
+
+         double remainsAmount = existedProduct.getAmount() + outcomingSum - incomingSum;
+
+         if (remainsAmount < outcomingAmount)
+         {
+            return false;
+         }
+
+         cal.setTime(destinationDate);
+         cal.add(Calendar.DATE, 1);
+         destinationDate = cal.getTime();
+      }
+
+      return true;
    }
 }

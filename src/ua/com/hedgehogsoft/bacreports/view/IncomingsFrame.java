@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -46,15 +47,11 @@ public class IncomingsFrame
 
       JFrame incomingsFrame = new JFrame("БакЗвіт - надходження");
 
-      incomingsFrame.pack();
-
       incomingsFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("IncomingsFrame was closed.");
-
-            incomingsFrame.dispose();
+            close(incomingsFrame);
          }
       });
 
@@ -65,9 +62,7 @@ public class IncomingsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            incomingsFrame.dispose();
-
-            logger.info("IncomingsFrame was closed.");
+            close(incomingsFrame);
          }
       });
 
@@ -82,9 +77,10 @@ public class IncomingsFrame
             {
                if (!new Connection().unitExist((String) incomingUnitComboBox.getSelectedItem()))
                {
-                  new Connection().addUnit((String) incomingUnitComboBox.getSelectedItem());
-
-                  units = new Units(new Connection().getUnits());
+                  if (new Connection().addUnit((String) incomingUnitComboBox.getSelectedItem()))
+                  {
+                     units = new Units(new Connection().getUnits());
+                  }
                }
 
                Product product = new Product();
@@ -99,37 +95,61 @@ public class IncomingsFrame
 
                product.setUnit(units.indexOf((String) incomingUnitComboBox.getSelectedItem()));
 
-               if (new Connection().productExist(product.getName(), product.getPrice(), product.getSource(),
-                     product.getUnit()))
-               {
-                  Product existedProduct = new Connection().getProductByNameAndPriceAndSourceAndUnit(product.getName(),
-                        product.getPrice(), product.getSource(), product.getUnit());
+               Product existedProduct = null;
 
+               boolean wasUpdated = false;
+
+               if ((existedProduct = new Connection().getProductByNameAndPriceAndSourceAndUnit(product.getName(),
+                     product.getPrice(), product.getSource(), product.getUnit())) != null)
+               {
                   existedProduct.setAmount(product.getAmount() + existedProduct.getAmount());
 
-                  new Connection().updateProduct(existedProduct);
+                  if (new Connection().updateProduct(existedProduct))
+                  {
+                     ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
 
-                  ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
+                     model.updateAmount(existedProduct);
 
-                  model.updateAmount(existedProduct);
+                     wasUpdated = true;
+                  }
+
                }
                else
                {
-                  new Connection().addProductToStore(product);
+                  if (new Connection().addProductToStore(product))
+                  {
+                     ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
 
-                  ProductStoreTableModel model = (ProductStoreTableModel) mainFrame.getTable().getModel();
+                     model.addProduct(product);
 
-                  model.addProduct(product);
+                     wasUpdated = true;
+                  }
                }
 
-               new Connection().addIncoming(product,
-                     datePicker.getJFormattedTextField().getText());
+               if (wasUpdated)
+               {
+                  new Connection().addIncoming(product, datePicker.getJFormattedTextField().getText());
 
-               logger.info("Incomings were performed.");
+                  logger.info("Incomings were performed.");
 
-               incomingsFrame.dispose();
+                  JPanel panel = new JPanel(new GridLayout(6, 2));
+                  panel.add(new JLabel("Найменування: "));
+                  panel.add(new JLabel(product.getName()));
+                  panel.add(new JLabel("Кількість, од.: "));
+                  panel.add(new JLabel(Double.toString(product.getAmount())));
+                  panel.add(new JLabel("Одиниця виміру: "));
+                  panel.add(new JLabel(units.valueOf(product.getUnit()).getName()));
+                  panel.add(new JLabel("Ціна, грн./од.: "));
+                  panel.add(new JLabel(Double.toString(product.getPrice())));
+                  panel.add(new JLabel("Група: "));
+                  panel.add(new JLabel(mainFrame.getSources().valueOf(product.getSource()).getName()));
+                  panel.add(new JLabel("Сума, грн.: "));
+                  panel.add(new JLabel(Double.toString(product.getTotalPrice())));
 
-               logger.info("IncomingsFrame was closed.");
+                  JOptionPane.showMessageDialog(null, panel, "Додано", JOptionPane.INFORMATION_MESSAGE);
+               }
+
+               close(incomingsFrame);
             }
          }
       });
@@ -223,7 +243,7 @@ public class IncomingsFrame
             {
                incomingCostComboBox.removeAllItems();
 
-               List<Double> prices = new Connection().getPricesByProductAndUnit(
+               List<Double> prices = new Connection().getPricesByProductNameAndUnit(
                      (String) incomingNameComboBox.getSelectedItem(),
                      units.indexOf((String) incomingUnitComboBox.getSelectedItem()));
 
@@ -246,6 +266,10 @@ public class IncomingsFrame
             List<String> unitNamesForProduct = new Connection()
                   .getUniqueUnitNamesByProductName((String) incomingNameComboBox.getSelectedItem());
 
+            /*
+             * The next part of code resort unit combo box in order to be units
+             * for this product at first and all others lately.
+             */
             List<String> unitsNames = new Connection().getUniqueUnitNames();
 
             unitsNames.removeAll(unitNamesForProduct);
@@ -267,8 +291,6 @@ public class IncomingsFrame
       incomingsFrame.add(incomingPanel, BorderLayout.CENTER);
 
       incomingsFrame.add(buttonsPanel, BorderLayout.SOUTH);
-
-      incomingsFrame.pack();
 
       incomingsFrame.setSize(700, 225);
 
@@ -351,5 +373,12 @@ public class IncomingsFrame
       c.gridy = y;
 
       return c;
+   }
+
+   private void close(JFrame frame)
+   {
+      logger.info("IncomingsFrame was closed.");
+
+      frame.dispose();
    }
 }

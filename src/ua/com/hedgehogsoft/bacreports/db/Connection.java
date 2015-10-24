@@ -590,9 +590,8 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery(
-               "SELECT DISTINCT unit FROM units LEFT JOIN store ON units.id = store.unit_id WHERE store.name='"
-                     + productName + "'");
+         rs = s.executeQuery("SELECT DISTINCT unit FROM units JOIN store ON units.id = store.unit_id WHERE store.name='"
+               + productName + "'");
 
          while (rs.next())
          {
@@ -621,7 +620,7 @@ public class Connection
       return result;
    }
 
-   public List<String> getUniqueUnitNamesByProductNameAndSourceName(String productName, int sourceID)
+   public List<String> getUniqueUnitNamesByProductNameAndSource(String productName, int sourceID)
    {
       java.sql.Connection conn = null;
 
@@ -639,9 +638,8 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery(
-               "SELECT DISTINCT unit FROM units LEFT JOIN store ON units.id = store.unit_id WHERE store.name='"
-                     + productName + "' AND store.source_id=" + sourceID);
+         rs = s.executeQuery("SELECT DISTINCT unit FROM units JOIN store ON units.id = store.unit_id WHERE store.name='"
+               + productName + "' AND store.source_id=" + sourceID);
 
          while (rs.next())
          {
@@ -858,7 +856,7 @@ public class Connection
       return result;
    }
 
-   public List<Double> getPricesByProductAndUnit(String productName, int unitID)
+   public List<Double> getPricesByProductNameAndUnit(String productName, int unitID)
    {
       java.sql.Connection conn = null;
 
@@ -981,6 +979,8 @@ public class Connection
          {
             result = new Product();
 
+            result.setId(rs.getInt("id"));
+
             result.setName(rs.getString("name"));
 
             result.setPrice(rs.getDouble("price"));
@@ -1075,8 +1075,10 @@ public class Connection
       return result;
    }
 
-   public void updateProduct(Product product)
+   public boolean updateProduct(Product product)
    {
+      boolean result = false;
+
       java.sql.Connection conn = null;
 
       PreparedStatement ps = null;
@@ -1087,17 +1089,15 @@ public class Connection
 
          conn.setAutoCommit(false);
 
-         ps = conn.prepareStatement(
-               "UPDATE store SET amount = ? WHERE name = ? AND price = ? AND source_id = ? AND unit_id = ?");
+         ps = conn.prepareStatement("UPDATE store SET amount = ? WHERE id = ?");
 
          ps.setDouble(1, product.getAmount());
-         ps.setString(2, product.getName());
-         ps.setDouble(3, product.getPrice());
-         ps.setInt(4, product.getSource());
-         ps.setInt(5, product.getUnit());
+         ps.setInt(2, product.getId());
          ps.executeUpdate();
 
          conn.commit();
+
+         result = true;
       }
       catch (SQLException e)
       {
@@ -1116,10 +1116,13 @@ public class Connection
             DbConnection.printSQLException(e);
          }
       }
+      return result;
    }
 
-   public void addProductToStore(Product product)
+   public boolean addProductToStore(Product product)
    {
+      boolean result = false;
+
       java.sql.Connection conn = null;
 
       PreparedStatement ps = null;
@@ -1141,6 +1144,8 @@ public class Connection
          ps.executeUpdate();
 
          conn.commit();
+
+         result = true;
       }
       catch (SQLException e)
       {
@@ -1159,6 +1164,7 @@ public class Connection
             DbConnection.printSQLException(e);
          }
       }
+      return result;
    }
 
    public void addIncoming(Product product, String date)
@@ -1206,8 +1212,10 @@ public class Connection
       }
    }
 
-   public void addOutcoming(Product product, String date)
+   public boolean addOutcoming(Product product, String date)
    {
+      boolean result = false;
+
       java.sql.Connection conn = null;
 
       PreparedStatement ps = null;
@@ -1229,6 +1237,8 @@ public class Connection
          ps.executeUpdate();
 
          conn.commit();
+
+         result = true;
       }
       catch (SQLException e)
       {
@@ -1247,9 +1257,14 @@ public class Connection
             DbConnection.printSQLException(e);
          }
       }
+
+      return result;
    }
 
-   public Double getAmountByProductNameAndPriceAndSource(String productName, double productPrice, int sourceID)
+   public Double getAmountByProductNameAndPriceAndSourceAndUnit(String productName,
+                                                                double productPrice,
+                                                                int sourceID,
+                                                                int unitID)
    {
       java.sql.Connection conn = null;
 
@@ -1299,7 +1314,7 @@ public class Connection
       return result;
    }
 
-   public boolean productExist(String productName, double productPrice, int sourceID, int unitID)
+   public boolean productExist(Product product)
    {
       boolean result = false;
 
@@ -1317,12 +1332,13 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT COUNT(*) FROM store WHERE name = '" + productName + "' AND price = " + productPrice
-               + " AND source_id = " + sourceID + " AND unit_id = " + unitID);
+         rs = s.executeQuery("SELECT COUNT(*) AS counter FROM store WHERE name = '" + product.getName()
+               + "' AND price = " + product.getPrice() + " AND source_id = " + product.getSource() + " AND unit_id = "
+               + product.getUnit());
 
          while (rs.next())
          {
-            if (rs.getInt("1") != 0)
+            if (rs.getInt("counter") != 0)
             {
                result = true;
             }
@@ -1368,11 +1384,11 @@ public class Connection
 
          s = conn.createStatement();
 
-         rs = s.executeQuery("SELECT COUNT(*) FROM units WHERE unit = '" + unitName + "'");
+         rs = s.executeQuery("SELECT COUNT(*) AS counter FROM units WHERE unit = '" + unitName + "'");
 
          while (rs.next())
          {
-            if (rs.getInt("1") != 0)
+            if (rs.getInt("counter") != 0)
             {
                result = true;
             }
@@ -1400,8 +1416,10 @@ public class Connection
       return result;
    }
 
-   public void addUnit(String unitName)
+   public boolean addUnit(String unitName)
    {
+      boolean result = false;
+
       java.sql.Connection conn = null;
 
       PreparedStatement ps = null;
@@ -1419,6 +1437,8 @@ public class Connection
          ps.executeUpdate();
 
          conn.commit();
+
+         result = true;
       }
       catch (SQLException e)
       {
@@ -1437,6 +1457,7 @@ public class Connection
             DbConnection.printSQLException(e);
          }
       }
+      return result;
    }
 
    /**
