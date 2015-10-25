@@ -8,14 +8,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -25,6 +29,9 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
+import ua.com.hedgehogsoft.bacreports.commons.DateLabelFormatter;
+import ua.com.hedgehogsoft.bacreports.commons.Sources;
+import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Incoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
@@ -38,9 +45,9 @@ public class IncomingsReport
    private JTable table = null;
    private static final Logger logger = Logger.getLogger(IncomingsReport.class);
 
-   public IncomingsReport(String from, String to)
+   public IncomingsReport(MainFrame mainFrame, String from, String to)
    {
-      JFrame reportsFrame = new JFrame("БакОтчеты - Поступления");
+      JFrame reportsFrame = new JFrame("БакЗвіт - надходження");
 
       reportsFrame.pack();
 
@@ -48,26 +55,22 @@ public class IncomingsReport
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("IncomingsReport was closed.");
-
-            reportsFrame.dispose();
+            close(reportsFrame);
          }
       });
 
-      closeButton = new JButton("Закрыть");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            reportsFrame.dispose();
-
-            logger.info("IncomingsReport was closed.");
+            close(reportsFrame);
          }
       });
 
-      printButton = new JButton("Печать");
+      printButton = new JButton("Друкувати");
 
       printButton.addActionListener(new ActionListener()
       {
@@ -76,9 +79,7 @@ public class IncomingsReport
          {
             new Printer().print(table);
 
-            reportsFrame.dispose();
-
-            logger.info("IncomingsReport was closed.");
+            close(reportsFrame);
          }
       });
 
@@ -89,18 +90,65 @@ public class IncomingsReport
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
+            Incoming incoming = new Connection().getIncomingById((int) table.getValueAt(table.getSelectedRow(), 0));
 
+            Product existedProduct = new Connection().getProductById(incoming.getProduct().getId());
+
+            if (isReversible(existedProduct, incoming.getProduct().getAmount(), incoming.getDate()))
+            {
+               existedProduct.setAmount(existedProduct.getAmount() - incoming.getProduct().getAmount());
+
+               if (new Connection().updateProduct(existedProduct))
+               {
+                  if (new Connection().deleteIncomingById(incoming.getId()))
+                  {
+                     DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+                     model.removeRow(table.getSelectedRow());
+
+                     Sources sources = new Sources(new Connection().getSources());
+
+                     Units units = new Units(new Connection().getUnits());
+
+                     JPanel panel = new JPanel(new GridLayout(7, 2));
+                     panel.add(new JLabel("Дата: "));
+                     panel.add(new JLabel(new DateLabelFormatter().dateToString(incoming.getDate())));
+                     panel.add(new JLabel("Найменування: "));
+                     panel.add(new JLabel(incoming.getProduct().getName()));
+                     panel.add(new JLabel("Кількість, од.: "));
+                     panel.add(new JLabel(Double.toString(incoming.getProduct().getAmount())));
+                     panel.add(new JLabel("Одиниця виміру: "));
+                     panel.add(new JLabel(units.valueOf(incoming.getProduct().getUnit()).getName()));
+                     panel.add(new JLabel("Ціна, грн./од.: "));
+                     panel.add(new JLabel(Double.toString(incoming.getProduct().getPrice())));
+                     panel.add(new JLabel("Група: "));
+                     panel.add(new JLabel(sources.valueOf(incoming.getProduct().getSource()).getName()));
+                     panel.add(new JLabel("Сума, грн.: "));
+                     panel.add(new JLabel(Double.toString(incoming.getProduct().getTotalPrice())));
+
+                     JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
+
+                     close(reportsFrame);
+                  }
+               }
+            }
+            else
+            {
+               JOptionPane.showMessageDialog(null,
+                     "Ви не можете видалити вказане надходження,"
+                           + "\nтак как у більш пізні строки Ви отримаєте від'ємний залишок.",
+                     "Помилка", JOptionPane.ERROR_MESSAGE);
+            }
          }
       });
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new JLabel("Начало периода:"));
+      datePanel.add(new JLabel("Початок періоду:"));
 
       datePanel.add(new JLabel(from));
 
-      datePanel.add(new JLabel("Конец периода:"));
+      datePanel.add(new JLabel("Кінець періоду:"));
 
       datePanel.add(new JLabel(to));
 
@@ -120,8 +168,6 @@ public class IncomingsReport
 
       reportsFrame.add(buttonsPanel, BorderLayout.SOUTH);
 
-      reportsFrame.pack();
-
       reportsFrame.setSize(1000, 700);
 
       reportsFrame.setResizable(true);
@@ -130,21 +176,38 @@ public class IncomingsReport
 
       reportsFrame.setVisible(true);
 
-      logger.info("ReportsFrame was started.");
+      logger.info("IncomingsReport was started.");
    }
 
    private JTable getFilledTable(String from, String to)
    {
-      String[] columnNames = {"№, п/п",
-                              "Наименование товара",
-                              "Цена, грн./ед.",
-                              "Количество, ед.",
-                              "Сумма, грн.",
-                              "Дата поступления"};
+      String[] columnNames = {"№ з/п",
+                              "Найменування предметів закупівель",
+                              "Одиниця виміру",
+                              "Дата надходження",
+                              "Ціна, грн./од.",
+                              "Кількість, од.",
+                              "Сума, грн.",
+                              "Група"};
 
       List<Incoming> incomings = new Connection().getIncomings(from, to);
 
-      DefaultTableModel model = new DefaultTableModel();
+      Sources sources = new Sources(new Connection().getSources());
+
+      Units units = new Units(new Connection().getUnits());
+
+      DateLabelFormatter formatter = new DateLabelFormatter();
+
+      DefaultTableModel model = new DefaultTableModel()
+      {
+         private static final long serialVersionUID = 1L;
+
+         @Override
+         public boolean isCellEditable(int row, int column)
+         {
+            return false;
+         }
+      };
 
       model.setColumnIdentifiers(columnNames);
 
@@ -154,12 +217,14 @@ public class IncomingsReport
          {
             Product product = incomings.get(i).getProduct();
 
-            model.addRow(new Object[] {i + 1,
+            model.addRow(new Object[] {incomings.get(i).getId(),
                                        product.getName(),
+                                       units.valueOf(product.getUnit()).getName(),
+                                       formatter.dateToString(incomings.get(i).getDate()),
                                        product.getPrice(),
                                        product.getAmount(),
                                        product.getTotalPrice(),
-                                       incomings.get(i).getDate()});
+                                       sources.valueOf(product.getSource()).getName()});
          }
       }
 
@@ -168,6 +233,8 @@ public class IncomingsReport
       table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
       table.setFillsViewportHeight(true);
+
+      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
 
@@ -212,5 +279,69 @@ public class IncomingsReport
    public JTable getTable()
    {
       return table;
+   }
+
+   /*
+    * Check ability to delete an incoming in the past (f.e. today is 24.05.2015
+    * and the date of outcoming is 20.03.2015)
+    */
+   private boolean isReversible(Product existedProduct, double incomingAmount, Date destinationDate)
+   {
+      /*
+       * Amount for today after deleting the incoming.
+       */
+      double amount = existedProduct.getAmount() - incomingAmount;
+
+      if (amount < 0)
+      {
+         return false;
+      }
+
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.HOUR_OF_DAY, 0);
+      cal.set(Calendar.MINUTE, 0);
+      cal.set(Calendar.SECOND, 0);
+      cal.set(Calendar.MILLISECOND, 0);
+
+      Date today = cal.getTime();
+
+      DateLabelFormatter formatter = new DateLabelFormatter();
+
+      /*
+       * In the same day we have the remain without changes, so we increase the
+       * date by one and check its result (sub zero or no).
+       */
+      cal.setTime(destinationDate);
+      cal.add(Calendar.DATE, 1);
+      destinationDate = cal.getTime();
+
+      while (destinationDate.before(today))
+      {
+         double incomingsSum = new Connection().getIncomingsSumFromDate(existedProduct.getId(),
+               formatter.dateToString(destinationDate));
+
+         double outcomingsSum = new Connection().getOutcomingsSumFromDate(existedProduct.getId(),
+               formatter.dateToString(destinationDate));
+
+         double remainsAmount = amount + outcomingsSum - incomingsSum;
+
+         if (remainsAmount < 0)
+         {
+            return false;
+         }
+
+         cal.setTime(destinationDate);
+         cal.add(Calendar.DATE, 1);
+         destinationDate = cal.getTime();
+      }
+
+      return true;
+   }
+
+   private void close(JFrame frame)
+   {
+      frame.dispose();
+
+      logger.info("IncomingsReport was closed.");
    }
 }

@@ -402,13 +402,21 @@ public class OutcomingsFrame
 
       while (destinationDate.before(today))
       {
-         double incomingSum = new Connection().getIncomingSumsFromDate(existedProduct.getId(),
+         double incomingsSum = new Connection().getIncomingsSumFromDate(existedProduct.getId(),
                formatter.dateToString(destinationDate));
 
-         double outcomingSum = new Connection().getOutcomingSumsFromDate(existedProduct.getId(),
+         double outcomingsSum = new Connection().getOutcomingsSumFromDate(existedProduct.getId(),
                formatter.dateToString(destinationDate));
 
-         double remainsAmount = existedProduct.getAmount() + outcomingSum - incomingSum;
+         double remainsAmount = existedProduct.getAmount() + outcomingsSum - incomingsSum;
+
+         double incomingSumOnDate = new Connection().getIncomingSumOnDate(existedProduct.getId(),
+               formatter.dateToString(destinationDate));
+
+         double outcomingSumOnDate = new Connection().getOutcomingSumOnDate(existedProduct.getId(),
+               formatter.dateToString(destinationDate));
+
+         remainsAmount = remainsAmount + incomingSumOnDate - outcomingSumOnDate;
 
          if (remainsAmount < outcomingAmount)
          {

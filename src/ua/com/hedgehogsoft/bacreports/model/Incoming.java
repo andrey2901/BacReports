@@ -4,8 +4,19 @@ import java.sql.Date;
 
 public class Incoming
 {
+   private int id;
    private Product product;
    private Date date;
+
+   public int getId()
+   {
+      return id;
+   }
+
+   public void setId(int id)
+   {
+      this.id = id;
+   }
 
    public Product getProduct()
    {

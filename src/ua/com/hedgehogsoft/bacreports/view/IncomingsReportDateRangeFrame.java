@@ -28,7 +28,7 @@ public class IncomingsReportDateRangeFrame
    private JDatePickerImpl datePickerTo = null;
    private static final Logger logger = Logger.getLogger(IncomingsReportDateRangeFrame.class);
 
-   public IncomingsReportDateRangeFrame()
+   public IncomingsReportDateRangeFrame(MainFrame mainFrame)
    {
       JFrame frame = new JFrame("Ѕак«в≥т - оберить пер≥од");
 
@@ -58,10 +58,9 @@ public class IncomingsReportDateRangeFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
             if (checkInputData())
             {
-               new IncomingsReport(datePickerFrom.getJFormattedTextField().getText(),
+               new IncomingsReport(mainFrame, datePickerFrom.getJFormattedTextField().getText(),
                      datePickerTo.getJFormattedTextField().getText());
 
                close(frame);

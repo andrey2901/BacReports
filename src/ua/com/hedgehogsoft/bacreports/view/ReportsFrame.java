@@ -22,7 +22,7 @@ public class ReportsFrame
    private JButton closeButton = null;
    private static final Logger logger = Logger.getLogger(ReportsFrame.class);
 
-   public ReportsFrame()
+   public ReportsFrame(MainFrame mainFrame)
    {
       JFrame reportsFrame = new JFrame("¡‡Í«‚≥Ú - Á‚≥ÚË");
 
@@ -91,7 +91,7 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new IncomingsReportDateRangeFrame();
+            new IncomingsReportDateRangeFrame(mainFrame);
          }
       });
 

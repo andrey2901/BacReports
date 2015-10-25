@@ -144,17 +144,17 @@ public class FinalReportFrame
 
       for (int id : ids)
       {
-         double incomingSumBetweenDates = new Connection().getIncomingSumsBetweenDates(id, dateFrom, dateTo);
+         double incomingSumBetweenDates = new Connection().getIncomingsSumBetweenDates(id, dateFrom, dateTo);
 
-         double outcomingSumBetweenDates = new Connection().getOutcomingSumsBetweenDates(id, dateFrom, dateTo);
+         double outcomingSumBetweenDates = new Connection().getOutcomingsSumBetweenDates(id, dateFrom, dateTo);
 
-         double incomingSumFromDates = new Connection().getIncomingSumsFromDate(id, dateFrom);
+         double incomingSumFromDates = new Connection().getIncomingsSumFromDate(id, dateFrom);
 
-         double outcomingSumFromDates = new Connection().getOutcomingSumsFromDate(id, dateFrom);
+         double outcomingSumFromDates = new Connection().getOutcomingsSumFromDate(id, dateFrom);
 
-         double incomingSumToDates = new Connection().getIncomingSumsFromDate(id, dateTo);
+         double incomingSumToDates = new Connection().getIncomingsSumFromDate(id, dateTo);
 
-         double outcomingSumToDates = new Connection().getOutcomingSumsFromDate(id, dateTo);
+         double outcomingSumToDates = new Connection().getOutcomingsSumFromDate(id, dateTo);
 
          Product product = new Connection().getProductById(id);
 

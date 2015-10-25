@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
@@ -42,10 +43,13 @@ public class MainFrame
    private JTable table = null;
    private Sources sources = null;
    private Units units = null;
+   private MainFrame own = null;
    private static final Logger logger = Logger.getLogger(MainFrame.class);
 
    public MainFrame()
    {
+      own = this;
+
       sources = new Sources(new Connection().getSources());
 
       units = new Units(new Connection().getUnits());
@@ -77,7 +81,7 @@ public class MainFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new ReportsFrame();
+            new ReportsFrame(own);
          }
       });
 
@@ -147,7 +151,7 @@ public class MainFrame
          {
             Product product = products.get(i);
 
-            model.addRow(new Object[] {i + 1,
+            model.addRow(new Object[] {product.getId(),
                                        product.getName(),
                                        units.valueOf(product.getUnit()).getName(),
                                        product.getPrice(),
@@ -162,6 +166,8 @@ public class MainFrame
       table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
       table.setFillsViewportHeight(true);
+
+      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 

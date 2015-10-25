@@ -139,9 +139,9 @@ public class RemainsReportPatronFrame
 
       for (int id : ids)
       {
-         double incomingSum = new Connection().getIncomingSumsFromDate(id, date);
+         double incomingSum = new Connection().getIncomingsSumFromDate(id, date);
 
-         double outcomingSum = new Connection().getOutcomingSumsFromDate(id, date);
+         double outcomingSum = new Connection().getOutcomingsSumFromDate(id, date);
 
          Product product = new Connection().getProductById(id);
 
