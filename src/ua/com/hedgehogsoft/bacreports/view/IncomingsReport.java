@@ -36,6 +36,7 @@ import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Incoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
 import ua.com.hedgehogsoft.bacreports.print.Printer;
+import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class IncomingsReport
 {
@@ -105,6 +106,31 @@ public class IncomingsReport
                      DefaultTableModel model = (DefaultTableModel) table.getModel();
 
                      model.removeRow(table.getSelectedRow());
+
+                     for (int i = 0; i < mainFrame.getTable().getColumnCount(); i++)
+                     {
+                        if (mainFrame.getTable().getColumnName(i).equals("№ з/п"))
+                        {
+                           for (int k = 0; k < mainFrame.getTable().getRowCount(); k++)
+                           {
+                              if (((int) mainFrame.getTable().getValueAt(k, i)) == existedProduct.getId())
+                              {
+                                 for (int z = 0; z < mainFrame.getTable().getColumnCount(); z++)
+                                 {
+                                    if (mainFrame.getTable().getColumnName(z).equals("Кількість, од."))
+                                    {
+                                       ((ProductStoreTableModel) mainFrame.getTable().getModel())
+                                             .updateAmount(existedProduct);
+
+                                       break;
+                                    }
+                                 }
+                                 break;
+                              }
+                           }
+                           break;
+                        }
+                     }
 
                      Sources sources = new Sources(new Connection().getSources());
 
