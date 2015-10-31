@@ -139,17 +139,20 @@ public class RemainsReportFrame
 
       for (int id : ids)
       {
-         double incomingSum = new Connection().getIncomingsSumFromDate(id, date);
+         double incomingSum = new Connection().getIncomingsSumFromDateForBudget(id, date);
 
-         double outcomingSum = new Connection().getOutcomingsSumFromDate(id, date);
+         double outcomingSum = new Connection().getOutcomingsSumFromDateForBudget(id, date);
 
-         Product product = new Connection().getProductById(id);
+         Product product = new Connection().getProductByIdForBudget(id);
 
-         product.setAmount(product.getAmount() + outcomingSum - incomingSum);
-
-         if (product.getAmount() != 0.0)
+         if (product != null)
          {
-            products.add(product);
+            product.setAmount(product.getAmount() + outcomingSum - incomingSum);
+
+            if (product.getAmount() != 0.0)
+            {
+               products.add(product);
+            }
          }
       }
 

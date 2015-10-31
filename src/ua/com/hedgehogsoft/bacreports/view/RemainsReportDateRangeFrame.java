@@ -96,8 +96,6 @@ public class RemainsReportDateRangeFrame
 
       frame.pack();
 
-      frame.setSize(275, 120);
-
       frame.setResizable(false);
 
       frame.setLocationRelativeTo(null);

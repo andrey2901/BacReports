@@ -32,7 +32,7 @@ import ua.com.hedgehogsoft.bacreports.commons.Sources;
 import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.print.RemainsReportPrinter;
+import ua.com.hedgehogsoft.bacreports.print.RemainsPatronReportPrinter;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class RemainsReportPatronFrame
@@ -76,7 +76,7 @@ public class RemainsReportPatronFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new RemainsReportPrinter().print(table, date);
+            new RemainsPatronReportPrinter().print(table, date);
 
             remainsFrame.dispose();
 
@@ -139,17 +139,20 @@ public class RemainsReportPatronFrame
 
       for (int id : ids)
       {
-         double incomingSum = new Connection().getIncomingsSumFromDate(id, date);
+         double incomingSum = new Connection().getIncomingsSumFromDateForPatron(id, date);
 
-         double outcomingSum = new Connection().getOutcomingsSumFromDate(id, date);
+         double outcomingSum = new Connection().getOutcomingsSumFromDateForPatron(id, date);
 
-         Product product = new Connection().getProductById(id);
+         Product product = new Connection().getProductByIdForPatron(id);
 
-         product.setAmount(product.getAmount() + outcomingSum - incomingSum);
-
-         if (product.getAmount() != 0.0)
+         if (product != null)
          {
-            products.add(product);
+            product.setAmount(product.getAmount() + outcomingSum - incomingSum);
+
+            if (product.getAmount() != 0.0)
+            {
+               products.add(product);
+            }
          }
       }
 

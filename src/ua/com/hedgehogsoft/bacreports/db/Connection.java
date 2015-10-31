@@ -1156,6 +1156,128 @@ public class Connection
       return result;
    }
 
+   public Product getProductByIdForBudget(int id)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      Product result = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT * FROM store WHERE id = " + id + " AND store.source_id = 1");
+
+         while (rs.next())
+         {
+            result = new Product();
+
+            result.setId(rs.getInt("id"));
+
+            result.setName(rs.getString("name"));
+
+            result.setPrice(rs.getDouble("price"));
+
+            result.setAmount(rs.getDouble("amount"));
+
+            result.setSource(rs.getInt("source_id"));
+
+            result.setUnit(rs.getInt("unit_id"));
+
+            break;
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public Product getProductByIdForPatron(int id)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      Product result = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT * FROM store WHERE id = " + id + " AND store.source_id = 2");
+
+         while (rs.next())
+         {
+            result = new Product();
+
+            result.setId(rs.getInt("id"));
+
+            result.setName(rs.getString("name"));
+
+            result.setPrice(rs.getDouble("price"));
+
+            result.setAmount(rs.getDouble("amount"));
+
+            result.setSource(rs.getInt("source_id"));
+
+            result.setUnit(rs.getInt("unit_id"));
+
+            break;
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public boolean updateProduct(Product product)
    {
       boolean result = false;
@@ -1697,6 +1819,106 @@ public class Connection
       return result;
    }
 
+   public double getIncomingsSumFromDateForBudget(int id, String date)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT SUM(temp.amount) as summa FROM "
+               + "(SELECT incomings.amount FROM incomings JOIN store ON incomings.product_id = store.id "
+               + "WHERE incomings.incoming_date >= '" + date + "' AND store.id = " + id
+               + " AND store.source_id = 1) as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public double getIncomingsSumFromDateForPatron(int id, String date)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT SUM(temp.amount) as summa FROM "
+               + "(SELECT incomings.amount FROM incomings JOIN store ON incomings.product_id = store.id "
+               + "WHERE incomings.incoming_date >= '" + date + "' AND store.id = " + id
+               + " AND store.source_id = 2) as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public double getIncomingSumOnDate(int id, String date)
    {
       java.sql.Connection conn = null;
@@ -1767,6 +1989,106 @@ public class Connection
          rs = s.executeQuery("SELECT SUM(temp.amount) as summa "
                + "FROM (SELECT outcomings.amount FROM outcomings JOIN store ON outcomings.product_id = store.id "
                + "WHERE outcomings.outcoming_date >= '" + date + "' AND store.id = " + id + ") as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public double getOutcomingsSumFromDateForBudget(int id, String date)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT SUM(temp.amount) as summa "
+               + "FROM (SELECT outcomings.amount FROM outcomings JOIN store ON outcomings.product_id = store.id "
+               + "WHERE outcomings.outcoming_date >= '" + date + "' AND store.id = " + id
+               + " AND store.source_id = 1) as temp");
+
+         while (rs.next())
+         {
+            result = rs.getDouble("summa");
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public double getOutcomingsSumFromDateForPatron(int id, String date)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      double result = 0;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery("SELECT SUM(temp.amount) as summa "
+               + "FROM (SELECT outcomings.amount FROM outcomings JOIN store ON outcomings.product_id = store.id "
+               + "WHERE outcomings.outcoming_date >= '" + date + "' AND store.id = " + id
+               + " AND store.source_id = 2) as temp");
 
          while (rs.next())
          {
