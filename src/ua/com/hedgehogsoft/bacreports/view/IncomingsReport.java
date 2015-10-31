@@ -35,7 +35,7 @@ import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Incoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.print.Printer;
+import ua.com.hedgehogsoft.bacreports.print.IncomingsPrinter;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class IncomingsReport
@@ -78,7 +78,7 @@ public class IncomingsReport
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new Printer().print(table);
+            new IncomingsPrinter().print(table, from, to);
 
             close(reportsFrame);
          }
