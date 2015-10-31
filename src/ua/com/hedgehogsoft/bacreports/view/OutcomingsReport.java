@@ -13,9 +13,11 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -25,10 +27,14 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
+import ua.com.hedgehogsoft.bacreports.commons.DateLabelFormatter;
+import ua.com.hedgehogsoft.bacreports.commons.Sources;
+import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Outcoming;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.print.Printer;
+import ua.com.hedgehogsoft.bacreports.print.OutcomingsPrinter;
+import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class OutcomingsReport
 {
@@ -38,9 +44,9 @@ public class OutcomingsReport
    private JTable table = null;
    private static final Logger logger = Logger.getLogger(OutcomingsReport.class);
 
-   public OutcomingsReport(String from, String to)
+   public OutcomingsReport(MainFrame mainFrame, String from, String to)
    {
-      JFrame reportsFrame = new JFrame("БакОтчеты - Списания");
+      JFrame reportsFrame = new JFrame("БакЗвіт - списання");
 
       reportsFrame.pack();
 
@@ -48,37 +54,31 @@ public class OutcomingsReport
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("OutcomingsReport was closed.");
-
-            reportsFrame.dispose();
+            close(reportsFrame);
          }
       });
 
-      closeButton = new JButton("Закрыть");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            reportsFrame.dispose();
-
-            logger.info("OutcomingsReport was closed.");
+            close(reportsFrame);
          }
       });
 
-      printButton = new JButton("Печать");
+      printButton = new JButton("Друкувати");
 
       printButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new Printer().print(table);
+            new OutcomingsPrinter().print(table, from, to);
 
-            reportsFrame.dispose();
-
-            logger.info("OutcomingsReport was closed.");
+            close(reportsFrame);
          }
       });
 
@@ -89,18 +89,80 @@ public class OutcomingsReport
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            // TODO Auto-generated method stub
+            Outcoming outcoming = new Connection().getOutcomingById((int) table.getValueAt(table.getSelectedRow(), 0));
 
+            Product existedProduct = new Connection().getProductById(outcoming.getProduct().getId());
+
+            existedProduct.setAmount(existedProduct.getAmount() + outcoming.getProduct().getAmount());
+
+            if (new Connection().updateProduct(existedProduct))
+            {
+               if (new Connection().deleteOutcomingById(outcoming.getId()))
+               {
+                  DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+                  model.removeRow(table.getSelectedRow());
+
+                  for (int i = 0; i < mainFrame.getTable().getColumnCount(); i++)
+                  {
+                     if (mainFrame.getTable().getColumnName(i).equals("№ з/п"))
+                     {
+                        for (int k = 0; k < mainFrame.getTable().getRowCount(); k++)
+                        {
+                           if (((int) mainFrame.getTable().getValueAt(k, i)) == existedProduct.getId())
+                           {
+                              for (int z = 0; z < mainFrame.getTable().getColumnCount(); z++)
+                              {
+                                 if (mainFrame.getTable().getColumnName(z).equals("Кількість, од."))
+                                 {
+                                    ((ProductStoreTableModel) mainFrame.getTable().getModel())
+                                          .updateAmount(existedProduct);
+
+                                    break;
+                                 }
+                              }
+                              break;
+                           }
+                        }
+                        break;
+                     }
+                  }
+
+                  Sources sources = new Sources(new Connection().getSources());
+
+                  Units units = new Units(new Connection().getUnits());
+
+                  JPanel panel = new JPanel(new GridLayout(7, 2));
+                  panel.add(new JLabel("Дата: "));
+                  panel.add(new JLabel(new DateLabelFormatter().dateToString(outcoming.getDate())));
+                  panel.add(new JLabel("Найменування: "));
+                  panel.add(new JLabel(outcoming.getProduct().getName()));
+                  panel.add(new JLabel("Кількість, од.: "));
+                  panel.add(new JLabel(Double.toString(outcoming.getProduct().getAmount())));
+                  panel.add(new JLabel("Одиниця виміру: "));
+                  panel.add(new JLabel(units.valueOf(outcoming.getProduct().getUnit()).getName()));
+                  panel.add(new JLabel("Ціна, грн./од.: "));
+                  panel.add(new JLabel(Double.toString(outcoming.getProduct().getPrice())));
+                  panel.add(new JLabel("Група: "));
+                  panel.add(new JLabel(sources.valueOf(outcoming.getProduct().getSource()).getName()));
+                  panel.add(new JLabel("Сума, грн.: "));
+                  panel.add(new JLabel(Double.toString(outcoming.getProduct().getTotalPrice())));
+
+                  JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
+
+                  close(reportsFrame);
+               }
+            }
          }
       });
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new JLabel("Начало периода:"));
+      datePanel.add(new JLabel("Початок періоду:"));
 
       datePanel.add(new JLabel(from));
 
-      datePanel.add(new JLabel("Конец периода:"));
+      datePanel.add(new JLabel("Кінець періоду:"));
 
       datePanel.add(new JLabel(to));
 
@@ -120,8 +182,6 @@ public class OutcomingsReport
 
       reportsFrame.add(buttonsPanel, BorderLayout.SOUTH);
 
-      reportsFrame.pack();
-
       reportsFrame.setSize(1000, 700);
 
       reportsFrame.setResizable(true);
@@ -135,16 +195,33 @@ public class OutcomingsReport
 
    private JTable getFilledTable(String from, String to)
    {
-      String[] columnNames = {"№, п/п",
-                              "Наименование товара",
-                              "Цена, грн./ед.",
-                              "Количество, ед.",
-                              "Сумма, грн.",
-                              "Дата списания"};
+      String[] columnNames = {"№ з/п",
+                              "Найменування предметів закупівель",
+                              "Одиниця виміру",
+                              "Дата списання",
+                              "Ціна, грн./од.",
+                              "Кількість, од.",
+                              "Сума, грн.",
+                              "Група"};
 
       List<Outcoming> outcomings = new Connection().getOutcomings(from, to);
 
-      DefaultTableModel model = new DefaultTableModel();
+      Sources sources = new Sources(new Connection().getSources());
+
+      Units units = new Units(new Connection().getUnits());
+
+      DateLabelFormatter formatter = new DateLabelFormatter();
+
+      DefaultTableModel model = new DefaultTableModel()
+      {
+         private static final long serialVersionUID = 1L;
+
+         @Override
+         public boolean isCellEditable(int row, int column)
+         {
+            return false;
+         }
+      };
 
       model.setColumnIdentifiers(columnNames);
 
@@ -154,12 +231,14 @@ public class OutcomingsReport
          {
             Product product = outcomings.get(i).getProduct();
 
-            model.addRow(new Object[] {i + 1,
+            model.addRow(new Object[] {outcomings.get(i).getId(),
                                        product.getName(),
+                                       units.valueOf(product.getUnit()).getName(),
+                                       formatter.dateToString(outcomings.get(i).getDate()),
                                        product.getPrice(),
                                        product.getAmount(),
                                        product.getTotalPrice(),
-                                       outcomings.get(i).getDate()});
+                                       sources.valueOf(product.getSource()).getName()});
          }
       }
 
@@ -168,6 +247,8 @@ public class OutcomingsReport
       table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
       table.setFillsViewportHeight(true);
+
+      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
 
@@ -212,5 +293,12 @@ public class OutcomingsReport
    public JTable getTable()
    {
       return table;
+   }
+
+   private void close(JFrame frame)
+   {
+      frame.dispose();
+
+      logger.info("OutcomingsReport was closed.");
    }
 }

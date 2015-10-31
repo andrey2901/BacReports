@@ -102,7 +102,7 @@ public class ReportsFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new OutcomingsReportDateRangeFrame();
+            new OutcomingsReportDateRangeFrame(mainFrame);
          }
       });
 

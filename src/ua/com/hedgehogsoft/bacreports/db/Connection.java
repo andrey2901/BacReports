@@ -740,6 +740,78 @@ public class Connection
       return result;
    }
 
+   public Outcoming getOutcomingById(int id)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      Outcoming result = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT outcomings.id as out_id, outcomings.amount, outcomings.outcoming_date, store.id as pr_id, "
+                     + "store.name, store.price, store.source_id, store.unit_id FROM outcomings JOIN store "
+                     + "ON outcomings.product_id = store.id WHERE outcomings.id = " + id);
+
+         while (rs.next())
+         {
+            result = new Outcoming();
+
+            result.setId(rs.getInt("out_id"));
+
+            result.setDate(rs.getDate("outcoming_date"));
+
+            Product product = new Product();
+
+            product.setId(rs.getInt("pr_id"));
+
+            product.setName(rs.getString("name"));
+
+            product.setPrice(rs.getDouble("price"));
+
+            product.setSource(rs.getInt("source_id"));
+
+            product.setUnit(rs.getInt("unit_id"));
+
+            product.setAmount(rs.getDouble("amount"));
+
+            result.setProduct(product);
+
+            break;
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public List<Incoming> getIncomings(String dateFrom, String dateTo)
    {
       java.sql.Connection conn = null;
@@ -759,7 +831,7 @@ public class Connection
          s = conn.createStatement();
 
          rs = s.executeQuery(
-               "SELECT incomings.id, incomings.amount, incomings.incoming_date, store.name, store.price, store.source_id, store.unit_id FROM incomings "
+               "SELECT incomings.id, store.id as pr_id, incomings.amount, incomings.incoming_date, store.name, store.price, store.source_id, store.unit_id FROM incomings "
                      + "JOIN store ON incomings.product_id = store.id WHERE incoming_date >= '" + dateFrom
                      + "' AND incoming_date <= '" + dateTo + "'");
 
@@ -772,6 +844,8 @@ public class Connection
             incoming.setDate(rs.getDate("incoming_date"));
 
             Product product = new Product();
+
+            product.setId(rs.getInt("pr_id"));
 
             product.setName(rs.getString("name"));
 
@@ -829,7 +903,8 @@ public class Connection
          s = conn.createStatement();
 
          rs = s.executeQuery(
-               "SELECT outcomings.amount, outcoming_date, store.name, store.price FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcoming_date >= '"
+               "SELECT outcomings.id, store.id as pr_id, outcomings.amount, outcomings.outcoming_date, store.name, store.price, store.source_id, store.unit_id "
+                     + "FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcoming_date >= '"
                      + dateFrom + "' AND outcoming_date <= '" + dateTo + "'");
 
          while (rs.next())
@@ -838,15 +913,23 @@ public class Connection
 
             Product product = new Product();
 
+            product.setId(rs.getInt("pr_id"));
+
             product.setName(rs.getString("name"));
 
             product.setPrice(rs.getDouble("price"));
+
+            product.setSource(rs.getInt("source_id"));
+
+            product.setUnit(rs.getInt("unit_id"));
 
             product.setAmount(rs.getDouble("amount"));
 
             outcoming.setProduct(product);
 
             outcoming.setDate(rs.getDate("outcoming_date"));
+
+            outcoming.setId(rs.getInt("id"));
 
             result.add(outcoming);
          }
@@ -2379,6 +2462,51 @@ public class Connection
          conn.setAutoCommit(false);
 
          ps = conn.prepareStatement("DELETE FROM incomings WHERE id = ?");
+
+         ps.setInt(1, id);
+
+         ps.executeUpdate();
+
+         conn.commit();
+
+         result = true;
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(ps);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+
+      return result;
+   }
+
+   public boolean deleteOutcomingById(int id)
+   {
+      boolean result = false;
+
+      java.sql.Connection conn = null;
+
+      PreparedStatement ps = null;
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         ps = conn.prepareStatement("DELETE FROM outcomings WHERE id = ?");
 
          ps.setInt(1, id);
 
