@@ -134,7 +134,7 @@ public class ActReportFrame
                               "Кількість, од.",
                               "Сума, грн."};
 
-      List<Integer> ids = new Connection().getUniqueIdsForOutcomings(dateFrom, dateTo);
+      List<Integer> ids = new Connection().getUniqueIdsForOutcomingsForBudget(dateFrom, dateTo);
 
       List<Product> products = new ArrayList<Product>();
 

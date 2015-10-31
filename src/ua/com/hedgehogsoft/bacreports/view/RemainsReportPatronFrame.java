@@ -84,7 +84,7 @@ public class RemainsReportPatronFrame
          }
       });
 
-      JPanel titlePanel = new JPanel(new GridLayout(4, 1));
+      JPanel titlePanel = new JPanel(new GridLayout(5, 1));
 
       titlePanel.add(new JLabel("Залишок", SwingConstants.CENTER));
 
@@ -95,6 +95,8 @@ public class RemainsReportPatronFrame
             SwingConstants.CENTER));
 
       titlePanel.add(new JLabel("на " + date, SwingConstants.CENTER));
+
+      titlePanel.add(new JLabel("\"Меценат\"", SwingConstants.CENTER));
 
       JPanel buttonsPanel = new JPanel();
 

@@ -32,7 +32,7 @@ import ua.com.hedgehogsoft.bacreports.commons.Sources;
 import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
 import ua.com.hedgehogsoft.bacreports.model.Product;
-import ua.com.hedgehogsoft.bacreports.print.ActReportPrinter;
+import ua.com.hedgehogsoft.bacreports.print.ActPatronReportPrinter;
 import ua.com.hedgehogsoft.bacreports.view.table.ProductStoreTableModel;
 
 public class ActReportPatronFrame
@@ -76,7 +76,7 @@ public class ActReportPatronFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            new ActReportPrinter().print(table, dateFrom, dateTo);
+            new ActPatronReportPrinter().print(table, dateFrom, dateTo);
 
             actsFrame.dispose();
 
@@ -84,7 +84,7 @@ public class ActReportPatronFrame
          }
       });
 
-      JPanel titlePanel = new JPanel(new GridLayout(4, 1));
+      JPanel titlePanel = new JPanel(new GridLayout(5, 1));
 
       titlePanel.add(new JLabel("Акт", SwingConstants.CENTER));
 
@@ -96,6 +96,8 @@ public class ActReportPatronFrame
             SwingConstants.CENTER));
 
       titlePanel.add(new JLabel("з " + dateFrom + " до " + dateTo, SwingConstants.CENTER));
+
+      titlePanel.add(new JLabel("\"Меценат\"", SwingConstants.CENTER));
 
       JPanel buttonsPanel = new JPanel();
 
@@ -134,7 +136,7 @@ public class ActReportPatronFrame
                               "Кількість, од.",
                               "Сума, грн."};
 
-      List<Integer> ids = new Connection().getUniqueIdsForOutcomings(dateFrom, dateTo);
+      List<Integer> ids = new Connection().getUniqueIdsForOutcomingsForPatron(dateFrom, dateTo);
 
       List<Product> products = new ArrayList<Product>();
 

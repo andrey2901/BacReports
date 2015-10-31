@@ -1770,6 +1770,104 @@ public class Connection
       return result;
    }
 
+   public List<Integer> getUniqueIdsForOutcomingsForBudget(String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Integer> result = new ArrayList<Integer>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT DISTINCT store.id FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcomings.outcoming_date >= '"
+                     + dateFrom + "' AND outcomings.outcoming_date <=  '" + dateTo + "' AND store.source_id = 1");
+
+         while (rs.next())
+         {
+            result.add(rs.getInt("id"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
+   public List<Integer> getUniqueIdsForOutcomingsForPatron(String dateFrom, String dateTo)
+   {
+      java.sql.Connection conn = null;
+
+      Statement s = null;
+
+      ResultSet rs = null;
+
+      List<Integer> result = new ArrayList<Integer>();
+
+      try
+      {
+         conn = DbConnection.getConnection();
+
+         conn.setAutoCommit(false);
+
+         s = conn.createStatement();
+
+         rs = s.executeQuery(
+               "SELECT DISTINCT store.id FROM outcomings JOIN store ON outcomings.product_id = store.id WHERE outcomings.outcoming_date >= '"
+                     + dateFrom + "' AND outcomings.outcoming_date <=  '" + dateTo + "' AND store.source_id = 2");
+
+         while (rs.next())
+         {
+            result.add(rs.getInt("id"));
+         }
+
+         conn.commit();
+      }
+      catch (SQLException e)
+      {
+         DbConnection.printSQLException(e);
+      }
+      finally
+      {
+         try
+         {
+            DbConnection.closeStatements(s);
+
+            DbConnection.closeConnection(conn);
+         }
+         catch (SQLException e)
+         {
+            DbConnection.printSQLException(e);
+         }
+      }
+      return result;
+   }
+
    public double getIncomingsSumFromDate(int id, String date)
    {
       java.sql.Connection conn = null;
