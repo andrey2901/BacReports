@@ -15,9 +15,9 @@ public class DirectoryCopywriter
 
    public void copy()
    {
-      File srcFolder = new File(System.getProperty("derby.system.home") + "/derbyDB");
-      File destFolder = new File(System.getProperty("derby.system.home") + "/backup/derbyDB"
-            + new DateFormatter().valueToString(Calendar.getInstance()));
+      File srcFolder = new File(System.getProperty("derby.system.home") + File.separator + "derbyDB");
+      File destFolder = new File(System.getProperty("derby.system.home") + File.separator + "backup" + File.separator
+            + "derbyDB" + new DateFormatter().valueToString(Calendar.getInstance()));
 
       if (!srcFolder.exists())
       {

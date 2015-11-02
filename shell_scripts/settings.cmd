@@ -1,0 +1,5 @@
+set BAC_REPORT=C:\BacReports
+set REPORTS_FOLDER=%BAC_REPORT%\reports
+set DERBY_FOLDER=%BAC_REPORT%\derby
+set BACKUP_FOLDER=%DERBY_FOLDER%\backup
+set FONT_FOLDER=C:\Windows\Fonts\ARIAL.TTF
