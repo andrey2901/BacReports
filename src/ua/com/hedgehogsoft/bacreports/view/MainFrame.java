@@ -26,6 +26,7 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
+import ua.com.hedgehogsoft.bacreports.commons.DirectoryCopywriter;
 import ua.com.hedgehogsoft.bacreports.commons.Sources;
 import ua.com.hedgehogsoft.bacreports.commons.Units;
 import ua.com.hedgehogsoft.bacreports.db.Connection;
@@ -39,6 +40,7 @@ public class MainFrame
    private JButton incomingButton = null;
    private JButton outcomingButton = null;
    private JButton reportsButton = null;
+   private JButton backupButton = null;
    private JButton exitButton = null;
    private JTable table = null;
    private Sources sources = null;
@@ -96,6 +98,17 @@ public class MainFrame
          }
       });
 
+      backupButton = new JButton("Архивувати");
+
+      backupButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent arg0)
+         {
+            new DirectoryCopywriter().copy();
+         }
+      });
+
       JPanel buttonsPanel = new JPanel(new BorderLayout());
 
       JPanel comingButtonPanel = new JPanel();
@@ -119,6 +132,8 @@ public class MainFrame
       mainFrame.add(scrollPane, BorderLayout.CENTER);
 
       mainFrame.add(buttonsPanel, BorderLayout.SOUTH);
+
+      mainFrame.add(backupButton, BorderLayout.NORTH);
 
       mainFrame.setSize(1000, 700);
 
