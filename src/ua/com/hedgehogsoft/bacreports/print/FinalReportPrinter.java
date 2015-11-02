@@ -66,7 +66,7 @@ public class FinalReportPrinter
          paragraph1.setSpacingAfter(3);
          paragraph1.setSpacingBefore(3);
          paragraph1.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk1 = new Chunk("Звіт");
+         Chunk chunk1 = new Chunk("Р—РІС–С‚");
          paragraph1.add(chunk1);
 
          Paragraph paragraph2 = new Paragraph();
@@ -74,7 +74,7 @@ public class FinalReportPrinter
          paragraph2.setSpacingAfter(3);
          paragraph2.setSpacingBefore(3);
          paragraph2.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk2 = new Chunk("про надходження і відпуск (використання) лікарських засобів та медичних виробів");
+         Chunk chunk2 = new Chunk("РїСЂРѕ РЅР°РґС…РѕРґР¶РµРЅРЅСЏ С– РІС–РґРїСѓСЃРє (РІРёРєРѕСЂРёСЃС‚Р°РЅРЅСЏ) Р»С–РєР°СЂСЃСЊРєРёС… Р·Р°СЃРѕР±С–РІ С‚Р° РјРµРґРёС‡РЅРёС… РІРёСЂРѕР±С–РІ");
          paragraph2.add(chunk2);
 
          Paragraph paragraph3 = new Paragraph();
@@ -82,7 +82,7 @@ public class FinalReportPrinter
          paragraph3.setSpacingAfter(3);
          paragraph3.setSpacingBefore(3);
          paragraph3.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk4 = new Chunk("з " + dateFrom + " до " + dateTo);
+         Chunk chunk4 = new Chunk("Р· " + dateFrom + " РґРѕ " + dateTo);
          paragraph3.add(chunk4);
 
          paragraph.add(paragraph1);
@@ -104,43 +104,43 @@ public class FinalReportPrinter
          pdfTable.setWidthPercentage(90);
 
          PdfPCell cell = null;
-         cell = new PdfPCell(new Phrase("№ з/п", font));
+         cell = new PdfPCell(new Phrase("в„– Р·/Рї", font));
          cell.setRowspan(2);
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Найменування лікарських засобів та медичних виробів", font));
+         cell = new PdfPCell(new Phrase("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ Р»С–РєР°СЂСЃСЊРєРёС… Р·Р°СЃРѕР±С–РІ С‚Р° РјРµРґРёС‡РЅРёС… РІРёСЂРѕР±С–РІ", font));
          cell.setRowspan(2);
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Одини-\nця\nвиміру", font));
+         cell = new PdfPCell(new Phrase("РћРґРёРЅРё-\nС†СЏ\nРІРёРјС–СЂСѓ", font));
          cell.setRowspan(2);
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Кількість", font));
+         cell = new PdfPCell(new Phrase("РљС–Р»СЊРєС–СЃС‚СЊ", font));
          cell.setColspan(4);
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Залишок на початок періоду", font));
+         cell = new PdfPCell(new Phrase("Р—Р°Р»РёС€РѕРє РЅР° РїРѕС‡Р°С‚РѕРє РїРµСЂС–РѕРґСѓ", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Надход-\nження", font));
+         cell = new PdfPCell(new Phrase("РќР°РґС…РѕРґ-\nР¶РµРЅРЅСЏ", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Викорис-\nтання", font));
+         cell = new PdfPCell(new Phrase("Р’РёРєРѕСЂРёСЃ-\nС‚Р°РЅРЅСЏ", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Залишок на\nкінець\nперіоду", font));
+         cell = new PdfPCell(new Phrase("Р—Р°Р»РёС€РѕРє РЅР°\nРєС–РЅРµС†СЊ\nРїРµСЂС–РѕРґСѓ", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          pdfTable.addCell(cell);
 
@@ -214,10 +214,10 @@ public class FinalReportPrinter
          laboratoryParagraph.setSpacingAfter(3);
          laboratoryParagraph.setSpacingBefore(3);
          laboratoryParagraph.setAlignment(Element.ALIGN_RIGHT);
-         Chunk labVacancyChunk = new Chunk("Лаборант з бактеріології      ");
+         Chunk labVacancyChunk = new Chunk("Р›Р°Р±РѕСЂР°РЅС‚ Р· Р±Р°РєС‚РµСЂС–РѕР»РѕРіС–С—      ");
          Chunk labUnderlineChunk = new Chunk("                                       ");
          labUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk labNameChunk = new Chunk("       Н.В. Нагорна            ");
+         Chunk labNameChunk = new Chunk("       Рќ.Р’. РќР°РіРѕСЂРЅР°            ");
          laboratoryParagraph.add(labVacancyChunk);
          laboratoryParagraph.add(labUnderlineChunk);
          laboratoryParagraph.add(labNameChunk);
@@ -227,10 +227,10 @@ public class FinalReportPrinter
          accountParagraph.setSpacingAfter(3);
          accountParagraph.setSpacingBefore(3);
          accountParagraph.setAlignment(Element.ALIGN_RIGHT);
-         Chunk accVacancyChunk = new Chunk("Бухгалтер      ");
+         Chunk accVacancyChunk = new Chunk("Р‘СѓС…РіР°Р»С‚РµСЂ      ");
          Chunk accUnderlineChunk = new Chunk("                                       ");
          accUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk accNameChunk = new Chunk("      І.Ф. Кольцова            ");
+         Chunk accNameChunk = new Chunk("      Р†.Р¤. РљРѕР»СЊС†РѕРІР°            ");
          accountParagraph.add(accVacancyChunk);
          accountParagraph.add(accUnderlineChunk);
          accountParagraph.add(accNameChunk);
@@ -240,10 +240,10 @@ public class FinalReportPrinter
          deputyParagraph.setSpacingAfter(3);
          deputyParagraph.setSpacingBefore(3);
          deputyParagraph.setAlignment(Element.ALIGN_RIGHT);
-         Chunk deputyVacancyChunk = new Chunk("Затверджую зам.головного лікаря з медичної частини      ");
+         Chunk deputyVacancyChunk = new Chunk("Р—Р°С‚РІРµСЂРґР¶СѓСЋ Р·Р°Рј.РіРѕР»РѕРІРЅРѕРіРѕ Р»С–РєР°СЂСЏ Р· РјРµРґРёС‡РЅРѕС— С‡Р°СЃС‚РёРЅРё      ");
          Chunk deputyUnderlineChunk = new Chunk("                                       ");
          deputyUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk deputyNameChunk = new Chunk("    І.А. Єсауленко            ");
+         Chunk deputyNameChunk = new Chunk("    Р†.Рђ. Р„СЃР°СѓР»РµРЅРєРѕ            ");
          deputyParagraph.add(deputyVacancyChunk);
          deputyParagraph.add(deputyUnderlineChunk);
          deputyParagraph.add(deputyNameChunk);

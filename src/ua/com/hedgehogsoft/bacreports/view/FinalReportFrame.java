@@ -46,7 +46,7 @@ public class FinalReportFrame
 
    public FinalReportFrame(String dateFrom, String dateTo)
    {
-      JFrame finalReportFrame = new JFrame("БакЗвіт - загальний звіт");
+      JFrame finalReportFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - Р·Р°РіР°Р»СЊРЅРёР№ Р·РІС–С‚");
 
       finalReportFrame.addWindowListener(new WindowAdapter()
       {
@@ -58,7 +58,7 @@ public class FinalReportFrame
          }
       });
 
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -71,7 +71,7 @@ public class FinalReportFrame
          }
       });
 
-      printButton = new JButton("Друкувати");
+      printButton = new JButton("Р”СЂСѓРєСѓРІР°С‚Рё");
 
       printButton.addActionListener(new ActionListener()
       {
@@ -88,13 +88,13 @@ public class FinalReportFrame
 
       JPanel titlePanel = new JPanel(new GridLayout(4, 1));
 
-      titlePanel.add(new JLabel("Звіт", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("Р—РІС–С‚", SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("про надходження і відпуск (використання)", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("РїСЂРѕ РЅР°РґС…РѕРґР¶РµРЅРЅСЏ С– РІС–РґРїСѓСЃРє (РІРёРєРѕСЂРёСЃС‚Р°РЅРЅСЏ)", SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("лікарських засобів та медичних виробів", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("Р»С–РєР°СЂСЃСЊРєРёС… Р·Р°СЃРѕР±С–РІ С‚Р° РјРµРґРёС‡РЅРёС… РІРёСЂРѕР±С–РІ", SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("з " + dateFrom + " до " + dateTo, SwingConstants.CENTER));
+      titlePanel.add(new JLabel("Р· " + dateFrom + " РґРѕ " + dateTo, SwingConstants.CENTER));
 
       JPanel buttonsPanel = new JPanel();
 
@@ -125,14 +125,14 @@ public class FinalReportFrame
 
    private JTable getFilledTable(String dateFrom, String dateTo)
    {
-      String[] columnNames = {"№ з/п",
-                              "Найменування лікарських засобів та медичних виробів",
-                              "Одиниця виміру",
-                              "Залишок на\nпочаток періоду",
-                              "Надходження",
-                              "Використання",
-                              "Залишок на\nкінець періоду",
-                              "Група"};
+      String[] columnNames = {"в„– Р·/Рї",
+                              "РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ Р»С–РєР°СЂСЃСЊРєРёС… Р·Р°СЃРѕР±С–РІ С‚Р° РјРµРґРёС‡РЅРёС… РІРёСЂРѕР±С–РІ",
+                              "РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ",
+                              "Р—Р°Р»РёС€РѕРє РЅР°\nРїРѕС‡Р°С‚РѕРє РїРµСЂС–РѕРґСѓ",
+                              "РќР°РґС…РѕРґР¶РµРЅРЅСЏ",
+                              "Р’РёРєРѕСЂРёСЃС‚Р°РЅРЅСЏ",
+                              "Р—Р°Р»РёС€РѕРє РЅР°\nРєС–РЅРµС†СЊ РїРµСЂС–РѕРґСѓ",
+                              "Р“СЂСѓРїР°"};
 
       List<Integer> ids = new Connection().getIds();
 

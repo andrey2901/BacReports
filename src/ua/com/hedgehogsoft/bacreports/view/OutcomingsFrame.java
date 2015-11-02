@@ -49,7 +49,7 @@ public class OutcomingsFrame
    {
       units = new Units(new Connection().getUnits());
 
-      JFrame outcomingsFrame = new JFrame("БакЗвіт - списання");
+      JFrame outcomingsFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - СЃРїРёСЃР°РЅРЅСЏ");
 
       outcomingsFrame.addWindowListener(new WindowAdapter()
       {
@@ -59,7 +59,7 @@ public class OutcomingsFrame
          }
       });
 
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -70,7 +70,7 @@ public class OutcomingsFrame
          }
       });
 
-      outcomingButton = new JButton("Списати");
+      outcomingButton = new JButton("РЎРїРёСЃР°С‚Рё");
 
       outcomingButton.addActionListener(new ActionListener()
       {
@@ -112,20 +112,20 @@ public class OutcomingsFrame
                            logger.info("Outcomings were performed.");
 
                            JPanel panel = new JPanel(new GridLayout(6, 2));
-                           panel.add(new JLabel("Найменування: "));
+                           panel.add(new JLabel("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ: "));
                            panel.add(new JLabel(product.getName()));
-                           panel.add(new JLabel("Кількість, од.: "));
+                           panel.add(new JLabel("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.: "));
                            panel.add(new JLabel(Double.toString(product.getAmount())));
-                           panel.add(new JLabel("Одиниця виміру: "));
+                           panel.add(new JLabel("РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ: "));
                            panel.add(new JLabel(units.valueOf(product.getUnit()).getName()));
-                           panel.add(new JLabel("Ціна, грн./од.: "));
+                           panel.add(new JLabel("Р¦С–РЅР°, РіСЂРЅ./РѕРґ.: "));
                            panel.add(new JLabel(Double.toString(product.getPrice())));
-                           panel.add(new JLabel("Група: "));
+                           panel.add(new JLabel("Р“СЂСѓРїР°: "));
                            panel.add(new JLabel(mainFrame.getSources().valueOf(product.getSource()).getName()));
-                           panel.add(new JLabel("Сума, грн.: "));
+                           panel.add(new JLabel("РЎСѓРјР°, РіСЂРЅ.: "));
                            panel.add(new JLabel(Double.toString(product.getTotalPrice())));
 
-                           JOptionPane.showMessageDialog(null, panel, "Списано", JOptionPane.INFORMATION_MESSAGE);
+                           JOptionPane.showMessageDialog(null, panel, "РЎРїРёСЃР°РЅРѕ", JOptionPane.INFORMATION_MESSAGE);
 
                            close(outcomingsFrame);
                         }
@@ -134,16 +134,16 @@ public class OutcomingsFrame
                   else
                   {
                      JOptionPane.showMessageDialog(null,
-                           "Ви не можете списати вказану кількість товару на цю дату,"
-                                 + "\nтак как у більш пізні строки Ви отримаєте від'ємний залишок.",
-                           "Помилка", JOptionPane.ERROR_MESSAGE);
+                           "Р’Рё РЅРµ РјРѕР¶РµС‚Рµ СЃРїРёСЃР°С‚Рё РІРєР°Р·Р°РЅСѓ РєС–Р»СЊРєС–СЃС‚СЊ С‚РѕРІР°СЂСѓ РЅР° С†СЋ РґР°С‚Сѓ,"
+                                 + "\nС‚Р°Рє РєР°Рє Сѓ Р±С–Р»СЊС€ РїС–Р·РЅС– СЃС‚СЂРѕРєРё Р’Рё РѕС‚СЂРёРјР°С”С‚Рµ РІС–Рґ'С”РјРЅРёР№ Р·Р°Р»РёС€РѕРє.",
+                           "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
                   }
                }
                else
                {
                   JOptionPane.showMessageDialog(null,
-                        "Ви намагаєтеся списати більшу кількість товару, ніж є на складі.\nВкажіть вірне значення.",
-                        "Помилка", JOptionPane.ERROR_MESSAGE);
+                        "Р’Рё РЅР°РјР°РіР°С”С‚РµСЃСЏ СЃРїРёСЃР°С‚Рё Р±С–Р»СЊС€Сѓ РєС–Р»СЊРєС–СЃС‚СЊ С‚РѕРІР°СЂСѓ, РЅС–Р¶ С” РЅР° СЃРєР»Р°РґС–.\nР’РєР°Р¶С–С‚СЊ РІС–СЂРЅРµ Р·РЅР°С‡РµРЅРЅСЏ.",
+                        "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
                }
                close(outcomingsFrame);
             }
@@ -170,35 +170,35 @@ public class OutcomingsFrame
          outcomingSourceComboBox.addItem(source.getName());
       }
 
-      outcomingPanel.add(new JLabel("Група даних:"), position(0, 0));
+      outcomingPanel.add(new JLabel("Р“СЂСѓРїР° РґР°РЅРёС…:"), position(0, 0));
 
       outcomingPanel.add(outcomingSourceComboBox, position(1, 0));
 
-      outcomingPanel.add(new JLabel("Найменування засобу:"), position(0, 1));
+      outcomingPanel.add(new JLabel("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ Р·Р°СЃРѕР±Сѓ:"), position(0, 1));
 
       outcomingNameComboBox = new JComboBox<String>();
 
       outcomingPanel.add(outcomingNameComboBox, position(1, 1));
 
-      outcomingPanel.add(new JLabel("Одиниця виміру:"), position(0, 2));
+      outcomingPanel.add(new JLabel("РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ:"), position(0, 2));
 
       outcomingUnitComboBox = new JComboBox<String>();
 
       outcomingPanel.add(outcomingUnitComboBox, position(1, 2));
 
-      outcomingPanel.add(new JLabel("Ціна, грн./од.:"), position(0, 3));
+      outcomingPanel.add(new JLabel("Р¦С–РЅР°, РіСЂРЅ./РѕРґ.:"), position(0, 3));
 
       outcomingCostComboBox = new JComboBox<String>();
 
       outcomingPanel.add(outcomingCostComboBox, position(1, 3));
 
-      outcomingPanel.add(new JLabel("Кількість, од.:"), position(0, 4));
+      outcomingPanel.add(new JLabel("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.:"), position(0, 4));
 
       outcomingAmountTextField = new JTextField();
 
       outcomingPanel.add(outcomingAmountTextField, position(1, 4));
 
-      outcomingPanel.add(new JLabel("Дата:"), position(0, 5));
+      outcomingPanel.add(new JLabel("Р”Р°С‚Р°:"), position(0, 5));
 
       outcomingPanel.add(datePicker, position(1, 5));
 
@@ -307,7 +307,7 @@ public class OutcomingsFrame
       if (outcomingNameComboBox.getSelectedItem() == null
             || ((String) outcomingNameComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заповніть поле найменування товару", "Помилка",
+         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РЅР°Р№РјРµРЅСѓРІР°РЅРЅСЏ С‚РѕРІР°СЂСѓ", "РџРѕРјРёР»РєР°",
                JOptionPane.ERROR_MESSAGE);
 
          result = false;
@@ -316,7 +316,7 @@ public class OutcomingsFrame
       if (outcomingUnitComboBox.getSelectedItem() == null
             || ((String) outcomingUnitComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заповніть поле одиниць виміру", "Помилка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РѕРґРёРЅРёС†СЊ РІРёРјС–СЂСѓ", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
@@ -324,20 +324,20 @@ public class OutcomingsFrame
       if (outcomingCostComboBox.getSelectedItem() == null
             || ((String) outcomingCostComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заповніть поле вартості", "Помилка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РІР°СЂС‚РѕСЃС‚С–", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (outcomingAmountTextField.getText() == null || outcomingAmountTextField.getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заповніть поле кількості", "Помилка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РєС–Р»СЊРєРѕСЃС‚С–", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (datePicker.getJFormattedTextField().getText() == null
             || datePicker.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заповніть поле дати", "Помилка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РґР°С‚Рё", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }

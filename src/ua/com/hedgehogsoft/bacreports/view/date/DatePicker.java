@@ -15,9 +15,9 @@ public class DatePicker
       UtilDateModel model = new UtilDateModel();
 
       Properties props = new Properties();
-      props.put("text.today", "—¸Ó„Ó‰Ì≥");
-      props.put("text.month", "Ã≥Òˇˆ¸");
-      props.put("text.year", "–≥Í");
+      props.put("text.today", "–°—å–æ–≥–æ–¥–Ω—ñ");
+      props.put("text.month", "–ú—ñ—Å—è—Ü—å");
+      props.put("text.year", "–†—ñ–∫");
 
       JDatePanelImpl datePanel = new JDatePanelImpl(model, props);
 

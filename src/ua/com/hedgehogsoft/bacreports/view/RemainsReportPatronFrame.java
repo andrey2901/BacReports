@@ -44,7 +44,7 @@ public class RemainsReportPatronFrame
 
    public RemainsReportPatronFrame(String date)
    {
-      JFrame remainsFrame = new JFrame("БакЗвіт - залишки");
+      JFrame remainsFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - Р·Р°Р»РёС€РєРё");
 
       remainsFrame.addWindowListener(new WindowAdapter()
       {
@@ -56,7 +56,7 @@ public class RemainsReportPatronFrame
          }
       });
 
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -69,7 +69,7 @@ public class RemainsReportPatronFrame
          }
       });
 
-      printButton = new JButton("Друкувати");
+      printButton = new JButton("Р”СЂСѓРєСѓРІР°С‚Рё");
 
       printButton.addActionListener(new ActionListener()
       {
@@ -86,17 +86,17 @@ public class RemainsReportPatronFrame
 
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
 
-      titlePanel.add(new JLabel("Залишок", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("Р—Р°Р»РёС€РѕРє", SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("поживних середовищ і хімреактивів, лабораторного скла ", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("РїРѕР¶РёРІРЅРёС… СЃРµСЂРµРґРѕРІРёС‰ С– С…С–РјСЂРµР°РєС‚РёРІС–РІ, Р»Р°Р±РѕСЂР°С‚РѕСЂРЅРѕРіРѕ СЃРєР»Р° ", SwingConstants.CENTER));
 
       titlePanel.add(new JLabel(
-            "по Централізованій баклабораторії Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"",
+            "РїРѕ Р¦РµРЅС‚СЂР°Р»С–Р·РѕРІР°РЅС–Р№ Р±Р°РєР»Р°Р±РѕСЂР°С‚РѕСЂС–С— Р›С–РІРѕР±РµСЂРµР¶Р¶СЏ РљР— \"Р”РЅС–РїСЂРѕРїРµС‚СЂРѕРІСЊСЃРєР° РјС–СЃСЊРєР° РєР»С–РЅС–С‡РЅР° Р»С–РєР°СЂРЅСЏ в„–9\" Р”РћР \"",
             SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("на " + date, SwingConstants.CENTER));
+      titlePanel.add(new JLabel("РЅР° " + date, SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("\"Меценат\"", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("\"РњРµС†РµРЅР°С‚\"", SwingConstants.CENTER));
 
       JPanel buttonsPanel = new JPanel();
 
@@ -127,13 +127,13 @@ public class RemainsReportPatronFrame
 
    private JTable getFilledTable(String date)
    {
-      String[] columnNames = {"№ з/п",
-                              "Найменування предметів закупівель",
-                              "Одиниця виміру",
-                              "Група",
-                              "Ціна, грн./од.",
-                              "Кількість, од.",
-                              "Сума, грн."};
+      String[] columnNames = {"в„– Р·/Рї",
+                              "РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ РїСЂРµРґРјРµС‚С–РІ Р·Р°РєСѓРїС–РІРµР»СЊ",
+                              "РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ",
+                              "Р“СЂСѓРїР°",
+                              "Р¦С–РЅР°, РіСЂРЅ./РѕРґ.",
+                              "РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.",
+                              "РЎСѓРјР°, РіСЂРЅ."};
 
       List<Integer> ids = new Connection().getIds();
 

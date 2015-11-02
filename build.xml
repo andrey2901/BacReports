@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BacReports" default="main" basedir=".">
+	<!-- Sets variables which can later be used. -->
+	<!-- The value of a property is accessed via ${} -->
+	<property name="src.dir" location="src" />
+	<property name="build.dir" location="ant\bin" />
+	<property name="dist.dir" location="ant\dist" />
+	<property name="docs.dir" location="ant\docs" />
+	<property name="lib.dir" location="libs" />
+
+	<!-- Create a classpath container which can be later used in the ant task -->
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Deletes the existing build, docs and dist directory -->
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${docs.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<!-- Creates the build, docs and dist directory -->
+	<target name="makedir">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${docs.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<!-- Compiles the java code (including the usage of library for JUnit -->
+	<target name="compile" depends="clean, makedir">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="build.classpath"
+			includeantruntime="false" />
+		<copy file="${src.dir}/log4j.properties" tofile="${build.dir}/log4j.properties"
+			overwrite="true" />
+	</target>
+
+	<!-- Creates Javadoc -->
+	<target name="docs" depends="compile">
+		<javadoc packagenames="src" sourcepath="${src.dir}" destdir="${docs.dir}">
+			<!-- Define which files / directory should get included, we include all -->
+			<fileset dir="${src.dir}">
+				<include name="**" />
+			</fileset>
+		</javadoc>
+	</target>
+
+	<!--Creates the deployable jar file -->
+	<target name="jar" depends="compile">
+		<jar destfile="${dist.dir}\BacReports.jar" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class"
+					value="ua.com.hedgehogsoft.bacreports.BacReports" />
+			</manifest>
+			<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+		</jar>
+	</target>
+
+	<target name="zip" depends="compile, jar">
+		<zip destfile="${dist.dir}/BacReports.zip" basedir="${dist.dir}">
+			<fileset dir="shell_scripts" />
+		</zip>
+	</target>
+
+	<target name="main" depends="compile, jar, zip">
+		<description>Main target</description>
+	</target>
+
+	<!-- <property name="BacReportsText" value="BacReports" /> <target name="BacReports"> 
+		<echo>${BacReportsText}</echo> </target> <target name="makejar" description="Create 
+		a jar for the BacReports project"> <jar jarfile="BacReports.jar" includes="*.class" 
+		basedir="bin" /> </target> -->
+</project>

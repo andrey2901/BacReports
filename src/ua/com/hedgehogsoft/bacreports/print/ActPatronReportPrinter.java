@@ -66,7 +66,7 @@ public class ActPatronReportPrinter
          paragraph1.setSpacingAfter(3);
          paragraph1.setSpacingBefore(3);
          paragraph1.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk1 = new Chunk("Акт");
+         Chunk chunk1 = new Chunk("РђРєС‚");
          paragraph1.add(chunk1);
 
          Paragraph paragraph2 = new Paragraph();
@@ -74,9 +74,9 @@ public class ActPatronReportPrinter
          paragraph2.setSpacingAfter(3);
          paragraph2.setSpacingBefore(3);
          paragraph2.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk2 = new Chunk("списання поживних середовищ і хімреактивів, лабораторного скла,\n"
-               + "використаних Централізованою баклабораторією Лівобережжя\nКЗ \"Дніпропетровьска міська клінічна лікарня №9 \" ДОР\""
-               + "\n\"Меценат\"");
+         Chunk chunk2 = new Chunk("СЃРїРёСЃР°РЅРЅСЏ РїРѕР¶РёРІРЅРёС… СЃРµСЂРµРґРѕРІРёС‰ С– С…С–РјСЂРµР°РєС‚РёРІС–РІ, Р»Р°Р±РѕСЂР°С‚РѕСЂРЅРѕРіРѕ СЃРєР»Р°,\n"
+               + "РІРёРєРѕСЂРёСЃС‚Р°РЅРёС… Р¦РµРЅС‚СЂР°Р»С–Р·РѕРІР°РЅРѕСЋ Р±Р°РєР»Р°Р±РѕСЂР°С‚РѕСЂС–С”СЋ Р›С–РІРѕР±РµСЂРµР¶Р¶СЏ\nРљР— \"Р”РЅС–РїСЂРѕРїРµС‚СЂРѕРІСЊСЃРєР° РјС–СЃСЊРєР° РєР»С–РЅС–С‡РЅР° Р»С–РєР°СЂРЅСЏ в„–9 \" Р”РћР \""
+               + "\n\"РњРµС†РµРЅР°С‚\"");
          paragraph2.add(chunk2);
 
          Paragraph paragraph3 = new Paragraph();
@@ -84,7 +84,7 @@ public class ActPatronReportPrinter
          paragraph3.setSpacingAfter(3);
          paragraph3.setSpacingBefore(3);
          paragraph3.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk4 = new Chunk("з " + dateFrom + " до " + dateTo);
+         Chunk chunk4 = new Chunk("Р· " + dateFrom + " РґРѕ " + dateTo);
          paragraph3.add(chunk4);
 
          paragraph.add(paragraph1);
@@ -106,32 +106,32 @@ public class ActPatronReportPrinter
          pdfTable.setWidthPercentage(90);
 
          PdfPCell cell = null;
-         cell = new PdfPCell(new Phrase("№ з/п", font));
+         cell = new PdfPCell(new Phrase("в„– Р·/Рї", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Найменування предметів закупівель", font));
+         cell = new PdfPCell(new Phrase("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ РїСЂРµРґРјРµС‚С–РІ Р·Р°РєСѓРїС–РІРµР»СЊ", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Одиниця виміру", font));
+         cell = new PdfPCell(new Phrase("РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Ціна, грн./од.", font));
+         cell = new PdfPCell(new Phrase("Р¦С–РЅР°, РіСЂРЅ./РѕРґ.", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Кількість, од.", font));
+         cell = new PdfPCell(new Phrase("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
 
-         cell = new PdfPCell(new Phrase("Сума, грн.", font));
+         cell = new PdfPCell(new Phrase("РЎСѓРјР°, РіСЂРЅ.", font));
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
@@ -201,7 +201,7 @@ public class ActPatronReportPrinter
             }
          }
 
-         cell = new PdfPCell(new Phrase("Всього", font));
+         cell = new PdfPCell(new Phrase("Р’СЃСЊРѕРіРѕ", font));
          cell.setColspan(5);
          cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
          pdfTable.addCell(cell);
@@ -226,7 +226,7 @@ public class ActPatronReportPrinter
          responsibleParagraph.setSpacingBefore(5);
          responsibleParagraph.setAlignment(Element.ALIGN_RIGHT);
          Chunk responsibleChunk = new Chunk(
-               "Матеріально відповідальна особа                                                                                         ");
+               "РњР°С‚РµСЂС–Р°Р»СЊРЅРѕ РІС–РґРїРѕРІС–РґР°Р»СЊРЅР° РѕСЃРѕР±Р°                                                                                         ");
          responsibleParagraph.add(responsibleChunk);
 
          Paragraph laboratoryParagraph = new Paragraph();
@@ -234,10 +234,10 @@ public class ActPatronReportPrinter
          laboratoryParagraph.setSpacingAfter(3);
          laboratoryParagraph.setSpacingBefore(0);
          laboratoryParagraph.setAlignment(Element.ALIGN_RIGHT);
-         Chunk labVacancyChunk = new Chunk("Лаборант з бактеріології      ");
+         Chunk labVacancyChunk = new Chunk("Р›Р°Р±РѕСЂР°РЅС‚ Р· Р±Р°РєС‚РµСЂС–РѕР»РѕРіС–С—      ");
          Chunk labUnderlineChunk = new Chunk("                                       ");
          labUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk labNameChunk = new Chunk("          Н.В. Нагорна            ");
+         Chunk labNameChunk = new Chunk("          Рќ.Р’. РќР°РіРѕСЂРЅР°            ");
          laboratoryParagraph.add(labVacancyChunk);
          laboratoryParagraph.add(labUnderlineChunk);
          laboratoryParagraph.add(labNameChunk);
@@ -247,10 +247,10 @@ public class ActPatronReportPrinter
          deputyParagraph.setSpacingAfter(5);
          deputyParagraph.setSpacingBefore(5);
          deputyParagraph.setAlignment(Element.ALIGN_RIGHT);
-         Chunk deputyVacancyChunk = new Chunk("Зав.ЦБакЛЛ      ");
+         Chunk deputyVacancyChunk = new Chunk("Р—Р°РІ.Р¦Р‘Р°РєР›Р›      ");
          Chunk deputyUnderlineChunk = new Chunk("                                       ");
          deputyUnderlineChunk.setUnderline(0.1f, -0.5f);
-         Chunk deputyNameChunk = new Chunk("    Л.М. Москаленко            ");
+         Chunk deputyNameChunk = new Chunk("    Р›.Рњ. РњРѕСЃРєР°Р»РµРЅРєРѕ            ");
          deputyParagraph.add(deputyVacancyChunk);
          deputyParagraph.add(deputyUnderlineChunk);
          deputyParagraph.add(deputyNameChunk);

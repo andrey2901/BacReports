@@ -56,7 +56,7 @@ public class MainFrame
 
       units = new Units(new Connection().getUnits());
 
-      JFrame mainFrame = new JFrame("БакЗвіт - склад");
+      JFrame mainFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - СЃРєР»Р°Рґ");
 
       mainFrame.setLayout(new BorderLayout());
 
@@ -68,15 +68,15 @@ public class MainFrame
          }
       });
 
-      incomingButton = new JButton("Надходження");
+      incomingButton = new JButton("РќР°РґС…РѕРґР¶РµРЅРЅСЏ");
 
       incomingButton.addActionListener(new IncomingActionListener(this));
 
-      outcomingButton = new JButton("Використання");
+      outcomingButton = new JButton("Р’РёРєРѕСЂРёСЃС‚Р°РЅРЅСЏ");
 
       outcomingButton.addActionListener(new OutcomingActionListener(this));
 
-      reportsButton = new JButton("Звіти");
+      reportsButton = new JButton("Р—РІС–С‚Рё");
 
       reportsButton.addActionListener(new ActionListener()
       {
@@ -87,7 +87,7 @@ public class MainFrame
          }
       });
 
-      exitButton = new JButton("Вихід");
+      exitButton = new JButton("Р’РёС…С–Рґ");
 
       exitButton.addActionListener(new ActionListener()
       {
@@ -98,7 +98,7 @@ public class MainFrame
          }
       });
 
-      backupButton = new JButton("Архивувати");
+      backupButton = new JButton("РђСЂС…РёРІСѓРІР°С‚Рё");
 
       backupButton.addActionListener(new ActionListener()
       {
@@ -148,13 +148,13 @@ public class MainFrame
 
    private JTable getFilledTable()
    {
-      String[] columnNames = {"№ з/п",
-                              "Найменування лікарських засобів та медичних виробів",
-                              "Одиниця виміру",
-                              "Ціна, грн./од.",
-                              "Кількість, од.",
-                              "Сума, грн.",
-                              "Група"};
+      String[] columnNames = {"в„– Р·/Рї",
+                              "РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ Р»С–РєР°СЂСЃСЊРєРёС… Р·Р°СЃРѕР±С–РІ С‚Р° РјРµРґРёС‡РЅРёС… РІРёСЂРѕР±С–РІ",
+                              "РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ",
+                              "Р¦С–РЅР°, РіСЂРЅ./РѕРґ.",
+                              "РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.",
+                              "РЎСѓРјР°, РіСЂРЅ.",
+                              "Р“СЂСѓРїР°"};
 
       List<Product> products = new Connection().getStore();
 

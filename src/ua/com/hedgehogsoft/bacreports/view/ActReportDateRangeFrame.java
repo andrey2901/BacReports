@@ -27,7 +27,7 @@ public class ActReportDateRangeFrame
 
    public ActReportDateRangeFrame()
    {
-      JFrame frame = new JFrame("БакЗвіт - оберить період");
+      JFrame frame = new JFrame("Р‘Р°РєР—РІС–С‚ - РѕР±РµСЂРёС‚СЊ РїРµСЂС–РѕРґ");
 
       frame.addWindowListener(new WindowAdapter()
       {
@@ -37,7 +37,7 @@ public class ActReportDateRangeFrame
          }
       });
 
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -80,25 +80,25 @@ public class ActReportDateRangeFrame
 
       JPanel datePanel = new JPanel(new GridLayout(3, 2));
 
-      datePanel.add(new JLabel("Місяць:"));
+      datePanel.add(new JLabel("РњС–СЃСЏС†СЊ:"));
 
       monthComboBox = new JComboBox<String>(
-            new String[] {"Січень",
-                          "Лютий",
-                          "Березень",
-                          "Квітень",
-                          "Травень",
-                          "Червень",
-                          "Липень",
-                          "Серпень",
-                          "Вересень",
-                          "Жовтень",
-                          "Листопад",
-                          "Грудень"});
+            new String[] {"РЎС–С‡РµРЅСЊ",
+                          "Р›СЋС‚РёР№",
+                          "Р‘РµСЂРµР·РµРЅСЊ",
+                          "РљРІС–С‚РµРЅСЊ",
+                          "РўСЂР°РІРµРЅСЊ",
+                          "Р§РµСЂРІРµРЅСЊ",
+                          "Р›РёРїРµРЅСЊ",
+                          "РЎРµСЂРїРµРЅСЊ",
+                          "Р’РµСЂРµСЃРµРЅСЊ",
+                          "Р–РѕРІС‚РµРЅСЊ",
+                          "Р›РёСЃС‚РѕРїР°Рґ",
+                          "Р“СЂСѓРґРµРЅСЊ"});
 
       datePanel.add(monthComboBox);
 
-      datePanel.add(new JLabel("Рік:"));
+      datePanel.add(new JLabel("Р С–Рє:"));
 
       yearComboBox = new JComboBox<Integer>();
 
@@ -109,9 +109,9 @@ public class ActReportDateRangeFrame
 
       datePanel.add(yearComboBox);
 
-      datePanel.add(new JLabel("Група:"));
+      datePanel.add(new JLabel("Р“СЂСѓРїР°:"));
 
-      sourceComboBox = new JComboBox<String>(new String[] {"Бюджет", "Меценат"});
+      sourceComboBox = new JComboBox<String>(new String[] {"Р‘СЋРґР¶РµС‚", "РњРµС†РµРЅР°С‚"});
 
       datePanel.add(sourceComboBox);
 

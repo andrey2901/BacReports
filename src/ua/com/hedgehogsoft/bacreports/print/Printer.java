@@ -109,7 +109,7 @@ public class Printer
       }
       Font font = new Font(bf);
       
-      preface.add(new Paragraph("Это отчет баклаборатории", font));
+      preface.add(new Paragraph("Р­С‚Рѕ РѕС‚С‡РµС‚ Р±Р°РєР»Р°Р±РѕСЂР°С‚РѕСЂРёРё", font));
 
       addEmptyLine(preface, 5);
 

@@ -28,7 +28,7 @@ public class RemainsReportDateRangeFrame
 
    public RemainsReportDateRangeFrame()
    {
-      JFrame frame = new JFrame("БакЗвіт - оберить дату");
+      JFrame frame = new JFrame("Р‘Р°РєР—РІС–С‚ - РѕР±РµСЂРёС‚СЊ РґР°С‚Сѓ");
 
       frame.addWindowListener(new WindowAdapter()
       {
@@ -38,7 +38,7 @@ public class RemainsReportDateRangeFrame
          }
       });
 
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -80,13 +80,13 @@ public class RemainsReportDateRangeFrame
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new JLabel("Група:"));
+      datePanel.add(new JLabel("Р“СЂСѓРїР°:"));
 
-      sourceComboBox = new JComboBox<String>(new String[] {"Бюджет", "Меценат"});
+      sourceComboBox = new JComboBox<String>(new String[] {"Р‘СЋРґР¶РµС‚", "РњРµС†РµРЅР°С‚"});
 
       datePanel.add(sourceComboBox);
 
-      datePanel.add(new JLabel("Дата:"));
+      datePanel.add(new JLabel("Р”Р°С‚Р°:"));
 
       datePanel.add(datePicker = DatePicker.getDatePicker());
 
@@ -112,7 +112,7 @@ public class RemainsReportDateRangeFrame
       if (datePicker.getJFormattedTextField().getText() == null
             || datePicker.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Заповніть поле дати", "Помилка", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РґР°С‚Рё", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
