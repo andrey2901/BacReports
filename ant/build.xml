@@ -40,7 +40,7 @@
 		<javadoc packagenames="src" sourcepath="${src.dir}" destdir="${docs.dir}">
 			<!-- Define which files / directory should get included, we include all -->
 			<fileset dir="${src.dir}">
-				<include name="**" />
+				<exclude name="**/*.properties" />
 			</fileset>
 		</javadoc>
 	</target>
@@ -68,12 +68,7 @@
 		</delete>
 	</target>
 
-	<target name="main" depends="compile, jar, zip, gc">
+	<target name="main" depends="compile, jar, docs, zip, gc">
 		<description>Main target</description>
 	</target>
-
-	<!-- <property name="BacReportsText" value="BacReports" /> <target name="BacReports"> 
-		<echo>${BacReportsText}</echo> </target> <target name="makejar" description="Create 
-		a jar for the BacReports project"> <jar jarfile="BacReports.jar" includes="*.class" 
-		basedir="bin" /> </target> -->
 </project>
