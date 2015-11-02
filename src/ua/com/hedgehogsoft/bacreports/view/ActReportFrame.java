@@ -44,7 +44,7 @@ public class ActReportFrame
 
    public ActReportFrame(String dateFrom, String dateTo)
    {
-      JFrame actsFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - Р°РєС‚ СЃРїРёСЃР°РЅРЅСЏ");
+      JFrame actsFrame = new JFrame("БакЗвіт - акт списання");
 
       actsFrame.addWindowListener(new WindowAdapter()
       {
@@ -56,7 +56,7 @@ public class ActReportFrame
          }
       });
 
-      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -69,7 +69,7 @@ public class ActReportFrame
          }
       });
 
-      printButton = new JButton("Р”СЂСѓРєСѓРІР°С‚Рё");
+      printButton = new JButton("Друкувати");
 
       printButton.addActionListener(new ActionListener()
       {
@@ -86,16 +86,16 @@ public class ActReportFrame
 
       JPanel titlePanel = new JPanel(new GridLayout(4, 1));
 
-      titlePanel.add(new JLabel("РђРєС‚", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("Акт", SwingConstants.CENTER));
 
       titlePanel
-            .add(new JLabel("СЃРїРёСЃР°РЅРЅСЏ РїРѕР¶РёРІРЅРёС… СЃРµСЂРµРґРѕРІРёС‰ С– С…С–РјСЂРµР°РєС‚РёРІС–РІ, Р»Р°Р±РѕСЂР°С‚РѕСЂРЅРѕРіРѕ СЃРєР»Р°,", SwingConstants.CENTER));
+            .add(new JLabel("списання поживних середовищ і хімреактивів, лабораторного скла,", SwingConstants.CENTER));
 
       titlePanel.add(new JLabel(
-            "РІРёРєРѕСЂРёСЃС‚Р°РЅРёС… Р¦РµРЅС‚СЂР°Р»С–Р·РѕРІР°РЅРѕСЋ Р±Р°РєР»Р°Р±РѕСЂР°С‚РѕСЂС–С”СЋ Р›С–РІРѕР±РµСЂРµР¶Р¶СЏ РљР— \"Р”РЅС–РїСЂРѕРїРµС‚СЂРѕРІСЊСЃРєР° РјС–СЃСЊРєР° РєР»С–РЅС–С‡РЅР° Р»С–РєР°СЂРЅСЏ в„–9\" Р”РћР \"",
+            "використаних Централізованою баклабораторією Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"",
             SwingConstants.CENTER));
 
-      titlePanel.add(new JLabel("Р· " + dateFrom + " РґРѕ " + dateTo, SwingConstants.CENTER));
+      titlePanel.add(new JLabel("з " + dateFrom + " до " + dateTo, SwingConstants.CENTER));
 
       JPanel buttonsPanel = new JPanel();
 
@@ -126,13 +126,13 @@ public class ActReportFrame
 
    private JTable getFilledTable(String dateFrom, String dateTo)
    {
-      String[] columnNames = {"в„– Р·/Рї",
-                              "РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ РїСЂРµРґРјРµС‚С–РІ Р·Р°РєСѓРїС–РІРµР»СЊ",
-                              "РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ",
-                              "Р“СЂСѓРїР°",
-                              "Р¦С–РЅР°, РіСЂРЅ./РѕРґ.",
-                              "РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.",
-                              "РЎСѓРјР°, РіСЂРЅ."};
+      String[] columnNames = {"№ з/п",
+                              "Найменування предметів закупівель",
+                              "Одиниця виміру",
+                              "Група",
+                              "Ціна, грн./од.",
+                              "Кількість, од.",
+                              "Сума, грн."};
 
       List<Integer> ids = new Connection().getUniqueIdsForOutcomingsForBudget(dateFrom, dateTo);
 

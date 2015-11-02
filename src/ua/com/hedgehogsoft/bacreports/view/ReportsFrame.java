@@ -24,7 +24,7 @@ public class ReportsFrame
 
    public ReportsFrame(MainFrame mainFrame)
    {
-      JFrame reportsFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - Р·РІС–С‚Рё");
+      JFrame reportsFrame = new JFrame("БакЗвіт - звіти");
 
       reportsFrame.pack();
 
@@ -38,7 +38,7 @@ public class ReportsFrame
          }
       });
 
-      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -51,7 +51,7 @@ public class ReportsFrame
          }
       });
 
-      remainsReportButton = new JButton("Р—Р°Р»РёС€РєРё");
+      remainsReportButton = new JButton("Залишки");
 
       remainsReportButton.addActionListener(new ActionListener()
       {
@@ -62,7 +62,7 @@ public class ReportsFrame
          }
       });
 
-      actReportButton = new JButton("РђРєС‚ СЃРїРёСЃР°РЅРЅСЏ");
+      actReportButton = new JButton("Акт списання");
 
       actReportButton.addActionListener(new ActionListener()
       {
@@ -73,7 +73,7 @@ public class ReportsFrame
          }
       });
 
-      finalReportButton = new JButton("Р—РІС–С‚");
+      finalReportButton = new JButton("Звіт");
 
       finalReportButton.addActionListener(new ActionListener()
       {
@@ -84,7 +84,7 @@ public class ReportsFrame
          }
       });
 
-      incomingsReportButton = new JButton("РќР°РґС…РѕРґР¶РµРЅРЅСЏ");
+      incomingsReportButton = new JButton("Надходження");
 
       incomingsReportButton.addActionListener(new ActionListener()
       {
@@ -95,7 +95,7 @@ public class ReportsFrame
          }
       });
 
-      outcomingsReportButton = new JButton("Р’РёРєРѕСЂРёСЃС‚Р°РЅРЅСЏ");
+      outcomingsReportButton = new JButton("Використання");
 
       outcomingsReportButton.addActionListener(new ActionListener()
       {

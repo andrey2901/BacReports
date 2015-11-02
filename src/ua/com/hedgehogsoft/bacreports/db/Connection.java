@@ -64,7 +64,7 @@ public class Connection
          logger.info("Created table units");
 
          insertUnitsTableStatement.execute(
-               "INSERT INTO units(unit) VALUES ('Р°РјРї'), ('С„Р»Р°Рє'), ('С€С‚'), ('РіСЂ'), ('РєРі'), ('РЅР°Р±С–СЂ'), ('СѓРї'), ('РєРѕСЂ'), ('РїР°СЂ')");
+               "INSERT INTO units(unit) VALUES ('амп'), ('флак'), ('шт'), ('гр'), ('кг'), ('набір'), ('уп'), ('кор'), ('пар')");
 
          logger.info("Filled table units by default values");
 
@@ -74,7 +74,7 @@ public class Connection
          logger.info("Created table sources");
 
          insertSourceTableStatement.execute(
-               "INSERT INTO source_group(source) VALUES ('Р РµР°РєС‚РёРІРё, РїРѕР¶РёРІРЅС– СЃРµСЂРµРґРѕРІРёС‰Р°'), ('РњРµС†РµРЅР°С‚'), ('Р’С–Рґ РїСЂРѕРІС–Р·РѕСЂР°'), ('Р’С–Рґ РґРµР·С–РЅС„РµРєС‚РѕСЂР°')");
+               "INSERT INTO source_group(source) VALUES ('Реактиви, поживні середовища'), ('Меценат'), ('Від провізора'), ('Від дезінфектора')");
 
          logger.info("Filled table sources by default values");
 

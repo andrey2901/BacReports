@@ -46,7 +46,7 @@ public class OutcomingsReport
 
    public OutcomingsReport(MainFrame mainFrame, String from, String to)
    {
-      JFrame reportsFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - СЃРїРёСЃР°РЅРЅСЏ");
+      JFrame reportsFrame = new JFrame("БакЗвіт - списання");
 
       reportsFrame.pack();
 
@@ -58,7 +58,7 @@ public class OutcomingsReport
          }
       });
 
-      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -69,7 +69,7 @@ public class OutcomingsReport
          }
       });
 
-      printButton = new JButton("Р”СЂСѓРєСѓРІР°С‚Рё");
+      printButton = new JButton("Друкувати");
 
       printButton.addActionListener(new ActionListener()
       {
@@ -82,7 +82,7 @@ public class OutcomingsReport
          }
       });
 
-      deleteButton = new JButton("Р’РёРґР°Р»РёС‚Рё");
+      deleteButton = new JButton("Видалити");
 
       deleteButton.addActionListener(new ActionListener()
       {
@@ -105,7 +105,7 @@ public class OutcomingsReport
 
                   for (int i = 0; i < mainFrame.getTable().getColumnCount(); i++)
                   {
-                     if (mainFrame.getTable().getColumnName(i).equals("в„– Р·/Рї"))
+                     if (mainFrame.getTable().getColumnName(i).equals("№ з/п"))
                      {
                         for (int k = 0; k < mainFrame.getTable().getRowCount(); k++)
                         {
@@ -113,7 +113,7 @@ public class OutcomingsReport
                            {
                               for (int z = 0; z < mainFrame.getTable().getColumnCount(); z++)
                               {
-                                 if (mainFrame.getTable().getColumnName(z).equals("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ."))
+                                 if (mainFrame.getTable().getColumnName(z).equals("Кількість, од."))
                                  {
                                     ((ProductStoreTableModel) mainFrame.getTable().getModel())
                                           .updateAmount(existedProduct);
@@ -133,22 +133,22 @@ public class OutcomingsReport
                   Units units = new Units(new Connection().getUnits());
 
                   JPanel panel = new JPanel(new GridLayout(7, 2));
-                  panel.add(new JLabel("Р”Р°С‚Р°: "));
+                  panel.add(new JLabel("Дата: "));
                   panel.add(new JLabel(new DateLabelFormatter().dateToString(outcoming.getDate())));
-                  panel.add(new JLabel("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ: "));
+                  panel.add(new JLabel("Найменування: "));
                   panel.add(new JLabel(outcoming.getProduct().getName()));
-                  panel.add(new JLabel("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.: "));
+                  panel.add(new JLabel("Кількість, од.: "));
                   panel.add(new JLabel(Double.toString(outcoming.getProduct().getAmount())));
-                  panel.add(new JLabel("РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ: "));
+                  panel.add(new JLabel("Одиниця виміру: "));
                   panel.add(new JLabel(units.valueOf(outcoming.getProduct().getUnit()).getName()));
-                  panel.add(new JLabel("Р¦С–РЅР°, РіСЂРЅ./РѕРґ.: "));
+                  panel.add(new JLabel("Ціна, грн./од.: "));
                   panel.add(new JLabel(Double.toString(outcoming.getProduct().getPrice())));
-                  panel.add(new JLabel("Р“СЂСѓРїР°: "));
+                  panel.add(new JLabel("Група: "));
                   panel.add(new JLabel(sources.valueOf(outcoming.getProduct().getSource()).getName()));
-                  panel.add(new JLabel("РЎСѓРјР°, РіСЂРЅ.: "));
+                  panel.add(new JLabel("Сума, грн.: "));
                   panel.add(new JLabel(Double.toString(outcoming.getProduct().getTotalPrice())));
 
-                  JOptionPane.showMessageDialog(null, panel, "Р’РёРґР°Р»РµРЅРѕ", JOptionPane.INFORMATION_MESSAGE);
+                  JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
 
                   close(reportsFrame);
                }
@@ -158,11 +158,11 @@ public class OutcomingsReport
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new JLabel("РџРѕС‡Р°С‚РѕРє РїРµСЂС–РѕРґСѓ:"));
+      datePanel.add(new JLabel("Початок періоду:"));
 
       datePanel.add(new JLabel(from));
 
-      datePanel.add(new JLabel("РљС–РЅРµС†СЊ РїРµСЂС–РѕРґСѓ:"));
+      datePanel.add(new JLabel("Кінець періоду:"));
 
       datePanel.add(new JLabel(to));
 
@@ -195,14 +195,14 @@ public class OutcomingsReport
 
    private JTable getFilledTable(String from, String to)
    {
-      String[] columnNames = {"в„– Р·/Рї",
-                              "РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ РїСЂРµРґРјРµС‚С–РІ Р·Р°РєСѓРїС–РІРµР»СЊ",
-                              "РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ",
-                              "Р”Р°С‚Р° СЃРїРёСЃР°РЅРЅСЏ",
-                              "Р¦С–РЅР°, РіСЂРЅ./РѕРґ.",
-                              "РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.",
-                              "РЎСѓРјР°, РіСЂРЅ.",
-                              "Р“СЂСѓРїР°"};
+      String[] columnNames = {"№ з/п",
+                              "Найменування предметів закупівель",
+                              "Одиниця виміру",
+                              "Дата списання",
+                              "Ціна, грн./од.",
+                              "Кількість, од.",
+                              "Сума, грн.",
+                              "Група"};
 
       List<Outcoming> outcomings = new Connection().getOutcomings(from, to);
 

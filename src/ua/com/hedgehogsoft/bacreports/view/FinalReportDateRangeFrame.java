@@ -28,7 +28,7 @@ public class FinalReportDateRangeFrame
 
    public FinalReportDateRangeFrame()
    {
-      JFrame frame = new JFrame("Р‘Р°РєР—РІС–С‚ - РѕР±РµСЂРёС‚СЊ РїРµСЂС–РѕРґ");
+      JFrame frame = new JFrame("БакЗвіт - оберить період");
 
       frame.addWindowListener(new WindowAdapter()
       {
@@ -38,7 +38,7 @@ public class FinalReportDateRangeFrame
          }
       });
 
-      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -74,25 +74,25 @@ public class FinalReportDateRangeFrame
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new JLabel("РњС–СЃСЏС†СЊ:"));
+      datePanel.add(new JLabel("Місяць:"));
 
       monthComboBox = new JComboBox<String>(
-            new String[] {"РЎС–С‡РµРЅСЊ",
-                          "Р›СЋС‚РёР№",
-                          "Р‘РµСЂРµР·РµРЅСЊ",
-                          "РљРІС–С‚РµРЅСЊ",
-                          "РўСЂР°РІРµРЅСЊ",
-                          "Р§РµСЂРІРµРЅСЊ",
-                          "Р›РёРїРµРЅСЊ",
-                          "РЎРµСЂРїРµРЅСЊ",
-                          "Р’РµСЂРµСЃРµРЅСЊ",
-                          "Р–РѕРІС‚РµРЅСЊ",
-                          "Р›РёСЃС‚РѕРїР°Рґ",
-                          "Р“СЂСѓРґРµРЅСЊ"});
+            new String[] {"Січень",
+                          "Лютий",
+                          "Березень",
+                          "Квітень",
+                          "Травень",
+                          "Червень",
+                          "Липень",
+                          "Серпень",
+                          "Вересень",
+                          "Жовтень",
+                          "Листопад",
+                          "Грудень"});
 
       datePanel.add(monthComboBox);
 
-      datePanel.add(new JLabel("Р С–Рє:"));
+      datePanel.add(new JLabel("Рік:"));
 
       yearComboBox = new JComboBox<Integer>();
 

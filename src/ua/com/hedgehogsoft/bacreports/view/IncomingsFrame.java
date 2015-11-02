@@ -45,7 +45,7 @@ public class IncomingsFrame
    {
       units = new Units(new Connection().getUnits());
 
-      JFrame incomingsFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - РЅР°РґС…РѕРґР¶РµРЅРЅСЏ");
+      JFrame incomingsFrame = new JFrame("БакЗвіт - надходження");
 
       incomingsFrame.addWindowListener(new WindowAdapter()
       {
@@ -55,7 +55,7 @@ public class IncomingsFrame
          }
       });
 
-      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -66,7 +66,7 @@ public class IncomingsFrame
          }
       });
 
-      incomingButton = new JButton("РћРїСЂРёР±СѓС‚РєСѓРІР°С‚Рё");
+      incomingButton = new JButton("Оприбуткувати");
 
       incomingButton.addActionListener(new ActionListener()
       {
@@ -133,20 +133,20 @@ public class IncomingsFrame
                   logger.info("Incomings were performed.");
 
                   JPanel panel = new JPanel(new GridLayout(6, 2));
-                  panel.add(new JLabel("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ: "));
+                  panel.add(new JLabel("Найменування: "));
                   panel.add(new JLabel(product.getName()));
-                  panel.add(new JLabel("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.: "));
+                  panel.add(new JLabel("Кількість, од.: "));
                   panel.add(new JLabel(Double.toString(product.getAmount())));
-                  panel.add(new JLabel("РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ: "));
+                  panel.add(new JLabel("Одиниця виміру: "));
                   panel.add(new JLabel(units.valueOf(product.getUnit()).getName()));
-                  panel.add(new JLabel("Р¦С–РЅР°, РіСЂРЅ./РѕРґ.: "));
+                  panel.add(new JLabel("Ціна, грн./од.: "));
                   panel.add(new JLabel(Double.toString(product.getPrice())));
-                  panel.add(new JLabel("Р“СЂСѓРїР°: "));
+                  panel.add(new JLabel("Група: "));
                   panel.add(new JLabel(mainFrame.getSources().valueOf(product.getSource()).getName()));
-                  panel.add(new JLabel("РЎСѓРјР°, РіСЂРЅ.: "));
+                  panel.add(new JLabel("Сума, грн.: "));
                   panel.add(new JLabel(Double.toString(product.getTotalPrice())));
 
-                  JOptionPane.showMessageDialog(null, panel, "Р”РѕРґР°РЅРѕ", JOptionPane.INFORMATION_MESSAGE);
+                  JOptionPane.showMessageDialog(null, panel, "Додано", JOptionPane.INFORMATION_MESSAGE);
                }
 
                close(incomingsFrame);
@@ -167,7 +167,7 @@ public class IncomingsFrame
       /*--------------------------------------------------------------*/
       JPanel incomingPanel = new JPanel(new GridBagLayout());
 
-      incomingPanel.add(new JLabel("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ Р·Р°СЃРѕР±Сѓ:"), position(0, 0));
+      incomingPanel.add(new JLabel("Найменування засобу:"), position(0, 0));
 
       incomingNameComboBox = new JComboBox<String>();
 
@@ -187,7 +187,7 @@ public class IncomingsFrame
 
       incomingPanel.add(incomingNameComboBox, position(1, 0));
 
-      incomingPanel.add(new JLabel("РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ:"), position(0, 1));
+      incomingPanel.add(new JLabel("Одиниця виміру:"), position(0, 1));
 
       incomingUnitComboBox = new JComboBox<String>();
 
@@ -203,7 +203,7 @@ public class IncomingsFrame
 
       incomingUnitComboBox.setSelectedItem("");
 
-      incomingPanel.add(new JLabel("Р¦С–РЅР°, РіСЂРЅ./РѕРґ.:"), position(0, 2));
+      incomingPanel.add(new JLabel("Ціна, грн./од.:"), position(0, 2));
 
       incomingCostComboBox = new JComboBox<String>();
 
@@ -211,7 +211,7 @@ public class IncomingsFrame
 
       incomingPanel.add(incomingCostComboBox, position(1, 2));
 
-      incomingPanel.add(new JLabel("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.:"), position(0, 3));
+      incomingPanel.add(new JLabel("Кількість, од.:"), position(0, 3));
 
       incomingAmountTextField = new JTextField();
 
@@ -224,11 +224,11 @@ public class IncomingsFrame
          incomingSourceComboBox.addItem(source.getName());
       }
 
-      incomingPanel.add(new JLabel("Р“СЂСѓРїР° РґР°РЅРёС…:"), position(0, 4));
+      incomingPanel.add(new JLabel("Група даних:"), position(0, 4));
 
       incomingPanel.add(incomingSourceComboBox, position(1, 4));
 
-      incomingPanel.add(new JLabel("Р”Р°С‚Р°:"), position(0, 5));
+      incomingPanel.add(new JLabel("Дата:"), position(0, 5));
 
       incomingPanel.add(datePicker, position(1, 5));
 
@@ -311,33 +311,33 @@ public class IncomingsFrame
 
       if (incomingNameComboBox.getSelectedItem() == null || ((String) incomingNameComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РЅР°Р№РјРµРЅСѓРІР°РЅРЅСЏ С‚РѕРІР°СЂСѓ", "РџРѕРјРёР»РєР°",
+         JOptionPane.showMessageDialog(null, "Заповніть поле найменування товару", "Помилка",
                JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (incomingUnitComboBox.getSelectedItem() == null || ((String) incomingUnitComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РѕРґРёРЅРёС†СЊ РІРёРјС–СЂСѓ", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле одиниць виміру", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (incomingCostComboBox.getSelectedItem() == null || ((String) incomingCostComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РІР°СЂС‚РѕСЃС‚С–", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле вартості", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (incomingAmountTextField.getText() == null || incomingAmountTextField.getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РєС–Р»СЊРєРѕСЃС‚С–", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле кількості", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
       if (datePicker.getJFormattedTextField().getText() == null
             || datePicker.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РґР°С‚Рё", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле дати", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }

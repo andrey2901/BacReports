@@ -30,7 +30,7 @@ public class OutcomingsReportDateRangeFrame
 
    public OutcomingsReportDateRangeFrame(MainFrame mainFrame)
    {
-      JFrame frame = new JFrame("Р‘Р°РєР—РІС–С‚ - РѕР±РµСЂРёС‚СЊ РїРµСЂС–РѕРґ");
+      JFrame frame = new JFrame("БакЗвіт - оберить період");
 
       frame.addWindowListener(new WindowAdapter()
       {
@@ -40,7 +40,7 @@ public class OutcomingsReportDateRangeFrame
          }
       });
 
-      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -76,9 +76,9 @@ public class OutcomingsReportDateRangeFrame
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new JLabel("РџРѕС‡Р°С‚РѕРє РїРµСЂС–РѕРґСѓ:"));
+      datePanel.add(new JLabel("Початок періоду:"));
 
-      datePanel.add(new JLabel("РљС–РЅРµС†СЊ РїРµСЂС–РѕРґСѓ:"));
+      datePanel.add(new JLabel("Кінець періоду:"));
 
       datePanel.add(datePickerFrom = DatePicker.getDatePicker());
 
@@ -109,7 +109,7 @@ public class OutcomingsReportDateRangeFrame
       if (datePickerFrom.getJFormattedTextField().getText() == null
             || datePickerFrom.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РїРѕС‡Р°С‚РєСѓ РїРµСЂС–РѕРґСѓ", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле початку періоду", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
@@ -121,7 +121,7 @@ public class OutcomingsReportDateRangeFrame
       if (datePickerTo.getJFormattedTextField().getText() == null
             || datePickerTo.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, "Р—Р°РїРѕРІРЅС–С‚СЊ РїРѕР»Рµ РєС–РЅС†СЏ РїРµСЂС–РѕРґСѓ", "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+         JOptionPane.showMessageDialog(null, "Заповніть поле кінця періоду", "Помилка", JOptionPane.ERROR_MESSAGE);
 
          result = false;
       }
@@ -135,8 +135,8 @@ public class OutcomingsReportDateRangeFrame
          if (dateTo.before(dateFrom))
          {
             JOptionPane.showMessageDialog(null,
-                  "РљС–РЅРµС†СЊ РїРµСЂС–РѕРґСѓ РЅРµ РјРѕР¶Рµ Р±СѓС‚Рё СЂР°РЅС–С€Рµ Р·Р° Р№РѕРіРѕ РїРѕС‡Р°С‚РѕРє.\nРџРѕРјС–РЅСЏР№С‚Рµ, Р±СѓРґСЊ Р»Р°СЃРєР°, РґР°С‚Рё РјС–СЃС†СЏРјРё.",
-                  "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+                  "Кінець періоду не може бути раніше за його початок.\nПоміняйте, будь ласка, дати місцями.",
+                  "Помилка", JOptionPane.ERROR_MESSAGE);
          }
       }
 

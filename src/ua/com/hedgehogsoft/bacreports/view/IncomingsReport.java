@@ -48,7 +48,7 @@ public class IncomingsReport
 
    public IncomingsReport(MainFrame mainFrame, String from, String to)
    {
-      JFrame reportsFrame = new JFrame("Р‘Р°РєР—РІС–С‚ - РЅР°РґС…РѕРґР¶РµРЅРЅСЏ");
+      JFrame reportsFrame = new JFrame("БакЗвіт - надходження");
 
       reportsFrame.pack();
 
@@ -60,7 +60,7 @@ public class IncomingsReport
          }
       });
 
-      closeButton = new JButton("Р—Р°РєСЂРёС‚Рё");
+      closeButton = new JButton("Закрити");
 
       closeButton.addActionListener(new ActionListener()
       {
@@ -71,7 +71,7 @@ public class IncomingsReport
          }
       });
 
-      printButton = new JButton("Р”СЂСѓРєСѓРІР°С‚Рё");
+      printButton = new JButton("Друкувати");
 
       printButton.addActionListener(new ActionListener()
       {
@@ -84,7 +84,7 @@ public class IncomingsReport
          }
       });
 
-      deleteButton = new JButton("Р’РёРґР°Р»РёС‚Рё");
+      deleteButton = new JButton("Видалити");
 
       deleteButton.addActionListener(new ActionListener()
       {
@@ -109,7 +109,7 @@ public class IncomingsReport
 
                      for (int i = 0; i < mainFrame.getTable().getColumnCount(); i++)
                      {
-                        if (mainFrame.getTable().getColumnName(i).equals("в„– Р·/Рї"))
+                        if (mainFrame.getTable().getColumnName(i).equals("№ з/п"))
                         {
                            for (int k = 0; k < mainFrame.getTable().getRowCount(); k++)
                            {
@@ -117,7 +117,7 @@ public class IncomingsReport
                               {
                                  for (int z = 0; z < mainFrame.getTable().getColumnCount(); z++)
                                  {
-                                    if (mainFrame.getTable().getColumnName(z).equals("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ."))
+                                    if (mainFrame.getTable().getColumnName(z).equals("Кількість, од."))
                                     {
                                        ((ProductStoreTableModel) mainFrame.getTable().getModel())
                                              .updateAmount(existedProduct);
@@ -137,22 +137,22 @@ public class IncomingsReport
                      Units units = new Units(new Connection().getUnits());
 
                      JPanel panel = new JPanel(new GridLayout(7, 2));
-                     panel.add(new JLabel("Р”Р°С‚Р°: "));
+                     panel.add(new JLabel("Дата: "));
                      panel.add(new JLabel(new DateLabelFormatter().dateToString(incoming.getDate())));
-                     panel.add(new JLabel("РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ: "));
+                     panel.add(new JLabel("Найменування: "));
                      panel.add(new JLabel(incoming.getProduct().getName()));
-                     panel.add(new JLabel("РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.: "));
+                     panel.add(new JLabel("Кількість, од.: "));
                      panel.add(new JLabel(Double.toString(incoming.getProduct().getAmount())));
-                     panel.add(new JLabel("РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ: "));
+                     panel.add(new JLabel("Одиниця виміру: "));
                      panel.add(new JLabel(units.valueOf(incoming.getProduct().getUnit()).getName()));
-                     panel.add(new JLabel("Р¦С–РЅР°, РіСЂРЅ./РѕРґ.: "));
+                     panel.add(new JLabel("Ціна, грн./од.: "));
                      panel.add(new JLabel(Double.toString(incoming.getProduct().getPrice())));
-                     panel.add(new JLabel("Р“СЂСѓРїР°: "));
+                     panel.add(new JLabel("Група: "));
                      panel.add(new JLabel(sources.valueOf(incoming.getProduct().getSource()).getName()));
-                     panel.add(new JLabel("РЎСѓРјР°, РіСЂРЅ.: "));
+                     panel.add(new JLabel("Сума, грн.: "));
                      panel.add(new JLabel(Double.toString(incoming.getProduct().getTotalPrice())));
 
-                     JOptionPane.showMessageDialog(null, panel, "Р’РёРґР°Р»РµРЅРѕ", JOptionPane.INFORMATION_MESSAGE);
+                     JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
 
                      close(reportsFrame);
                   }
@@ -161,20 +161,20 @@ public class IncomingsReport
             else
             {
                JOptionPane.showMessageDialog(null,
-                     "Р’Рё РЅРµ РјРѕР¶РµС‚Рµ РІРёРґР°Р»РёС‚Рё РІРєР°Р·Р°РЅРµ РЅР°РґС…РѕРґР¶РµРЅРЅСЏ,"
-                           + "\nС‚Р°Рє РєР°Рє Сѓ Р±С–Р»СЊС€ РїС–Р·РЅС– СЃС‚СЂРѕРєРё Р’Рё РѕС‚СЂРёРјР°С”С‚Рµ РІС–Рґ'С”РјРЅРёР№ Р·Р°Р»РёС€РѕРє.",
-                     "РџРѕРјРёР»РєР°", JOptionPane.ERROR_MESSAGE);
+                     "Ви не можете видалити вказане надходження,"
+                           + "\nтак как у більш пізні строки Ви отримаєте від'ємний залишок.",
+                     "Помилка", JOptionPane.ERROR_MESSAGE);
             }
          }
       });
 
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
 
-      datePanel.add(new JLabel("РџРѕС‡Р°С‚РѕРє РїРµСЂС–РѕРґСѓ:"));
+      datePanel.add(new JLabel("Початок періоду:"));
 
       datePanel.add(new JLabel(from));
 
-      datePanel.add(new JLabel("РљС–РЅРµС†СЊ РїРµСЂС–РѕРґСѓ:"));
+      datePanel.add(new JLabel("Кінець періоду:"));
 
       datePanel.add(new JLabel(to));
 
@@ -207,14 +207,14 @@ public class IncomingsReport
 
    private JTable getFilledTable(String from, String to)
    {
-      String[] columnNames = {"в„– Р·/Рї",
-                              "РќР°Р№РјРµРЅСѓРІР°РЅРЅСЏ РїСЂРµРґРјРµС‚С–РІ Р·Р°РєСѓРїС–РІРµР»СЊ",
-                              "РћРґРёРЅРёС†СЏ РІРёРјС–СЂСѓ",
-                              "Р”Р°С‚Р° РЅР°РґС…РѕРґР¶РµРЅРЅСЏ",
-                              "Р¦С–РЅР°, РіСЂРЅ./РѕРґ.",
-                              "РљС–Р»СЊРєС–СЃС‚СЊ, РѕРґ.",
-                              "РЎСѓРјР°, РіСЂРЅ.",
-                              "Р“СЂСѓРїР°"};
+      String[] columnNames = {"№ з/п",
+                              "Найменування предметів закупівель",
+                              "Одиниця виміру",
+                              "Дата надходження",
+                              "Ціна, грн./од.",
+                              "Кількість, од.",
+                              "Сума, грн.",
+                              "Група"};
 
       List<Incoming> incomings = new Connection().getIncomings(from, to);
 
